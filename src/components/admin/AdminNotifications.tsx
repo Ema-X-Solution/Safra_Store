@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { getFirebaseDb } from "@/lib/firebase/config";
 import { markNotificationRead, markAllNotificationsRead } from "@/lib/firebase/admin-firestore";
-import { formatPrice } from "@/lib/utils";
+import Price from "@/components/ui/Price";
 import type { AdminNotification } from "@/lib/types";
 import { Bell, X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -77,7 +77,9 @@ export default function AdminNotifications() {
                     <p className="text-sm font-medium text-safra-dark">
                       {t("newOrderFrom", { name: n.customerName })}
                     </p>
-                    <p className="text-sm text-safra-deep-gold">{formatPrice(n.total)}</p>
+                    <p className="text-sm text-safra-deep-gold">
+                      <Price amount={n.total} />
+                    </p>
                     <div className="mt-2 flex gap-2">
                       <Link
                         href="/admin/orders"

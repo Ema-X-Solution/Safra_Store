@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Product, Category, getProductName, getCategoryName } from "@/lib/types";
 import { useCart } from "@/lib/context/CartContext";
-import { formatPrice } from "@/lib/utils";
+import Price from "@/components/ui/Price";
 import Button from "@/components/ui/Button";
 import type { Locale } from "@/i18n/routing";
 
@@ -46,9 +46,11 @@ export default function ProductCard({ product, category }: ProductCardProps) {
             <p className="mt-0.5 text-xs text-safra-muted">{getCategoryName(category, locale)}</p>
           )}
         </Link>
-        <p className="mt-1 text-lg font-bold text-safra-deep-gold">{formatPrice(product.price)}</p>
+        <p className="mt-1 text-lg font-bold text-safra-deep-gold">
+          <Price amount={product.price} />
+        </p>
         <Button
-          className="mt-auto w-full pt-4"
+          className="mt-auto w-full pt-2 pb-2"
           size="sm"
           disabled={!inStock}
           onClick={() => addItem(product)}

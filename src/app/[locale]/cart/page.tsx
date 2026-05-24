@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useCart } from "@/lib/context/CartContext";
 import { getProductName } from "@/lib/types";
-import { formatPrice } from "@/lib/utils";
+import Price from "@/components/ui/Price";
 import Button from "@/components/ui/Button";
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import type { Locale } from "@/i18n/routing";
@@ -54,7 +54,9 @@ export default function CartPage() {
                     <h3 className="font-semibold text-safra-dark">
                       {getProductName(product, locale)}
                     </h3>
-                    <p className="text-safra-deep-gold">{formatPrice(product.price)}</p>
+                    <p className="text-safra-deep-gold">
+                      <Price amount={product.price} />
+                    </p>
                   </div>
                   <button
                     onClick={() => removeItem(product.id)}
@@ -92,7 +94,7 @@ export default function CartPage() {
           <div className="mt-4 space-y-2 text-sm">
             <div className="flex justify-between text-safra-muted">
               <span>{t("subtotal")}</span>
-              <span>{formatPrice(totalPrice)}</span>
+              <Price amount={totalPrice} />
             </div>
             <div className="flex justify-between text-safra-muted">
               <span>{t("shipping")}</span>
@@ -100,7 +102,7 @@ export default function CartPage() {
             </div>
             <div className="flex justify-between border-t border-safra-taupe/30 pt-2 text-lg font-bold text-safra-dark">
               <span>{t("total")}</span>
-              <span>{formatPrice(totalPrice)}</span>
+              <Price amount={totalPrice} />
             </div>
           </div>
           <Link href="/checkout" className="mt-6 block">

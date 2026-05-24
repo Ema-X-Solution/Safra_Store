@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { deleteProduct } from "@/lib/firebase/admin-firestore";
 import { getProductName, getCategoryName, type Product, type Category } from "@/lib/types";
-import { formatPrice } from "@/lib/utils";
+import Price from "@/components/ui/Price";
 import type { Locale } from "@/i18n/routing";
 import { Trash2 } from "lucide-react";
 
@@ -64,7 +64,9 @@ export default function ProductsList({ products, categories, onRefresh }: Produc
                       <span className="font-medium">{getProductName(product, locale)}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-3">{formatPrice(product.price)}</td>
+                  <td className="px-4 py-3">
+                    <Price amount={product.price} />
+                  </td>
                   <td className="px-4 py-3">{product.stock}</td>
                   <td className="px-4 py-3">
                     {cat ? getCategoryName(cat, locale) : "—"}

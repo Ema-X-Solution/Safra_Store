@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/context/AuthContext";
 import { useCart } from "@/lib/context/CartContext";
 import { createOrder } from "@/lib/firebase/firestore";
 import { getProductName } from "@/lib/types";
-import { formatPrice } from "@/lib/utils";
+import Price from "@/components/ui/Price";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import { CheckCircle } from "lucide-react";
@@ -100,13 +100,15 @@ export default function CheckoutPage() {
                 <span className="text-safra-olive">
                   {getProductName(product, locale)} × {quantity}
                 </span>
-                <span className="font-medium">{formatPrice(product.price * quantity)}</span>
+                <span className="font-medium">
+                  <Price amount={product.price * quantity} />
+                </span>
               </li>
             ))}
           </ul>
           <div className="mt-4 flex justify-between border-t border-safra-taupe/30 pt-4 text-lg font-bold text-safra-dark">
             <span>{cartT("total")}</span>
-            <span>{formatPrice(totalPrice)}</span>
+            <Price amount={totalPrice} />
           </div>
         </div>
       </div>

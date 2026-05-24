@@ -3,8 +3,9 @@ export function cn(...classes: (string | undefined | false | null)[]) {
 }
 
 export function formatPrice(price: number): string {
+  // OMR uses 3 decimal places.
   return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
+    minimumFractionDigits: 3,
+    maximumFractionDigits: 3,
   }).format(price);
 }

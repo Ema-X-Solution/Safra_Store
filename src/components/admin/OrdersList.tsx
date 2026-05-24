@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { updateOrderStatus } from "@/lib/firebase/admin-firestore";
-import { formatPrice } from "@/lib/utils";
+import Price from "@/components/ui/Price";
 import type { Order, OrderStatus } from "@/lib/types";
 
 const STATUSES: OrderStatus[] = ["pending", "processing", "shipped", "delivered"];
@@ -58,7 +58,9 @@ export default function OrdersList({ orders, onRefresh }: OrdersListProps) {
               <p className="text-sm text-safra-olive">{order.shippingAddress?.phone}</p>
             </div>
             <div className="text-end">
-              <p className="text-lg font-bold text-safra-deep-gold">{formatPrice(order.total)}</p>
+              <p className="text-lg font-bold text-safra-deep-gold">
+                <Price amount={order.total} />
+              </p>
               <select
                 value={order.status}
                 onChange={(e) => handleStatusChange(order.id, e.target.value as OrderStatus)}
@@ -78,7 +80,7 @@ export default function OrdersList({ orders, onRefresh }: OrdersListProps) {
                 <span>
                   {typeof item.name === "object" ? item.name.en : item.name} × {item.quantity}
                 </span>
-                <span>{formatPrice(item.price * item.quantity)}</span>
+                <Price amount={item.price * item.quantity} />
               </li>
             ))}
           </ul>

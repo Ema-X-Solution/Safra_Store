@@ -8,7 +8,7 @@ import { fetchProductById } from "@/lib/products";
 import { fetchCategories } from "@/lib/categories";
 import { getProductName, getProductDescription, getCategoryName, type Product, type Category } from "@/lib/types";
 import { useCart } from "@/lib/context/CartContext";
-import { formatPrice } from "@/lib/utils";
+import Price from "@/components/ui/Price";
 import Button from "@/components/ui/Button";
 import { ArrowLeft, Minus, Plus } from "lucide-react";
 import type { Locale } from "@/i18n/routing";
@@ -80,7 +80,7 @@ export default function ProductDetailPage({
             {getProductName(product, locale)}
           </h1>
           <p className="mt-4 text-2xl font-bold text-safra-deep-gold">
-            {formatPrice(product.price)}
+            <Price amount={product.price} />
           </p>
           <p className="mt-4 leading-relaxed text-safra-muted">
             {getProductDescription(product, locale)}
