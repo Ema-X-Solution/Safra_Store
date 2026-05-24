@@ -1,0 +1,182 @@
+{
+  "metadata": {
+    "title": "Safra Store — Fresh & Natural",
+    "description": "Your trusted marketplace for organic produce, pantry essentials, and artisan goods."
+  },
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "cart": "Cart",
+    "login": "Sign In",
+    "logout": "Sign Out",
+    "account": "Account",
+    "checkout": "Checkout",
+    "admin": "Admin"
+  },
+  "hero": {
+    "title": "Harvest the Best of Nature",
+    "subtitle": "Fresh organic produce, artisan pantry goods, and garden essentials — delivered from farm to your door.",
+    "cta": "Shop Now",
+    "secondary": "Browse Categories"
+  },
+  "home": {
+    "featuredTitle": "Featured Products",
+    "featuredSubtitle": "Handpicked favorites from our community of local producers",
+    "categoriesTitle": "Shop by Category",
+    "viewAll": "View All Products",
+    "noProducts": "No products available yet",
+    "whyUs": {
+      "title": "Why Safra Store?",
+      "fresh": {
+        "title": "Farm Fresh",
+        "desc": "Sourced directly from local farms and producers"
+      },
+      "organic": {
+        "title": "100% Organic",
+        "desc": "Certified organic products with no harmful chemicals"
+      },
+      "delivery": {
+        "title": "Fast Delivery",
+        "desc": "Same-day delivery available in select areas"
+      }
+    }
+  },
+  "products": {
+    "title": "All Products",
+    "subtitle": "Browse our full collection of fresh and natural goods",
+    "filterAll": "All",
+    "addToCart": "Add to Cart",
+    "outOfStock": "Out of Stock",
+    "inStock": "In Stock",
+    "itemsLeft": "{count} left",
+    "notFound": "Product not found",
+    "backToProducts": "Back to Products"
+  },
+  "categories": {
+    "Pantry": "Pantry",
+    "Garden": "Garden",
+    "Bakery": "Bakery",
+    "Dairy": "Dairy",
+    "Produce": "Produce"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "emptyDesc": "Looks like you haven't added anything yet.",
+    "continueShopping": "Continue Shopping",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "free": "Free",
+    "total": "Total",
+    "checkout": "Proceed to Checkout",
+    "remove": "Remove",
+    "quantity": "Qty"
+  },
+  "auth": {
+    "loginTitle": "Welcome Back",
+    "registerTitle": "Create Account",
+    "email": "Email",
+    "password": "Password",
+    "name": "Full Name",
+    "loginBtn": "Sign In",
+    "registerBtn": "Create Account",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "switchToRegister": "Sign up",
+    "switchToLogin": "Sign in",
+    "loginError": "Invalid email or password",
+    "registerError": "Could not create account",
+    "emailInUse": "This email is already registered",
+    "weakPassword": "Password must be at least 6 characters",
+    "invalidEmail": "Invalid email address",
+    "tooManyRequests": "Too many attempts. Please try again later",
+    "firebaseNotConfigured": "Firebase is not configured. Add NEXT_PUBLIC_FIREBASE_API_KEY to your .env file."
+  },
+  "checkout": {
+    "title": "Checkout",
+    "shippingInfo": "Shipping Information",
+    "fullName": "Full Name",
+    "address": "Address",
+    "city": "City",
+    "postalCode": "Postal Code",
+    "phone": "Phone Number",
+    "orderSummary": "Order Summary",
+    "placeOrder": "Place Order",
+    "loginRequired": "Please sign in to checkout",
+    "success": "Order placed successfully!",
+    "successDesc": "Thank you for your order. We'll send you a confirmation email shortly."
+  },
+  "footer": {
+    "tagline": "Fresh from the earth, delivered to your door.",
+    "shop": "Shop",
+    "support": "Support",
+    "contact": "Contact Us",
+    "faq": "FAQ",
+    "shipping": "Shipping Info",
+    "rights": "All rights reserved."
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "language": "Language"
+  },
+  "admin": {
+    "panel": "Admin Panel",
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "orders": "Orders",
+    "loading": "Loading...",
+    "accessDenied": "Access Denied",
+    "accessDeniedDesc": "Your account is not authorized to access the admin panel.",
+    "backToStore": "Back to Store",
+    "dashboardDesc": "Overview of your store",
+    "totalProducts": "Total Products",
+    "totalOrders": "Total Orders",
+    "pendingOrders": "Pending Orders",
+    "productsDesc": "Upload and manage products",
+    "ordersDesc": "View and manage customer orders",
+    "addProduct": "Add New Product",
+    "productList": "All Products",
+    "nameEn": "Name (English)",
+    "nameAr": "Name (Arabic)",
+    "descEn": "Description (English)",
+    "descAr": "Description (Arabic)",
+    "price": "Price",
+    "stock": "Stock",
+    "category": "Category",
+    "uploadImage": "Upload Image",
+    "imageUrl": "Or paste image URL",
+    "featured": "Featured product",
+    "saveProduct": "Save Product",
+    "saveError": "Failed to save product",
+    "imageRequired": "Please upload an image or paste a URL",
+    "noProducts": "No products yet",
+    "noOrders": "No orders yet",
+    "product": "Product",
+    "delete": "Delete",
+    "confirmDelete": "Delete this product?",
+    "customer": "Customer",
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "delivered": "Delivered"
+    },
+    "categories": "Categories",
+    "categoriesDesc": "Manage product categories",
+    "addCategory": "Add Category",
+    "saveCategory": "Save Category",
+    "categoryList": "All Categories",
+    "noCategories": "No categories yet — add one first",
+    "confirmDeleteCategory": "Delete this category?",
+    "sortOrder": "Sort order",
+    "needCategory": "Add a category before adding products",
+    "cloudinaryHint": "Images upload to Cloudinary",
+    "notifications": "Notifications",
+    "noNotifications": "No notifications",
+    "newOrderFrom": "New order from {name}",
+    "viewOrder": "View order",
+    "markRead": "Mark read",
+    "markAllRead": "Mark all read"
+  }
+}

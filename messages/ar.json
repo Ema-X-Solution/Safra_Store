@@ -1,0 +1,182 @@
+{
+  "metadata": {
+    "title": "متجر سفرة — طازج وطبيعي",
+    "description": "سوقك الموثوق للمنتجات العضوية والمستلزمات المنزلية والسلع الحرفية."
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "products": "المنتجات",
+    "cart": "السلة",
+    "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج",
+    "account": "حسابي",
+    "checkout": "الدفع",
+    "admin": "لوحة التحكم"
+  },
+  "hero": {
+    "title": "احصد أفضل ما في الطبيعة",
+    "subtitle": "منتجات عضوية طازجة ومستلزمات منزلية حرفية وأساسيات للحديقة — من المزرعة إلى بابك.",
+    "cta": "تسوق الآن",
+    "secondary": "تصفح الفئات"
+  },
+  "home": {
+    "featuredTitle": "منتجات مميزة",
+    "featuredSubtitle": "مختارات من أفضل المنتجين المحليين",
+    "categoriesTitle": "تسوق حسب الفئة",
+    "viewAll": "عرض جميع المنتجات",
+    "noProducts": "لا توجد منتجات متاحة حالياً",
+    "whyUs": {
+      "title": "لماذا متجر سفرة؟",
+      "fresh": {
+        "title": "طازج من المزرعة",
+        "desc": "نستورد مباشرة من المزارع والمنتجين المحليين"
+      },
+      "organic": {
+        "title": "عضوي 100%",
+        "desc": "منتجات عضوية معتمدة خالية من المواد الكيميائية الضارة"
+      },
+      "delivery": {
+        "title": "توصيل سريع",
+        "desc": "توصيل في نفس اليوم متاح في مناطق مختارة"
+      }
+    }
+  },
+  "products": {
+    "title": "جميع المنتجات",
+    "subtitle": "تصفح مجموعتنا الكاملة من السلع الطازجة والطبيعية",
+    "filterAll": "الكل",
+    "addToCart": "أضف إلى السلة",
+    "outOfStock": "نفدت الكمية",
+    "inStock": "متوفر",
+    "itemsLeft": "متبقي {count}",
+    "notFound": "المنتج غير موجود",
+    "backToProducts": "العودة للمنتجات"
+  },
+  "categories": {
+    "Pantry": "المطبخ",
+    "Garden": "الحديقة",
+    "Bakery": "المخبز",
+    "Dairy": "الألبان",
+    "Produce": "الخضروات والفواكه"
+  },
+  "cart": {
+    "title": "سلة التسوق",
+    "empty": "سلتك فارغة",
+    "emptyDesc": "يبدو أنك لم تضف أي منتجات بعد.",
+    "continueShopping": "متابعة التسوق",
+    "subtotal": "المجموع الفرعي",
+    "shipping": "الشحن",
+    "free": "مجاني",
+    "total": "الإجمالي",
+    "checkout": "متابعة الدفع",
+    "remove": "إزالة",
+    "quantity": "الكمية"
+  },
+  "auth": {
+    "loginTitle": "مرحباً بعودتك",
+    "registerTitle": "إنشاء حساب",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "name": "الاسم الكامل",
+    "loginBtn": "تسجيل الدخول",
+    "registerBtn": "إنشاء حساب",
+    "noAccount": "ليس لديك حساب؟",
+    "hasAccount": "لديك حساب بالفعل؟",
+    "switchToRegister": "سجّل الآن",
+    "switchToLogin": "سجّل دخولك",
+    "loginError": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+    "registerError": "تعذّر إنشاء الحساب",
+    "emailInUse": "هذا البريد مسجّل مسبقاً",
+    "weakPassword": "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+    "invalidEmail": "البريد الإلكتروني غير صالح",
+    "tooManyRequests": "محاولات كثيرة. حاول مرة أخرى لاحقاً",
+    "firebaseNotConfigured": "Firebase غير مُعد. أضف NEXT_PUBLIC_FIREBASE_API_KEY إلى ملف .env"
+  },
+  "checkout": {
+    "title": "إتمام الطلب",
+    "shippingInfo": "معلومات الشحن",
+    "fullName": "الاسم الكامل",
+    "address": "العنوان",
+    "city": "المدينة",
+    "postalCode": "الرمز البريدي",
+    "phone": "رقم الهاتف",
+    "orderSummary": "ملخص الطلب",
+    "placeOrder": "تأكيد الطلب",
+    "loginRequired": "يرجى تسجيل الدخول لإتمام الطلب",
+    "success": "تم تأكيد طلبك بنجاح!",
+    "successDesc": "شكراً لطلبك. سنرسل لك رسالة تأكيد قريباً."
+  },
+  "footer": {
+    "tagline": "من الأرض إلى بابك، طازجاً كل يوم.",
+    "shop": "المتجر",
+    "support": "الدعم",
+    "contact": "تواصل معنا",
+    "faq": "الأسئلة الشائعة",
+    "shipping": "معلومات الشحن",
+    "rights": "جميع الحقوق محفوظة."
+  },
+  "common": {
+    "loading": "جاري التحميل...",
+    "error": "حدث خطأ ما",
+    "language": "اللغة"
+  },
+  "admin": {
+    "panel": "لوحة الإدارة",
+    "dashboard": "الرئيسية",
+    "products": "المنتجات",
+    "orders": "الطلبات",
+    "loading": "جاري التحميل...",
+    "accessDenied": "غير مصرح",
+    "accessDeniedDesc": "حسابك غير مصرح له بالوصول إلى لوحة الإدارة.",
+    "backToStore": "العودة للمتجر",
+    "dashboardDesc": "نظرة عامة على متجرك",
+    "totalProducts": "إجمالي المنتجات",
+    "totalOrders": "إجمالي الطلبات",
+    "pendingOrders": "طلبات قيد الانتظار",
+    "productsDesc": "رفع وإدارة المنتجات",
+    "ordersDesc": "عرض وإدارة طلبات العملاء",
+    "addProduct": "إضافة منتج جديد",
+    "productList": "جميع المنتجات",
+    "nameEn": "الاسم (إنجليزي)",
+    "nameAr": "الاسم (عربي)",
+    "descEn": "الوصف (إنجليزي)",
+    "descAr": "الوصف (عربي)",
+    "price": "السعر",
+    "stock": "المخزون",
+    "category": "الفئة",
+    "uploadImage": "رفع صورة",
+    "imageUrl": "أو الصق رابط الصورة",
+    "featured": "منتج مميز",
+    "saveProduct": "حفظ المنتج",
+    "saveError": "فشل حفظ المنتج",
+    "imageRequired": "يرجى رفع صورة أو لصق رابط",
+    "noProducts": "لا توجد منتجات بعد",
+    "noOrders": "لا توجد طلبات بعد",
+    "product": "المنتج",
+    "delete": "حذف",
+    "confirmDelete": "حذف هذا المنتج؟",
+    "customer": "العميل",
+    "status": {
+      "pending": "قيد الانتظار",
+      "processing": "قيد المعالجة",
+      "shipped": "تم الشحن",
+      "delivered": "تم التسليم"
+    },
+    "categories": "الفئات",
+    "categoriesDesc": "إدارة فئات المنتجات",
+    "addCategory": "إضافة فئة",
+    "saveCategory": "حفظ الفئة",
+    "categoryList": "جميع الفئات",
+    "noCategories": "لا توجد فئات — أضف فئة أولاً",
+    "confirmDeleteCategory": "حذف هذه الفئة؟",
+    "sortOrder": "ترتيب العرض",
+    "needCategory": "أضف فئة قبل إضافة المنتجات",
+    "cloudinaryHint": "الصور تُرفع على Cloudinary",
+    "notifications": "الإشعارات",
+    "noNotifications": "لا توجد إشعارات",
+    "newOrderFrom": "طلب جديد من {name}",
+    "viewOrder": "عرض الطلب",
+    "markRead": "تعليم كمقروء",
+    "markAllRead": "تعليم الكل كمقروء"
+  }
+}

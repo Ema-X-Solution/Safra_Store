@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+@theme {
+  /* Safra Store palette */
+  --color-safra-light: #ddce76;
+  --color-safra-gold: #b9a81d;
+  --color-safra-dark: #3b4019;
+  --color-safra-cream: #e4dcbe;
+  --color-safra-deep-gold: #756b0d;
+  --color-safra-muted: #8d8a5d;
+  --color-safra-taupe: #b5ae83;
+  --color-safra-olive: #6b6a41;
+  --color-safra-bright: #dcc100;
+
+  --color-background: #e4dcbe;
+  --color-foreground: #3b4019;
+  --color-primary: #b9a81d;
+  --color-primary-foreground: #3b4019;
+  --color-secondary: #ddce76;
+  --color-secondary-foreground: #3b4019;
+  --color-accent: #dcc100;
+  --color-accent-foreground: #3b4019;
+  --color-muted: #b5ae83;
+  --color-muted-foreground: #6b6a41;
+  --color-card: #ffffff;
+  --color-card-foreground: #3b4019;
+  --color-border: #b5ae83;
+  --color-input: #ffffff;
+  --color-ring: #b9a81d;
+
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-arabic: var(--font-cairo), system-ui, sans-serif;
+}
+
+:root {
+  --safra-light: #ddce76;
+  --safra-gold: #b9a81d;
+  --safra-dark: #3b4019;
+  --safra-cream: #e4dcbe;
+  --safra-deep-gold: #756b0d;
+  --safra-muted: #8d8a5d;
+  --safra-taupe: #b5ae83;
+  --safra-olive: #6b6a41;
+  --safra-bright: #dcc100;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--safra-cream);
+  color: var(--safra-dark);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html[lang="ar"] body {
+  font-family: var(--font-arabic);
+}
+
+::selection {
+  background-color: var(--safra-gold);
+  color: var(--safra-cream);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--safra-cream);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--safra-taupe);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--safra-olive);
+}
