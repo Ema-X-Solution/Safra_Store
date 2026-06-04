@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "متجر سفرة — طازج وطبيعي",
-    "description": "سوقك الموثوق للمنتجات العضوية والمستلزمات المنزلية والسلع الحرفية."
+    "description": "سوقك الموثوق للمنتجات العضوية، ومستلزمات المخزن، والسلع الحرفية."
   },
   "nav": {
     "home": "الرئيسية",
@@ -9,66 +9,66 @@
     "cart": "السلة",
     "login": "تسجيل الدخول",
     "logout": "تسجيل الخروج",
-    "account": "حسابي",
-    "checkout": "الدفع",
+    "account": "الحساب",
+    "checkout": "إتمام الطلب",
     "admin": "لوحة التحكم"
   },
   "hero": {
     "title": "احصد أفضل ما في الطبيعة",
-    "subtitle": "منتجات عضوية طازجة ومستلزمات منزلية حرفية وأساسيات للحديقة — من المزرعة إلى بابك.",
+    "subtitle": "منتجات عضوية طازجة، وسلع مخزن حرفية، ومستلزمات الحدائق — من المزرعة إلى باب منزلك.",
     "cta": "تسوق الآن",
-    "secondary": "تصفح الفئات"
+    "secondary": "تصفح الأقسام"
   },
   "home": {
-    "featuredTitle": "منتجات مميزة",
-    "featuredSubtitle": "مختارات من أفضل المنتجين المحليين",
-    "categoriesTitle": "تسوق حسب الفئة",
-    "viewAll": "عرض جميع المنتجات",
-    "noProducts": "لا توجد منتجات متاحة حالياً",
+    "featuredTitle": "منتجات مختارة",
+    "featuredSubtitle": "مفضلات منتقاة بعناية من مجتمع المنتجين المحليين لدينا",
+    "categoriesTitle": "تسوق حسب القسم",
+    "viewAll": "عرض كل المنتجات",
+    "noProducts": "لا توجد منتجات متاحة بعد",
     "whyUs": {
       "title": "لماذا متجر سفرة؟",
       "fresh": {
         "title": "طازج من المزرعة",
-        "desc": "نستورد مباشرة من المزارع والمنتجين المحليين"
+        "desc": "يتم الحصول عليها مباشرة من المزارع والمنتجين المحليين"
       },
       "organic": {
         "title": "عضوي 100%",
-        "desc": "منتجات عضوية معتمدة خالية من المواد الكيميائية الضارة"
+        "desc": "منتجات عضوية معتمدة بدون مواد كيميائية ضارة"
       },
       "delivery": {
         "title": "توصيل سريع",
-        "desc": "توصيل في نفس اليوم متاح في مناطق مختارة"
+        "desc": "يتوفر التوصيل في نفس اليوم في مناطق محددة"
       }
     }
   },
   "products": {
-    "title": "جميع المنتجات",
+    "title": "كل المنتجات",
     "subtitle": "تصفح مجموعتنا الكاملة من السلع الطازجة والطبيعية",
     "filterAll": "الكل",
-    "addToCart": "أضف إلى السلة",
+    "addToCart": "أضف للسلة",
     "outOfStock": "نفدت الكمية",
     "inStock": "متوفر",
-    "itemsLeft": "متبقي {count}",
+    "itemsLeft": "باقي {count}",
     "notFound": "المنتج غير موجود",
     "backToProducts": "العودة للمنتجات"
   },
   "categories": {
-    "Pantry": "المطبخ",
+    "Pantry": "المخزن",
     "Garden": "الحديقة",
     "Bakery": "المخبز",
     "Dairy": "الألبان",
-    "Produce": "الخضروات والفواكه"
+    "Produce": "المنتجات الزراعية"
   },
   "cart": {
-    "title": "سلة التسوق",
+    "title": "سلة المشتريات",
     "empty": "سلتك فارغة",
-    "emptyDesc": "يبدو أنك لم تضف أي منتجات بعد.",
-    "continueShopping": "متابعة التسوق",
+    "emptyDesc": "يبدو أنك لم تضف أي شيء بعد.",
+    "continueShopping": "مواصلة التسوق",
     "subtotal": "المجموع الفرعي",
     "shipping": "الشحن",
     "free": "مجاني",
     "total": "الإجمالي",
-    "checkout": "متابعة الدفع",
+    "checkout": "إتمام الطلب",
     "remove": "إزالة",
     "quantity": "الكمية"
   },
@@ -82,15 +82,15 @@
     "registerBtn": "إنشاء حساب",
     "noAccount": "ليس لديك حساب؟",
     "hasAccount": "لديك حساب بالفعل؟",
-    "switchToRegister": "سجّل الآن",
-    "switchToLogin": "سجّل دخولك",
+    "switchToRegister": "سجل الآن",
+    "switchToLogin": "تسجيل الدخول",
     "loginError": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
-    "registerError": "تعذّر إنشاء الحساب",
-    "emailInUse": "هذا البريد مسجّل مسبقاً",
-    "weakPassword": "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
-    "invalidEmail": "البريد الإلكتروني غير صالح",
-    "tooManyRequests": "محاولات كثيرة. حاول مرة أخرى لاحقاً",
-    "firebaseNotConfigured": "Firebase غير مُعد. أضف NEXT_PUBLIC_FIREBASE_API_KEY إلى ملف .env"
+    "registerError": "تعذر إنشاء الحساب",
+    "emailInUse": "البريد الإلكتروني مسجل بالفعل",
+    "weakPassword": "يجب أن تكون كلمة المرور 6 أحرف على الأقل",
+    "invalidEmail": "عنوان بريد إلكتروني غير صالح",
+    "tooManyRequests": "محاولات كثيرة جداً. يرجى المحاولة لاحقاً",
+    "firebaseNotConfigured": "تم تكوين Firebase بشكل غير صحيح."
   },
   "checkout": {
     "title": "إتمام الطلب",
@@ -103,14 +103,14 @@
     "orderSummary": "ملخص الطلب",
     "placeOrder": "تأكيد الطلب",
     "loginRequired": "يرجى تسجيل الدخول لإتمام الطلب",
-    "success": "تم تأكيد طلبك بنجاح!",
-    "successDesc": "شكراً لطلبك. سنرسل لك رسالة تأكيد قريباً."
+    "success": "تم تقديم الطلب بنجاح!",
+    "successDesc": "شكراً لطلبك. سنرسل لك رسالة تأكيد عبر البريد الإلكتروني قريباً."
   },
   "footer": {
-    "tagline": "من الأرض إلى بابك، طازجاً كل يوم.",
-    "shop": "المتجر",
+    "tagline": "طازج من الأرض، إلى باب منزلك مباشرة.",
+    "shop": "تسوق",
     "support": "الدعم",
-    "contact": "تواصل معنا",
+    "contact": "اتصل بنا",
     "faq": "الأسئلة الشائعة",
     "shipping": "معلومات الشحن",
     "rights": "جميع الحقوق محفوظة."
@@ -121,29 +121,44 @@
     "language": "اللغة"
   },
   "admin": {
-    "panel": "لوحة الإدارة",
-    "dashboard": "الرئيسية",
+    "panel": "لوحة التحكم",
+    "dashboard": "لوحة القيادة",
+    "catalog": "الكتالوج",
+    "sales": "المبيعات",
+    "content": "المحتوى",
+    "settings": "الإعدادات",
+    "coupons": "الكوبونات",
+    "customers": "العملاء",
+    "faq": "الأسئلة الشائعة",
+    "shipping": "الشحن",
+    "messages": "الرسائل",
+    "visitStore": "زيارة المتجر",
+    "logout": "تسجيل خروج",
+    "viewAll": "عرض الكل",
+    "latestOrders": "أحدث الطلبات",
+    "date": "التاريخ",
+    "total": "الإجمالي",
     "products": "المنتجات",
     "orders": "الطلبات",
     "loading": "جاري التحميل...",
-    "accessDenied": "غير مصرح",
-    "accessDeniedDesc": "حسابك غير مصرح له بالوصول إلى لوحة الإدارة.",
+    "accessDenied": "تم رفض الوصول",
+    "accessDeniedDesc": "حسابك غير مصرح له بالوصول إلى لوحة التحكم.",
     "backToStore": "العودة للمتجر",
     "dashboardDesc": "نظرة عامة على متجرك",
     "totalProducts": "إجمالي المنتجات",
     "totalOrders": "إجمالي الطلبات",
-    "pendingOrders": "طلبات قيد الانتظار",
-    "productsDesc": "رفع وإدارة المنتجات",
+    "pendingOrders": "الطلبات المعلقة",
+    "productsDesc": "إدارة المنتجات",
     "ordersDesc": "عرض وإدارة طلبات العملاء",
     "addProduct": "إضافة منتج جديد",
     "productList": "جميع المنتجات",
-    "nameEn": "الاسم (إنجليزي)",
-    "nameAr": "الاسم (عربي)",
-    "descEn": "الوصف (إنجليزي)",
-    "descAr": "الوصف (عربي)",
+    "nameEn": "الاسم (بالانجليزية)",
+    "nameAr": "الاسم (بالعربية)",
+    "descEn": "الوصف (بالانجليزية)",
+    "descAr": "الوصف (بالعربية)",
     "price": "السعر",
     "stock": "المخزون",
-    "category": "الفئة",
+    "category": "القسم",
     "uploadImage": "رفع صورة",
     "imageUrl": "أو الصق رابط الصورة",
     "featured": "منتج مميز",
@@ -158,25 +173,26 @@
     "customer": "العميل",
     "status": {
       "pending": "قيد الانتظار",
-      "processing": "قيد المعالجة",
+      "processing": "جاري التجهيز",
       "shipped": "تم الشحن",
-      "delivered": "تم التسليم"
+      "delivered": "تم التوصيل",
+      "cancelled": "ملغى"
     },
-    "categories": "الفئات",
-    "categoriesDesc": "إدارة فئات المنتجات",
-    "addCategory": "إضافة فئة",
-    "saveCategory": "حفظ الفئة",
-    "categoryList": "جميع الفئات",
-    "noCategories": "لا توجد فئات — أضف فئة أولاً",
-    "confirmDeleteCategory": "حذف هذه الفئة؟",
+    "categories": "الأقسام",
+    "categoriesDesc": "إدارة أقسام المنتجات",
+    "addCategory": "إضافة قسم",
+    "saveCategory": "حفظ القسم",
+    "categoryList": "جميع الأقسام",
+    "noCategories": "لا توجد أقسام بعد — أضف قسماً أولاً",
+    "confirmDeleteCategory": "حذف هذا القسم؟",
     "sortOrder": "ترتيب العرض",
-    "needCategory": "أضف فئة قبل إضافة المنتجات",
-    "cloudinaryHint": "الصور تُرفع على Cloudinary",
+    "needCategory": "أضف قسماً قبل إضافة المنتجات",
+    "cloudinaryHint": "يتم رفع الصور إلى Cloudinary",
     "notifications": "الإشعارات",
     "noNotifications": "لا توجد إشعارات",
     "newOrderFrom": "طلب جديد من {name}",
     "viewOrder": "عرض الطلب",
-    "markRead": "تعليم كمقروء",
-    "markAllRead": "تعليم الكل كمقروء"
+    "markRead": "تحديد كمقروء",
+    "markAllRead": "تحديد الكل كمقروء"
   }
 }

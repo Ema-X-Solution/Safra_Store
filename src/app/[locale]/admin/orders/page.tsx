@@ -1,44 +1,82 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { getAllOrders } from "@/lib/firebase/admin-firestore";
+import { Search } from "lucide-react";
+import OrdersTable from "@/components/admin/orders/OrdersTable";
+import { getAllOrders } from "@/lib/firebase/services/orders-service";
 import type { Order } from "@/lib/types";
-import OrdersList from "@/components/admin/OrdersList";
+import { toast } from "sonner";
 
 export default function AdminOrdersPage() {
   const t = useTranslations("admin");
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
 
-  const loadOrders = useCallback(async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await getAllOrders();
-      setOrders(data);
-    } catch {
-      setOrders([]);
+      setOrders(await getAllOrders());
+    } catch (err) {
+      toast.error("Failed to load orders");
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    loadOrders();
-  }, [loadOrders]);
+    load();
+  }, [load]);
+
+  const filteredOrders = orders.filter(o => {
+    const term = search.toLowerCase();
+    const matchesSearch = o.id.toLowerCase().includes(term) || 
+                          o.shippingAddress?.fullName?.toLowerCase().includes(term) ||
+                          o.shippingAddress?.phone?.includes(term);
+    const matchesStatus = statusFilter ? o.status === statusFilter : true;
+    return matchesSearch && matchesStatus;
+  });
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-safra-dark">{t("orders")}</h1>
-      <p className="mt-1 text-safra-muted">{t("ordersDesc")}</p>
-
-      <div className="mt-8">
-        {loading ? (
-          <p className="text-safra-muted">{t("loading")}</p>
-        ) : (
-          <OrdersList orders={orders} onRefresh={loadOrders} />
-        )}
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-safra-dark">{t("orders")}</h1>
+        <p className="mt-1 text-sm text-safra-muted">{t("ordersDesc")}</p>
       </div>
+
+      <div className="flex flex-col sm:flex-row gap-4 bg-white p-4 rounded-xl border border-safra-taupe/40 shadow-sm">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-safra-muted" />
+          <input
+            type="text"
+            placeholder="Search by order ID, name, or phone..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 rounded-lg border border-safra-taupe/40 focus:outline-none focus:ring-1 focus:ring-safra-gold"
+          />
+        </div>
+        <select
+          value={statusFilter}
+          onChange={e => setStatusFilter(e.target.value)}
+          className="rounded-lg border border-safra-taupe/40 bg-white px-4 py-2 focus:outline-none focus:ring-1 focus:ring-safra-gold"
+        >
+          <option value="">All Statuses</option>
+          <option value="pending">Pending</option>
+          <option value="processing">Processing</option>
+          <option value="shipped">Shipped</option>
+          <option value="delivered">Delivered</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+
+      {loading ? (
+        <div className="flex h-40 items-center justify-center text-safra-muted">{t("loading")}</div>
+      ) : (
+        <OrdersTable orders={filteredOrders} />
+      )}
     </div>
   );
 }

@@ -75,10 +75,10 @@ export default function AdminNotifications() {
                     className={`border-b border-safra-taupe/20 px-4 py-3 ${!n.read ? "bg-safra-light/30" : ""}`}
                   >
                     <p className="text-sm font-medium text-safra-dark">
-                      {t("newOrderFrom", { name: n.customerName })}
+                      {t("newOrderFrom", { name: n.customerName || "Customer" })}
                     </p>
                     <p className="text-sm text-safra-deep-gold">
-                      <Price amount={n.total} />
+                      <Price amount={n.total || 0} />
                     </p>
                     <div className="mt-2 flex gap-2">
                       <Link

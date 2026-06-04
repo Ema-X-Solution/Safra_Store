@@ -5,6 +5,8 @@ import { Inter, Cairo } from "next/font/google";
 import { routing, type Locale } from "@/i18n/routing";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import HeaderWrapper from "@/components/layout/HeaderWrapper";
+import FooterWrapper from "@/components/layout/FooterWrapper";
 import Providers from "@/components/providers/Providers";
 import "../globals.css";
 
@@ -51,9 +53,13 @@ export default async function LocaleLayout({
       <body className={`${inter.variable} ${cairo.variable} flex min-h-screen flex-col antialiased`}>
         <NextIntlClientProvider messages={messages}>
           <Providers>
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
+            <HeaderWrapper>
+              <Header />
+            </HeaderWrapper>
+            <main className="flex-1 flex flex-col">{children}</main>
+            <FooterWrapper>
+              <Footer />
+            </FooterWrapper>
           </Providers>
         </NextIntlClientProvider>
       </body>
