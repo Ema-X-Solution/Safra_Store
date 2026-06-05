@@ -7,6 +7,10 @@
     "home": "الرئيسية",
     "products": "المنتجات",
     "cart": "السلة",
+    "wishlist": "المفضلة",
+    "contact": "اتصل بنا",
+    "faq": "الأسئلة الشائعة",
+    "shipping": "الشحن",
     "login": "تسجيل الدخول",
     "logout": "تسجيل الخروج",
     "account": "الحساب",
@@ -70,7 +74,8 @@
     "total": "الإجمالي",
     "checkout": "إتمام الطلب",
     "remove": "إزالة",
-    "quantity": "الكمية"
+    "quantity": "الكمية",
+    "orderSummary": "ملخص الطلب"
   },
   "auth": {
     "loginTitle": "مرحباً بعودتك",

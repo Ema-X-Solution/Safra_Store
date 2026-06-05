@@ -5,7 +5,7 @@ import { FirebaseError } from "firebase/app";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
-import { signIn, signUp } from "@/lib/firebase/auth";
+import { signIn } from "@/lib/firebase/auth";
 import { useAuth } from "@/lib/context/AuthContext";
 import { isAdminEmail } from "@/lib/admin";
 import { checkIsAdmin } from "@/lib/firebase/admin-firestore";
@@ -39,7 +39,6 @@ export default function LoginForm() {
   const { user, isAdmin, loading: authLoading, configured, setUserFromLogin } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [isRegister, setIsRegister] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -48,8 +47,7 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (!authLoading && user) {
-      const target = wantsAdmin || isAdmin ? "/admin" : "/";
-      router.replace(target);
+      router.replace("/admin");
     }
   }, [authLoading, user, isAdmin, wantsAdmin, router]);
 
@@ -61,32 +59,19 @@ export default function LoginForm() {
     const form = new FormData(e.currentTarget);
     const email = form.get("email") as string;
     const password = form.get("password") as string;
-    const name = form.get("name") as string;
 
     try {
-      const authUser = isRegister
-        ? await signUp(email, password, name)
-        : await signIn(email, password);
+      const authUser = await signIn(email, password);
 
       setUserFromLogin(authUser);
 
-      const admin =
-        wantsAdmin || isAdminEmail(authUser.email) || (await checkIsAdmin(authUser.uid));
-
-      router.replace(admin ? "/admin" : "/");
+      router.replace("/admin");
     } catch (err) {
-      const key = getAuthErrorMessage(
-        err,
-        isRegister ? "registerError" : "loginError"
-      );
+      const key = getAuthErrorMessage(err, "loginError");
       setError(
         t(
           key as
-            | "registerError"
             | "loginError"
-            | "emailInUse"
-            | "weakPassword"
-            | "invalidEmail"
             | "tooManyRequests"
         )
       );
@@ -99,7 +84,7 @@ export default function LoginForm() {
     <div className="mx-auto flex min-h-[60vh] max-w-md items-center px-4 py-12">
       <div className="w-full rounded-2xl border border-safra-taupe/40 bg-white p-8 shadow-sm">
         <h1 className="text-2xl font-bold text-safra-dark">
-          {isRegister ? t("registerTitle") : t("loginTitle")}
+          {t("loginTitle")}
         </h1>
 
         {!configured && (
@@ -109,36 +94,19 @@ export default function LoginForm() {
         )}
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          {isRegister && (
-            <Input name="name" label={t("name")} required autoComplete="name" />
-          )}
           <Input name="email" type="email" label={t("email")} required autoComplete="email" />
           <Input
             name="password"
             type="password"
             label={t("password")}
             required
-            autoComplete={isRegister ? "new-password" : "current-password"}
+            autoComplete="current-password"
           />
           {error && <p className="text-sm text-red-600">{error}</p>}
           <Button type="submit" className="w-full" loading={loading} disabled={!configured}>
-            {isRegister ? t("registerBtn") : t("loginBtn")}
+            {t("loginBtn")}
           </Button>
         </form>
-
-        <p className="mt-6 text-center text-sm text-safra-muted">
-          {isRegister ? t("hasAccount") : t("noAccount")}{" "}
-          <button
-            type="button"
-            onClick={() => {
-              setIsRegister(!isRegister);
-              setError("");
-            }}
-            className="font-medium text-safra-gold hover:text-safra-deep-gold"
-          >
-            {isRegister ? t("switchToLogin") : t("switchToRegister")}
-          </button>
-        </p>
       </div>
     </div>
   );

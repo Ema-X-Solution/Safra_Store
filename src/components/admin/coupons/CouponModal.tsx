@@ -25,19 +25,31 @@ export default function CouponModal({ isOpen, onClose, coupon, onSave }: CouponM
 
     const form = new FormData(e.currentTarget);
     const activeStr = form.get("active") as string;
-    
+
+    const minOrderRaw = Number(form.get("minOrderValue"));
+    const maxDiscountRaw = Number(form.get("maxDiscount"));
+    const usageLimitRaw = Number(form.get("usageLimit"));
+
+    // Build object without optional undefined fields — Firebase rejects undefined
+    const payload: import("@/lib/types").CouponInput = {
+      code: (form.get("code") as string).trim().toUpperCase(),
+      description: {
+        en: form.get("descEn") as string,
+        ar: form.get("descAr") as string,
+      },
+      discountType: form.get("discountType") as any,
+      discountValue: Number(form.get("discountValue")),
+      expiryDate: new Date(form.get("expiryDate") as string),
+      active: activeStr === "true",
+    };
+
+    // Only add optional fields if they have a real value
+    if (minOrderRaw > 0) payload.minOrderValue = minOrderRaw;
+    if (maxDiscountRaw > 0) payload.maxDiscount = maxDiscountRaw;
+    if (usageLimitRaw > 0) payload.usageLimit = usageLimitRaw;
+
     try {
-      await onSave({
-        code: form.get("code") as string,
-        description: { en: form.get("descEn") as string, ar: form.get("descAr") as string },
-        discountType: form.get("discountType") as any,
-        discountValue: Number(form.get("discountValue")),
-        minOrderValue: Number(form.get("minOrderValue")) || undefined,
-        maxDiscount: Number(form.get("maxDiscount")) || undefined,
-        usageLimit: Number(form.get("usageLimit")) || undefined,
-        expiryDate: new Date(form.get("expiryDate") as string),
-        active: activeStr === "true",
-      });
+      await onSave(payload);
       onClose();
     } finally {
       setLoading(false);

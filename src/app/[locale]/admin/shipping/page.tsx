@@ -1,17 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Save } from "lucide-react";
+import { Save, Plus, Trash2 } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { getShippingInfo, updateShippingInfo } from "@/lib/firebase/services/shipping-service";
-import type { ShippingInfo } from "@/lib/types";
+import type { ShippingZone } from "@/lib/types";
 import { toast } from "sonner";
 
 export default function AdminShippingPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  
+
   const [fee, setFee] = useState(0);
   const [policyEn, setPolicyEn] = useState("");
   const [policyAr, setPolicyAr] = useState("");
@@ -19,6 +19,12 @@ export default function AdminShippingPage() {
   const [timesAr, setTimesAr] = useState("");
   const [areasEn, setAreasEn] = useState("");
   const [areasAr, setAreasAr] = useState("");
+  const [zones, setZones] = useState<ShippingZone[]>([]);
+
+  // New zone form state
+  const [newZoneEn, setNewZoneEn] = useState("");
+  const [newZoneAr, setNewZoneAr] = useState("");
+  const [newZoneFee, setNewZoneFee] = useState<number>(0);
 
   useEffect(() => {
     async function load() {
@@ -32,6 +38,7 @@ export default function AdminShippingPage() {
           setTimesAr(info.deliveryTimes?.ar || "");
           setAreasEn(info.deliveryAreas?.en || "");
           setAreasAr(info.deliveryAreas?.ar || "");
+          setZones(info.shippingZones || []);
         }
       } catch (err) {
         toast.error("Failed to load shipping info");
@@ -42,6 +49,29 @@ export default function AdminShippingPage() {
     load();
   }, []);
 
+  const addZone = () => {
+    if (!newZoneEn.trim() || !newZoneAr.trim()) {
+      toast.error("Please enter both English and Arabic zone names");
+      return;
+    }
+    if (zones.some(z => z.name.en.toLowerCase() === newZoneEn.trim().toLowerCase())) {
+      toast.error("A zone with this English name already exists");
+      return;
+    }
+    setZones(prev => [...prev, { name: { en: newZoneEn.trim(), ar: newZoneAr.trim() }, fee: newZoneFee }]);
+    setNewZoneEn("");
+    setNewZoneAr("");
+    setNewZoneFee(0);
+  };
+
+  const removeZone = (index: number) => {
+    setZones(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const updateZoneFee = (index: number, newFee: number) => {
+    setZones(prev => prev.map((z, i) => i === index ? { ...z, fee: newFee } : z));
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -51,6 +81,7 @@ export default function AdminShippingPage() {
         policy: { en: policyEn, ar: policyAr },
         deliveryTimes: { en: timesEn, ar: timesAr },
         deliveryAreas: { en: areasEn, ar: areasAr },
+        shippingZones: zones,
       });
       toast.success("Shipping info updated");
     } catch (err) {
@@ -66,52 +97,152 @@ export default function AdminShippingPage() {
     <div className="mx-auto max-w-4xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-safra-dark">Shipping Settings</h1>
-        <p className="mt-1 text-sm text-safra-muted">Manage shipping policies, fees, and areas.</p>
+        <p className="mt-1 text-sm text-safra-muted">Manage shipping policies, fees, and delivery zones.</p>
       </div>
 
       <form onSubmit={handleSave} className="space-y-6">
+
+        {/* ─── Default Fee ───────────────────────────────────────────── */}
         <div className="rounded-xl border border-safra-taupe/40 bg-white p-6 shadow-sm">
-          <Input name="fee" label="Default Shipping Fee" type="number" step="0.01" value={fee} onChange={e => setFee(Number(e.target.value))} required />
+          <Input name="fee" label="Default Shipping Fee (Fallback)" type="number" step="0.01" value={fee} onChange={e => setFee(Number(e.target.value))} required />
+          <p className="mt-1 text-xs text-safra-muted">Used when no matching zone is found.</p>
         </div>
 
+        {/* ─── Shipping Zones ─────────────────────────────────────────── */}
+        <div className="rounded-xl border border-safra-taupe/40 bg-white p-6 shadow-sm space-y-4">
+          <div>
+            <h3 className="font-semibold text-safra-dark">Delivery Zones & Pricing</h3>
+            <p className="mt-1 text-sm text-safra-muted">Set a specific shipping fee for each delivery area (bilingual names).</p>
+          </div>
+
+          {/* Zone List */}
+          {zones.length > 0 ? (
+            <div className="space-y-2">
+              {zones.map((zone, i) => (
+                <div key={i} className="flex items-center gap-4 rounded-lg border border-safra-taupe/30 bg-safra-cream/20 px-4 py-3">
+                  <div className="flex-1 min-w-0">
+                    <span className="font-medium text-safra-dark">{zone.name.en}</span>
+                    <span className="mx-2 text-safra-taupe">|</span>
+                    <span className="text-safra-muted" dir="rtl">{zone.name.ar}</span>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-sm text-safra-muted">Fee:</span>
+                    <input
+                      type="number"
+                      value={zone.fee}
+                      min={0}
+                      step={0.01}
+                      onChange={e => updateZoneFee(i, Number(e.target.value))}
+                      className="w-24 rounded-lg border border-safra-taupe/40 px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-safra-gold text-safra-dark"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => removeZone(i)}
+                    className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-lg border border-dashed border-safra-taupe/40 bg-safra-cream/10 p-6 text-center text-sm text-safra-muted">
+              No delivery zones added yet.
+            </div>
+          )}
+
+          {/* Add New Zone */}
+          <div className="rounded-lg border border-safra-taupe/30 p-4 bg-safra-light/10 space-y-3">
+            <p className="text-sm font-medium text-safra-dark">Add New Zone</p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <label className="mb-1 block text-xs text-safra-muted">Name (English)</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Cairo"
+                  value={newZoneEn}
+                  onChange={e => setNewZoneEn(e.target.value)}
+                  className="w-full rounded-lg border border-safra-taupe/40 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-safra-gold"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs text-safra-muted">Name (Arabic) — الاسم بالعربي</label>
+                <input
+                  type="text"
+                  placeholder="مثال: القاهرة"
+                  value={newZoneAr}
+                  onChange={e => setNewZoneAr(e.target.value)}
+                  dir="rtl"
+                  className="w-full rounded-lg border border-safra-taupe/40 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-safra-gold"
+                />
+              </div>
+            </div>
+            <div className="flex items-end gap-3">
+              <div>
+                <label className="mb-1 block text-xs text-safra-muted">Fee</label>
+                <input
+                  type="number"
+                  min={0}
+                  step={0.01}
+                  value={newZoneFee}
+                  onChange={e => setNewZoneFee(Number(e.target.value))}
+                  className="w-32 rounded-lg border border-safra-taupe/40 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-safra-gold"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={addZone}
+                className="flex items-center gap-2 rounded-lg bg-safra-gold px-4 py-2 text-sm font-medium text-safra-dark hover:opacity-90 transition"
+              >
+                <Plus className="h-4 w-4" />
+                Add Zone
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ─── Shipping Policy ────────────────────────────────────────── */}
         <div className="rounded-xl border border-safra-taupe/40 bg-white p-6 shadow-sm space-y-6">
           <h3 className="font-semibold text-safra-dark">Shipping Policy</h3>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1">
               <label className="text-sm font-medium">English</label>
-              <textarea value={policyEn} onChange={e => setPolicyEn(e.target.value)} rows={4} className="w-full rounded-lg border border-safra-taupe/40 p-2" />
+              <textarea value={policyEn} onChange={e => setPolicyEn(e.target.value)} rows={4} className="w-full rounded-lg border border-safra-taupe/40 p-2 focus:ring-1 focus:ring-safra-gold" />
             </div>
             <div className="space-y-1">
               <label className="text-sm font-medium">Arabic</label>
-              <textarea value={policyAr} onChange={e => setPolicyAr(e.target.value)} rows={4} dir="rtl" className="w-full rounded-lg border border-safra-taupe/40 p-2" />
+              <textarea value={policyAr} onChange={e => setPolicyAr(e.target.value)} rows={4} dir="rtl" className="w-full rounded-lg border border-safra-taupe/40 p-2 focus:ring-1 focus:ring-safra-gold" />
             </div>
           </div>
         </div>
 
+        {/* ─── Delivery Times ─────────────────────────────────────────── */}
         <div className="rounded-xl border border-safra-taupe/40 bg-white p-6 shadow-sm space-y-6">
           <h3 className="font-semibold text-safra-dark">Delivery Times</h3>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1">
               <label className="text-sm font-medium">English</label>
-              <textarea value={timesEn} onChange={e => setTimesEn(e.target.value)} rows={3} className="w-full rounded-lg border border-safra-taupe/40 p-2" />
+              <textarea value={timesEn} onChange={e => setTimesEn(e.target.value)} rows={3} className="w-full rounded-lg border border-safra-taupe/40 p-2 focus:ring-1 focus:ring-safra-gold" />
             </div>
             <div className="space-y-1">
               <label className="text-sm font-medium">Arabic</label>
-              <textarea value={timesAr} onChange={e => setTimesAr(e.target.value)} rows={3} dir="rtl" className="w-full rounded-lg border border-safra-taupe/40 p-2" />
+              <textarea value={timesAr} onChange={e => setTimesAr(e.target.value)} rows={3} dir="rtl" className="w-full rounded-lg border border-safra-taupe/40 p-2 focus:ring-1 focus:ring-safra-gold" />
             </div>
           </div>
         </div>
 
+        {/* ─── Delivery Areas (text) ──────────────────────────────────── */}
         <div className="rounded-xl border border-safra-taupe/40 bg-white p-6 shadow-sm space-y-6">
-          <h3 className="font-semibold text-safra-dark">Delivery Areas</h3>
+          <h3 className="font-semibold text-safra-dark">Delivery Areas (Description)</h3>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1">
               <label className="text-sm font-medium">English</label>
-              <textarea value={areasEn} onChange={e => setAreasEn(e.target.value)} rows={3} className="w-full rounded-lg border border-safra-taupe/40 p-2" />
+              <textarea value={areasEn} onChange={e => setAreasEn(e.target.value)} rows={3} className="w-full rounded-lg border border-safra-taupe/40 p-2 focus:ring-1 focus:ring-safra-gold" />
             </div>
             <div className="space-y-1">
               <label className="text-sm font-medium">Arabic</label>
-              <textarea value={areasAr} onChange={e => setAreasAr(e.target.value)} rows={3} dir="rtl" className="w-full rounded-lg border border-safra-taupe/40 p-2" />
+              <textarea value={areasAr} onChange={e => setAreasAr(e.target.value)} rows={3} dir="rtl" className="w-full rounded-lg border border-safra-taupe/40 p-2 focus:ring-1 focus:ring-safra-gold" />
             </div>
           </div>
         </div>

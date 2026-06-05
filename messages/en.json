@@ -7,6 +7,10 @@
     "home": "Home",
     "products": "Products",
     "cart": "Cart",
+    "wishlist": "Wishlist",
+    "contact": "Contact",
+    "faq": "FAQ",
+    "shipping": "Shipping",
     "login": "Sign In",
     "logout": "Sign Out",
     "account": "Account",
@@ -70,7 +74,8 @@
     "total": "Total",
     "checkout": "Proceed to Checkout",
     "remove": "Remove",
-    "quantity": "Qty"
+    "quantity": "Qty",
+    "orderSummary": "Order Summary"
   },
   "auth": {
     "loginTitle": "Welcome Back",

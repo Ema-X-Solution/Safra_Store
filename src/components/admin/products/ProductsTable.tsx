@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations, useLocale } from "next-intl";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2, Eye } from "lucide-react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import type { Product, Category } from "@/lib/types";
@@ -97,14 +97,23 @@ export default function ProductsTable({ products, categories, onDelete }: Produc
                 <td className="px-6 py-3 text-end">
                   <div className="flex justify-end gap-2">
                     <Link
+                      href={`/admin/products/${product.id}/view`}
+                      className="rounded-lg p-2 text-safra-muted hover:bg-safra-cream hover:text-safra-dark transition-colors"
+                      title="View details"
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Link>
+                    <Link
                       href={`/admin/products/${product.id}`}
-                      className="rounded-lg p-2 text-safra-olive hover:bg-safra-light/50 hover:text-safra-dark"
+                      className="rounded-lg p-2 text-safra-olive hover:bg-safra-light/50 hover:text-safra-dark transition-colors"
+                      title="Edit product"
                     >
                       <Edit className="h-4 w-4" />
                     </Link>
                     <button
                       onClick={() => onDelete(product.id)}
-                      className="rounded-lg p-2 text-red-500 hover:bg-red-50"
+                      className="rounded-lg p-2 text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                      title="Delete product"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>

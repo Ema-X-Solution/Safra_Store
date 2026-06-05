@@ -13,7 +13,7 @@ import {
 import { getFirebaseDb } from "../config";
 import type { FAQ, FAQInput } from "@/lib/types";
 
-const COLLECTION = "faq";
+const COLLECTION = "faqs";
 
 export async function getFAQs(): Promise<FAQ[]> {
   const snap = await getDocs(query(collection(getFirebaseDb(), COLLECTION), orderBy("order", "asc")));

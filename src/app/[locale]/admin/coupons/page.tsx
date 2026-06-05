@@ -7,6 +7,7 @@ import CouponsTable from "@/components/admin/coupons/CouponsTable";
 import CouponModal from "@/components/admin/coupons/CouponModal";
 import { subscribeToCoupons, createCoupon, updateCoupon, deleteCoupon } from "@/lib/firebase/services/coupons-service";
 import type { Coupon, CouponInput } from "@/lib/types";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { toast } from "sonner";
 
 export default function AdminCouponsPage() {
@@ -15,6 +16,8 @@ export default function AdminCouponsPage() {
   
   const [modalOpen, setModalOpen] = useState(false);
   const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     const unsubscribe = subscribeToCoupons((data) => {
@@ -34,14 +37,21 @@ export default function AdminCouponsPage() {
     setModalOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this coupon?")) {
-      try {
-        await deleteCoupon(id);
-        toast.success("Coupon deleted");
-      } catch (err) {
-        toast.error("Failed to delete coupon");
-      }
+  const handleDelete = (id: string) => {
+    setDeleteTarget(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      await deleteCoupon(deleteTarget);
+      toast.success("Coupon deleted");
+    } catch (err) {
+      toast.error("Failed to delete coupon");
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
     }
   };
 
@@ -84,6 +94,15 @@ export default function AdminCouponsPage() {
         onClose={() => setModalOpen(false)}
         coupon={editingCoupon}
         onSave={handleSave}
+      />
+
+      <ConfirmDialog
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={confirmDelete}
+        title="Delete Coupon"
+        description="Are you sure you want to delete this coupon? This cannot be undone."
+        loading={deleting}
       />
     </div>
   );

@@ -7,13 +7,20 @@ import { useCart } from "@/lib/context/CartContext";
 import { getProductName } from "@/lib/types";
 import Price from "@/components/ui/Price";
 import Button from "@/components/ui/Button";
-import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
+import Input from "@/components/ui/Input";
+import { Minus, Plus, Trash2, ShoppingBag, Tag, X } from "lucide-react";
 import type { Locale } from "@/i18n/routing";
+import { useState } from "react";
+import { getCouponByCode } from "@/lib/firebase/services/coupons-service";
+import { toast } from "sonner";
 
 export default function CartPage() {
   const t = useTranslations("cart");
   const locale = useLocale() as Locale;
-  const { items, updateQuantity, removeItem, totalPrice } = useCart();
+  const { items, updateQuantity, removeItem, totalPrice, appliedCoupon, setCoupon } = useCart();
+  
+  const [couponCode, setCouponCode] = useState(appliedCoupon?.code || "");
+  const [applying, setApplying] = useState(false);
 
   if (items.length === 0) {
     return (
@@ -27,6 +34,46 @@ export default function CartPage() {
       </div>
     );
   }
+
+  const handleApplyCoupon = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!couponCode.trim()) return;
+    
+    setApplying(true);
+    try {
+      const coupon = await getCouponByCode(couponCode.trim());
+      if (!coupon) {
+        toast.error(locale === "ar" ? "كود خصم غير صالح" : "Invalid coupon code");
+        return;
+      }
+      
+      const now = new Date();
+      if (coupon.expiryDate && coupon.expiryDate.toDate() < now) {
+        toast.error(locale === "ar" ? "كود الخصم منتهي الصلاحية" : "Coupon is expired");
+        return;
+      }
+      
+      if (coupon.usageLimit && coupon.usageCount >= coupon.usageLimit) {
+        toast.error(locale === "ar" ? "تم الوصول للحد الأقصى لاستخدام الكوبون" : "Coupon usage limit reached");
+        return;
+      }
+
+      setCoupon({ code: coupon.code, discountValue: coupon.discountValue });
+      toast.success(locale === "ar" ? "تم تطبيق الخصم بنجاح" : "Coupon applied successfully");
+    } catch (err) {
+      toast.error(locale === "ar" ? "حدث خطأ أثناء تطبيق الخصم" : "Failed to apply coupon");
+    } finally {
+      setApplying(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setCoupon(null);
+    setCouponCode("");
+  };
+
+  const discountAmount = appliedCoupon ? (totalPrice * appliedCoupon.discountValue) / 100 : 0;
+  const finalTotal = Math.max(0, totalPrice - discountAmount);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -54,8 +101,13 @@ export default function CartPage() {
                     <h3 className="font-semibold text-safra-dark">
                       {getProductName(product, locale)}
                     </h3>
-                    <p className="text-safra-deep-gold">
-                      <Price amount={product.price} />
+                    <p className="text-safra-deep-gold font-medium">
+                      <Price amount={product.discountPrice || product.price} />
+                      {product.discountPrice && (
+                        <span className="ml-2 text-sm text-safra-muted line-through">
+                          <Price amount={product.price} />
+                        </span>
+                      )}
                     </p>
                   </div>
                   <button
@@ -89,25 +141,69 @@ export default function CartPage() {
           ))}
         </div>
 
-        <div className="h-fit rounded-xl border border-safra-taupe/40 bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-safra-dark">{t("total")}</h2>
-          <div className="mt-4 space-y-2 text-sm">
-            <div className="flex justify-between text-safra-muted">
-              <span>{t("subtotal")}</span>
-              <Price amount={totalPrice} />
-            </div>
-            <div className="flex justify-between text-safra-muted">
-              <span>{t("shipping")}</span>
-              <span>{t("free")}</span>
-            </div>
-            <div className="flex justify-between border-t border-safra-taupe/30 pt-2 text-lg font-bold text-safra-dark">
-              <span>{t("total")}</span>
-              <Price amount={totalPrice} />
-            </div>
+        <div className="space-y-6">
+          {/* Coupon Section */}
+          <div className="rounded-xl border border-safra-taupe/40 bg-white p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-safra-dark mb-4 flex items-center gap-2">
+              <Tag className="h-5 w-5 text-safra-olive" />
+              {locale === "ar" ? "كود الخصم" : "Discount Coupon"}
+            </h2>
+            {appliedCoupon ? (
+              <div className="flex items-center justify-between bg-safra-light/30 border border-safra-gold/30 rounded-lg p-3">
+                <div>
+                  <span className="font-medium text-safra-dark uppercase">{appliedCoupon.code}</span>
+                  <p className="text-sm text-safra-olive">{appliedCoupon.discountValue}% {locale === "ar" ? "خصم" : "Off"}</p>
+                </div>
+                <button onClick={removeCoupon} className="p-2 text-red-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleApplyCoupon} className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder={locale === "ar" ? "أدخل كود الخصم..." : "Enter coupon code..."}
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                  className="flex-1 rounded-lg border border-safra-taupe/40 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-safra-gold uppercase"
+                />
+                <Button type="submit" loading={applying} disabled={!couponCode.trim()}>
+                  {locale === "ar" ? "تطبيق" : "Apply"}
+                </Button>
+              </form>
+            )}
           </div>
-          <Link href="/checkout" className="mt-6 block">
-            <Button className="w-full">{t("checkout")}</Button>
-          </Link>
+
+          {/* Total Section */}
+          <div className="rounded-xl border border-safra-taupe/40 bg-white p-6 shadow-sm">
+            <h2 className="text-lg font-semibold text-safra-dark">{t("orderSummary")}</h2>
+            <div className="mt-4 space-y-3 text-sm">
+              <div className="flex justify-between text-safra-muted">
+                <span>{t("subtotal")}</span>
+                <Price amount={totalPrice} />
+              </div>
+              
+              {appliedCoupon && (
+                <div className="flex justify-between text-safra-gold font-medium">
+                  <span>{locale === "ar" ? "الخصم" : "Discount"} ({appliedCoupon.discountValue}%)</span>
+                  <span>-<Price amount={discountAmount} /></span>
+                </div>
+              )}
+
+              <div className="flex justify-between text-safra-muted">
+                <span>{t("shipping")}</span>
+                <span className="text-xs">{locale === "ar" ? "يتم حسابه عند الدفع" : "Calculated at checkout"}</span>
+              </div>
+              
+              <div className="flex justify-between border-t border-safra-taupe/30 pt-3 text-lg font-bold text-safra-dark">
+                <span>{t("total")}</span>
+                <Price amount={finalTotal} />
+              </div>
+            </div>
+            <Link href="/checkout" className="mt-6 block">
+              <Button className="w-full">{t("checkout")}</Button>
+            </Link>
+          </div>
         </div>
       </div>
     </div>

@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Search } from "lucide-react";
+import { Search, Plus } from "lucide-react";
+import Button from "@/components/ui/Button";
 import CustomersTable from "@/components/admin/customers/CustomersTable";
-import { getCustomers } from "@/lib/firebase/services/customers-service";
+import CustomerModal from "@/components/admin/customers/CustomerModal";
+import { getCustomers, createCustomer } from "@/lib/firebase/services/customers-service";
 import type { Customer } from "@/lib/types";
 import { toast } from "sonner";
 
@@ -11,6 +13,7 @@ export default function AdminCustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -34,11 +37,28 @@ export default function AdminCustomersPage() {
            c.phone.includes(term);
   });
 
+  const handleSaveCustomer = async (data: { name: string; email: string; phone: string }) => {
+    try {
+      await createCustomer(data);
+      toast.success("Customer added successfully");
+      load();
+    } catch (err) {
+      toast.error("Failed to add customer");
+      throw err;
+    }
+  };
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-safra-dark">Customers</h1>
-        <p className="mt-1 text-sm text-safra-muted">View and manage your store customers.</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-safra-dark">Customers</h1>
+          <p className="mt-1 text-sm text-safra-muted">View and manage your store customers.</p>
+        </div>
+        <Button onClick={() => setModalOpen(true)} className="gap-2">
+          <Plus className="h-5 w-5" />
+          Add Customer
+        </Button>
       </div>
 
       <div className="bg-white p-4 rounded-xl border border-safra-taupe/40 shadow-sm">
@@ -59,6 +79,12 @@ export default function AdminCustomersPage() {
       ) : (
         <CustomersTable customers={filteredCustomers} />
       )}
+
+      <CustomerModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSave={handleSaveCustomer}
+      />
     </div>
   );
 }

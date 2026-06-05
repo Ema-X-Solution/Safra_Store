@@ -8,12 +8,20 @@ import {
   deleteDoc,
   serverTimestamp,
   onSnapshot,
-  query
+  query,
+  where,
 } from "firebase/firestore";
 import { getFirebaseDb } from "../config";
 import type { Coupon, CouponInput } from "@/lib/types";
 
 const COLLECTION = "coupons";
+
+/** Remove all undefined values — Firebase rejects them */
+function stripUndefined<T extends Record<string, any>>(obj: T): Partial<T> {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([, v]) => v !== undefined)
+  ) as Partial<T>;
+}
 
 export async function getCoupons(): Promise<Coupon[]> {
   const snap = await getDocs(collection(getFirebaseDb(), COLLECTION));
@@ -33,9 +41,17 @@ export async function getCouponById(id: string): Promise<Coupon | null> {
   return { id: snap.id, ...snap.data() } as Coupon;
 }
 
+export async function getCouponByCode(code: string): Promise<Coupon | null> {
+  const q = query(collection(getFirebaseDb(), COLLECTION), where("code", "==", code));
+  const snap = await getDocs(q);
+  if (snap.empty) return null;
+  const doc = snap.docs[0];
+  return { id: doc.id, ...doc.data() } as Coupon;
+}
+
 export async function createCoupon(data: CouponInput): Promise<string> {
   const ref = await addDoc(collection(getFirebaseDb(), COLLECTION), {
-    ...data,
+    ...stripUndefined(data),
     usageCount: 0,
     createdAt: serverTimestamp(),
   });
@@ -43,7 +59,7 @@ export async function createCoupon(data: CouponInput): Promise<string> {
 }
 
 export async function updateCoupon(id: string, data: Partial<CouponInput>) {
-  await updateDoc(doc(getFirebaseDb(), COLLECTION, id), data);
+  await updateDoc(doc(getFirebaseDb(), COLLECTION, id), stripUndefined(data));
 }
 
 export async function deleteCoupon(id: string) {

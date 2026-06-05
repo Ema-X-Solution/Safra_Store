@@ -187,11 +187,17 @@ export interface FAQInput {
 }
 
 // ─── Shipping Info ──────────────────────────────────────────────────
+export interface ShippingZone {
+  name: BilingualText;   // e.g. { en: "Cairo", ar: "القاهرة" }
+  fee: number;
+}
+
 export interface ShippingInfo {
   policy: BilingualText;
   deliveryTimes: BilingualText;
   deliveryAreas: BilingualText;
-  shippingFee: number;
+  shippingFee: number;          // default/fallback fee
+  shippingZones?: ShippingZone[]; // per-zone pricing
   updatedAt?: FirebaseTimestamp;
 }
 

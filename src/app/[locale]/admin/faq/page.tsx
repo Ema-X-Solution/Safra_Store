@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { getFAQs, createFAQ, updateFAQ, deleteFAQ } from "@/lib/firebase/services/faq-service";
 import type { FAQ, FAQInput } from "@/lib/types";
 import { toast } from "sonner";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { useLocale } from "next-intl";
 
 export default function AdminFAQPage() {
@@ -17,6 +18,8 @@ export default function AdminFAQPage() {
   
   const [modalOpen, setModalOpen] = useState(false);
   const [editingFaq, setEditingFaq] = useState<FAQ | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -43,15 +46,22 @@ export default function AdminFAQPage() {
     setModalOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this FAQ?")) {
-      try {
-        await deleteFAQ(id);
-        toast.success("FAQ deleted");
-        load();
-      } catch (err) {
-        toast.error("Failed to delete FAQ");
-      }
+  const handleDelete = (id: string) => {
+    setDeleteTarget(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      await deleteFAQ(deleteTarget);
+      toast.success("FAQ deleted");
+      load();
+    } catch (err) {
+      toast.error("Failed to delete FAQ");
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
     }
   };
 
@@ -150,6 +160,15 @@ export default function AdminFAQPage() {
           </form>
         </DialogContent>
       </Dialog>
+
+      <ConfirmDialog
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={confirmDelete}
+        title="Delete FAQ"
+        description="Are you sure you want to delete this FAQ? This cannot be undone."
+        loading={deleting}
+      />
     </div>
   );
 }

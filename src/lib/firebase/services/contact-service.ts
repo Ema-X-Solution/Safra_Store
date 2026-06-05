@@ -13,7 +13,7 @@ import {
 import { getFirebaseDb } from "../config";
 import type { ContactMessage } from "@/lib/types";
 
-const COLLECTION = "contactMessages";
+const COLLECTION = "messages";
 
 export async function getContactMessages(): Promise<ContactMessage[]> {
   const snap = await getDocs(

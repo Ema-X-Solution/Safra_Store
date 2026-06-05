@@ -8,6 +8,8 @@ import Footer from "@/components/layout/Footer";
 import HeaderWrapper from "@/components/layout/HeaderWrapper";
 import FooterWrapper from "@/components/layout/FooterWrapper";
 import Providers from "@/components/providers/Providers";
+import WhatsAppButton from "@/components/layout/WhatsAppButton";
+import { getSettings } from "@/lib/firebase/services/settings-service";
 import "../globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -46,20 +48,23 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
   const messages = await getMessages();
+  const settings = await getSettings();
   const dir = locale === "ar" ? "rtl" : "ltr";
+  const fontClass = locale === "ar" ? "font-arabic" : "font-sans";
 
   return (
     <html lang={locale} dir={dir}>
-      <body className={`${inter.variable} ${cairo.variable} flex min-h-screen flex-col antialiased`}>
+      <body className={`${inter.variable} ${cairo.variable} ${fontClass} flex min-h-screen flex-col antialiased`}>
         <NextIntlClientProvider messages={messages}>
           <Providers>
             <HeaderWrapper>
-              <Header />
+              <Header branding={settings?.branding} />
             </HeaderWrapper>
             <main className="flex-1 flex flex-col">{children}</main>
             <FooterWrapper>
               <Footer />
             </FooterWrapper>
+            <WhatsAppButton />
           </Providers>
         </NextIntlClientProvider>
       </body>

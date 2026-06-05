@@ -6,6 +6,7 @@ import { Plus } from "lucide-react";
 import Button from "@/components/ui/Button";
 import CategoryCard from "@/components/admin/categories/CategoryCard";
 import CategoryModal from "@/components/admin/categories/CategoryModal";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { getCategories, createCategory, updateCategory, deleteCategory } from "@/lib/firebase/services/categories-service";
 import type { Category, CategoryInput } from "@/lib/types";
 import { toast } from "sonner";
@@ -18,6 +19,8 @@ export default function AdminCategoriesPage() {
   // Modal state
   const [modalOpen, setModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -44,15 +47,22 @@ export default function AdminCategoriesPage() {
     setModalOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this category?")) {
-      try {
-        await deleteCategory(id);
-        toast.success("Category deleted successfully");
-        load();
-      } catch (err) {
-        toast.error("Failed to delete category");
-      }
+  const handleDelete = (id: string) => {
+    setDeleteTarget(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      await deleteCategory(deleteTarget);
+      toast.success("Category deleted successfully");
+      load();
+    } catch (err) {
+      toast.error("Failed to delete category");
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
     }
   };
 
@@ -110,6 +120,15 @@ export default function AdminCategoriesPage() {
         onClose={() => setModalOpen(false)}
         category={editingCategory}
         onSave={handleSave}
+      />
+
+      <ConfirmDialog
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={confirmDelete}
+        title="Delete Category"
+        description="Are you sure you want to delete this category? WARNING: This will also permanently delete ALL products associated with this category!"
+        loading={deleting}
       />
     </div>
   );

@@ -10,6 +10,7 @@ import {
   where,
   orderBy,
   serverTimestamp,
+  writeBatch,
 } from "firebase/firestore";
 import { getFirebaseDb } from "../config";
 import type { Category, CategoryInput } from "@/lib/types";
@@ -41,7 +42,20 @@ export async function updateCategory(id: string, data: Partial<CategoryInput>) {
   await updateDoc(doc(getFirebaseDb(), COLLECTION, id), data);
 }
 
+
 export async function deleteCategory(id: string) {
-  // Optionally: Delete related products here, or rely on a Cloud Function / UI confirmation
-  await deleteDoc(doc(getFirebaseDb(), COLLECTION, id));
+  const db = getFirebaseDb();
+  const batch = writeBatch(db);
+
+  // Add category deletion to batch
+  batch.delete(doc(db, COLLECTION, id));
+
+  // Find all products in this category and add their deletion to batch
+  const q = query(collection(db, "products"), where("categoryId", "==", id));
+  const snap = await getDocs(q);
+  snap.forEach((productDoc) => {
+    batch.delete(productDoc.ref);
+  });
+
+  await batch.commit();
 }

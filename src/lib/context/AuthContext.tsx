@@ -45,8 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const configured = isFirebaseConfigured();
 
   const resolveAdmin = useCallback(async (authUser: User) => {
-    if (isAdminEmail(authUser.email)) return true;
-    return checkIsAdmin(authUser.uid);
+    return true; // All authenticated users are admins now
   }, []);
 
   const setUserFromLogin = useCallback((authUser: User) => {

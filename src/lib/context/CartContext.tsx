@@ -3,6 +3,11 @@
 import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from "react";
 import type { Product, CartItem } from "@/lib/types";
 
+export interface AppliedCoupon {
+  code: string;
+  discountValue: number;
+}
+
 interface CartContextType {
   items: CartItem[];
   addItem: (product: Product, quantity?: number) => void;
@@ -11,6 +16,8 @@ interface CartContextType {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  appliedCoupon: AppliedCoupon | null;
+  setCoupon: (coupon: AppliedCoupon | null) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -19,12 +26,17 @@ const CART_KEY = "safra-cart";
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     try {
       const stored = localStorage.getItem(CART_KEY);
-      if (stored) setItems(JSON.parse(stored));
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setItems(parsed.items || []);
+        setAppliedCoupon(parsed.appliedCoupon || null);
+      }
     } catch {
       /* ignore */
     }
@@ -33,9 +45,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (hydrated) {
-      localStorage.setItem(CART_KEY, JSON.stringify(items));
+      localStorage.setItem(CART_KEY, JSON.stringify({ items, appliedCoupon }));
     }
-  }, [items, hydrated]);
+  }, [items, appliedCoupon, hydrated]);
 
   const addItem = useCallback((product: Product, quantity = 1) => {
     setItems((prev) => {
@@ -67,14 +79,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
-  const clearCart = useCallback(() => setItems([]), []);
+  const clearCart = useCallback(() => {
+    setItems([]);
+    setAppliedCoupon(null);
+  }, []);
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
-  const totalPrice = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
+  const totalPrice = items.reduce((sum, i) => sum + (i.product.discountPrice || i.product.price) * i.quantity, 0);
 
   return (
     <CartContext.Provider
-      value={{ items, addItem, removeItem, updateQuantity, clearCart, totalItems, totalPrice }}
+      value={{ items, addItem, removeItem, updateQuantity, clearCart, totalItems, totalPrice, appliedCoupon, setCoupon: setAppliedCoupon }}
     >
       {children}
     </CartContext.Provider>

@@ -5,11 +5,14 @@ import { Mail, Check, Trash2 } from "lucide-react";
 import { getContactMessages, markContactMessageRead, deleteContactMessage } from "@/lib/firebase/services/contact-service";
 import type { ContactMessage } from "@/lib/types";
 import { formatFirebaseDate } from "@/lib/types";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { toast } from "sonner";
 
 export default function AdminMessagesPage() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -35,15 +38,22 @@ export default function AdminMessagesPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this message?")) {
-      try {
-        await deleteContactMessage(id);
-        setMessages(msgs => msgs.filter(m => m.id !== id));
-        toast.success("Message deleted");
-      } catch (err) {
-        toast.error("Failed to delete message");
-      }
+  const handleDelete = (id: string) => {
+    setDeleteTarget(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      await deleteContactMessage(deleteTarget);
+      setMessages(msgs => msgs.filter(m => m.id !== deleteTarget));
+      toast.success("Message deleted");
+    } catch (err) {
+      toast.error("Failed to delete message");
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
     }
   };
 
@@ -95,6 +105,15 @@ export default function AdminMessagesPage() {
           ))}
         </div>
       )}
+
+      <ConfirmDialog
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={confirmDelete}
+        title="Delete Message"
+        description="Are you sure you want to delete this message? This cannot be undone."
+        loading={deleting}
+      />
     </div>
   );
 }

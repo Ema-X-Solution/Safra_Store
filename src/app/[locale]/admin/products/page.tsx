@@ -8,6 +8,7 @@ import ProductsTable from "@/components/admin/products/ProductsTable";
 import { getProducts, deleteProduct } from "@/lib/firebase/services/products-service";
 import { getCategories } from "@/lib/firebase/services/categories-service";
 import type { Product, Category } from "@/lib/types";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { toast } from "sonner";
 import { useLocale } from "next-intl";
 
@@ -19,6 +20,9 @@ export default function AdminProductsPage() {
   
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
+
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -37,15 +41,22 @@ export default function AdminProductsPage() {
     load();
   }, [load]);
 
-  const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this product?")) {
-      try {
-        await deleteProduct(id);
-        toast.success("Product deleted");
-        load();
-      } catch (err) {
-        toast.error("Failed to delete product");
-      }
+  const handleDelete = (id: string) => {
+    setDeleteTarget(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      await deleteProduct(deleteTarget);
+      toast.success("Product deleted");
+      load();
+    } catch (err) {
+      toast.error("Failed to delete product");
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
     }
   };
 
@@ -98,6 +109,15 @@ export default function AdminProductsPage() {
       ) : (
         <ProductsTable products={filteredProducts} categories={categories} onDelete={handleDelete} />
       )}
+
+      <ConfirmDialog
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={confirmDelete}
+        title="Delete Product"
+        description="Are you sure you want to delete this product? This cannot be undone."
+        loading={deleting}
+      />
     </div>
   );
 }

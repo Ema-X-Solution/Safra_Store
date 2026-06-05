@@ -63,3 +63,12 @@ export async function getProductsByCategory(categoryId: string): Promise<Product
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() } as Product));
 }
+
+export async function getDiscountedProducts(): Promise<Product[]> {
+  const q = query(
+    collection(getFirebaseDb(), COLLECTION),
+    where("discountPrice", ">", 0)
+  );
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() } as Product));
+}

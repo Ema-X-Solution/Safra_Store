@@ -2,7 +2,9 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { Search } from "lucide-react";
+import { Search, Plus } from "lucide-react";
+import { Link } from "@/i18n/navigation";
+import Button from "@/components/ui/Button";
 import OrdersTable from "@/components/admin/orders/OrdersTable";
 import { getAllOrders } from "@/lib/firebase/services/orders-service";
 import type { Order } from "@/lib/types";
@@ -42,9 +44,17 @@ export default function AdminOrdersPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-safra-dark">{t("orders")}</h1>
-        <p className="mt-1 text-sm text-safra-muted">{t("ordersDesc")}</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-safra-dark">{t("orders")}</h1>
+          <p className="mt-1 text-sm text-safra-muted">{t("ordersDesc")}</p>
+        </div>
+        <Link href="/admin/orders/new">
+          <Button className="gap-2">
+            <Plus className="h-5 w-5" />
+            Add Order
+          </Button>
+        </Link>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 bg-white p-4 rounded-xl border border-safra-taupe/40 shadow-sm">
