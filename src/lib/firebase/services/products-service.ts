@@ -17,7 +17,7 @@ import type { Product, ProductInput } from "@/lib/types";
 const COLLECTION = "products";
 
 /** Remove all undefined values — Firebase rejects them */
-function stripUndefined<T extends Record<string, any>>(obj: T): Partial<T> {
+function stripUndefined<T extends object>(obj: T): Partial<T> {
   return Object.fromEntries(
     Object.entries(obj).filter(([, v]) => v !== undefined)
   ) as Partial<T>;
