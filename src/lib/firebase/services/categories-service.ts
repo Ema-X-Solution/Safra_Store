@@ -18,16 +18,26 @@ import type { Category, CategoryInput } from "@/lib/types";
 const COLLECTION = "categories";
 
 export async function getCategories(): Promise<Category[]> {
-  const snap = await getDocs(collection(getFirebaseDb(), COLLECTION));
-  return snap.docs
-    .map((d) => ({ id: d.id, ...d.data() } as Category))
-    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  try {
+    const snap = await getDocs(collection(getFirebaseDb(), COLLECTION));
+    return snap.docs
+      .map((d) => ({ id: d.id, ...d.data() } as Category))
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  } catch (error) {
+    console.error("Failed to fetch categories:", error);
+    return [];
+  }
 }
 
 export async function getCategoryById(id: string): Promise<Category | null> {
-  const snap = await getDoc(doc(getFirebaseDb(), COLLECTION, id));
-  if (!snap.exists()) return null;
-  return { id: snap.id, ...snap.data() } as Category;
+  try {
+    const snap = await getDoc(doc(getFirebaseDb(), COLLECTION, id));
+    if (!snap.exists()) return null;
+    return { id: snap.id, ...snap.data() } as Category;
+  } catch (error) {
+    console.error(`Failed to fetch category ${id}:`, error);
+    return null;
+  }
 }
 
 export async function createCategory(data: CategoryInput): Promise<string> {

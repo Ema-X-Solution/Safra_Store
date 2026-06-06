@@ -11,9 +11,14 @@ const DOC_ID = "main";
 const COLLECTION = "settings";
 
 export async function getSettings(): Promise<CMSSettings | null> {
-  const snap = await getDoc(doc(getFirebaseDb(), COLLECTION, DOC_ID));
-  if (!snap.exists()) return null;
-  return snap.data() as CMSSettings;
+  try {
+    const snap = await getDoc(doc(getFirebaseDb(), COLLECTION, DOC_ID));
+    if (!snap.exists()) return null;
+    return snap.data() as CMSSettings;
+  } catch (error) {
+    console.error("Failed to fetch settings:", error);
+    return null;
+  }
 }
 
 export async function updateSettings(data: Partial<CMSSettings>) {

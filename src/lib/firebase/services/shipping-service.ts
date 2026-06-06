@@ -11,9 +11,14 @@ const DOC_ID = "main";
 const COLLECTION = "shipping";
 
 export async function getShippingInfo(): Promise<ShippingInfo | null> {
-  const snap = await getDoc(doc(getFirebaseDb(), COLLECTION, DOC_ID));
-  if (!snap.exists()) return null;
-  return snap.data() as ShippingInfo;
+  try {
+    const snap = await getDoc(doc(getFirebaseDb(), COLLECTION, DOC_ID));
+    if (!snap.exists()) return null;
+    return snap.data() as ShippingInfo;
+  } catch (error) {
+    console.error("Failed to fetch shipping info:", error);
+    return null;
+  }
 }
 
 export async function updateShippingInfo(data: Partial<ShippingInfo>) {

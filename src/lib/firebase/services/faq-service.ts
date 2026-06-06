@@ -16,8 +16,13 @@ import type { FAQ, FAQInput } from "@/lib/types";
 const COLLECTION = "faqs";
 
 export async function getFAQs(): Promise<FAQ[]> {
-  const snap = await getDocs(query(collection(getFirebaseDb(), COLLECTION), orderBy("order", "asc")));
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() } as FAQ));
+  try {
+    const snap = await getDocs(query(collection(getFirebaseDb(), COLLECTION), orderBy("order", "asc")));
+    return snap.docs.map((d) => ({ id: d.id, ...d.data() } as FAQ));
+  } catch (error) {
+    console.error("Failed to fetch FAQs:", error);
+    return [];
+  }
 }
 
 export async function createFAQ(data: FAQInput): Promise<string> {
