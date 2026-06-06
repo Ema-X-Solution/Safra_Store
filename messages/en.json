@@ -45,6 +45,17 @@
       }
     }
   },
+  "banner": {
+    "title": "100% Natural Organic Goodness",
+    "description": "Discover the true essence of nature with our carefully sourced, chemical-free products. Elevate your healthy lifestyle today.",
+    "cta": "Shop Natural Now",
+    "organic": "Organic",
+    "organicDesc": "Direct from farms",
+    "pure": "Pure",
+    "pureDesc": "No chemicals",
+    "premium": "Premium",
+    "premiumDesc": "Highest quality"
+  },
   "products": {
     "title": "All Products",
     "subtitle": "Browse our full collection of fresh and natural goods",

@@ -19,6 +19,7 @@ export default function AdminMessagesPage() {
     try {
       setMessages(await getContactMessages());
     } catch (err) {
+      console.error("Error loading messages:", err);
       toast.error("Failed to load messages");
     } finally {
       setLoading(false);
@@ -82,6 +83,7 @@ export default function AdminMessagesPage() {
                   <div>
                     <h3 className="font-semibold text-safra-dark">{msg.subject}</h3>
                     <p className="text-sm font-medium text-safra-muted">{msg.name} &lt;{msg.email}&gt;</p>
+                    {msg.phone && <p className="text-sm font-medium text-safra-muted" dir="ltr">Phone: {msg.phone}</p>}
                     <p className="mt-1 text-xs text-safra-olive">{formatFirebaseDate(msg.createdAt)}</p>
                     <div className="mt-4 text-sm text-safra-dark bg-safra-light/10 p-4 rounded-lg border border-safra-taupe/20 whitespace-pre-wrap">
                       {msg.message}

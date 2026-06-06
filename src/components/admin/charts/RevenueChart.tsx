@@ -18,7 +18,7 @@ export default function RevenueChart({ orders, selectedYear, selectedMonth }: Re
     // Filter orders to selected year and exclude cancelled
     const validOrders = orders.filter(o => {
       if (o.status === "cancelled") return false;
-      const d = "seconds" in o.createdAt ? new Date(o.createdAt.seconds * 1000) : new Date(o.createdAt as any);
+      const d = "seconds" in o.createdAt ? new Date(o.createdAt.seconds * 1000) : new Date(o.createdAt as string | number | Date);
       if (d.getFullYear() !== selectedYear) return false;
       if (selectedMonth !== "all" && d.getMonth() !== Number(selectedMonth)) return false;
       return true;
@@ -30,7 +30,7 @@ export default function RevenueChart({ orders, selectedYear, selectedMonth }: Re
       const monthlyData = months.map(m => ({ name: m, revenue: 0 }));
       
       validOrders.forEach(o => {
-        const d = "seconds" in o.createdAt ? new Date(o.createdAt.seconds * 1000) : new Date(o.createdAt as any);
+        const d = "seconds" in o.createdAt ? new Date(o.createdAt.seconds * 1000) : new Date(o.createdAt as string | number | Date);
         monthlyData[d.getMonth()].revenue += o.total;
       });
       return monthlyData;
@@ -43,7 +43,7 @@ export default function RevenueChart({ orders, selectedYear, selectedMonth }: Re
       }));
 
       validOrders.forEach(o => {
-        const d = "seconds" in o.createdAt ? new Date(o.createdAt.seconds * 1000) : new Date(o.createdAt as any);
+        const d = "seconds" in o.createdAt ? new Date(o.createdAt.seconds * 1000) : new Date(o.createdAt as string | number | Date);
         dailyData[d.getDate() - 1].revenue += o.total;
       });
       return dailyData;
@@ -63,7 +63,8 @@ export default function RevenueChart({ orders, selectedYear, selectedMonth }: Re
               <Tooltip
                 cursor={{ fill: "#f0eed6" }}
                 contentStyle={{ borderRadius: "8px", border: "1px solid #b5ae83", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
-                formatter={(value: number) => [`$${value.toFixed(2)}`, "Revenue"]}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                formatter={(value: any) => [`$${Number(value || 0).toFixed(2)}`, "Revenue"]}
               />
               <Bar dataKey="revenue" fill="#b9a81d" radius={[4, 4, 0, 0]} maxBarSize={40} />
             </BarChart>
@@ -74,7 +75,8 @@ export default function RevenueChart({ orders, selectedYear, selectedMonth }: Re
               <YAxis axisLine={false} tickLine={false} tick={{ fill: "#8d8a5d", fontSize: 12 }} />
               <Tooltip
                 contentStyle={{ borderRadius: "8px", border: "1px solid #b5ae83", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
-                formatter={(value: number) => [`$${value.toFixed(2)}`, "Revenue"]}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                formatter={(value: any) => [`$${Number(value || 0).toFixed(2)}`, "Revenue"]}
                 labelFormatter={(label) => `Day ${label}`}
               />
               <Line type="monotone" dataKey="revenue" stroke="#b9a81d" strokeWidth={3} dot={{ fill: "#b9a81d", strokeWidth: 2, r: 4 }} activeDot={{ r: 6 }} />

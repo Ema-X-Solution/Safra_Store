@@ -6,6 +6,8 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { useCart } from "@/lib/context/CartContext";
 import { createOrder } from "@/lib/firebase/services/orders-service";
 import { getShippingInfo } from "@/lib/firebase/services/shipping-service";
+import { incrementCouponUsage } from "@/lib/firebase/services/coupons-service";
+import { createNotification } from "@/lib/firebase/services/notifications-service";
 import { useAuth } from "@/lib/context/AuthContext";
 import { getProductName } from "@/lib/types";
 import type { ShippingZone, PaymentMethod, Locale } from "@/lib/types";
@@ -135,6 +137,19 @@ export default function CheckoutPage() {
         shippingAddress: shippingAddress,
         notes: form.get("notes") as string || "",
       });
+      if (appliedCoupon) {
+        await incrementCouponUsage(appliedCoupon.code).catch(console.error);
+      }
+      // Fire realtime admin notification
+      try {
+        await createNotification({
+          type: "new_order",
+          customerName: shippingAddress.fullName,
+          total: finalTotal,
+        });
+      } catch (e) {
+        console.error("Failed to create order notification:", e);
+      }
       clearCart();
       setSuccess(true);
       window.scrollTo({ top: 0, behavior: 'smooth' });

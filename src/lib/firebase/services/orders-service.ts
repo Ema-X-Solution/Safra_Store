@@ -34,7 +34,7 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus, no
 
   const newHistoryEntry: OrderStatusHistoryEntry = {
     status,
-    timestamp: new Date() as any, // Will be serialized properly or use serverTimestamp if updating complex objects
+    timestamp: new Date() as unknown as Date, // Will be serialized properly or use serverTimestamp if updating complex objects
     note,
   };
 

@@ -75,8 +75,8 @@ export default function ProductGrid({ products, categories, showFilter = false }
       result.sort((a, b) => (b.discountPrice || b.price) - (a.discountPrice || a.price));
     } else if (sortBy === "newest") {
       result.sort((a, b) => {
-        const dateA = a.createdAt ? (a.createdAt as any).seconds : 0;
-        const dateB = b.createdAt ? (b.createdAt as any).seconds : 0;
+        const dateA = a.createdAt ? (a.createdAt as { seconds?: number }).seconds || 0 : 0;
+        const dateB = b.createdAt ? (b.createdAt as { seconds?: number }).seconds || 0 : 0;
         return dateB - dateA;
       });
     }

@@ -28,6 +28,17 @@ export async function createContactMessage(data: Omit<ContactMessage, "id" | "re
     read: false,
     createdAt: serverTimestamp(),
   });
+  // Send realtime notification to admin dashboard
+  try {
+    const { createNotification } = await import("./notifications-service");
+    await createNotification({
+      type: "new_message",
+      customerName: data.name,
+      message: data.subject,
+    });
+  } catch (e) {
+    console.error("Failed to create notification:", e);
+  }
   return ref.id;
 }
 

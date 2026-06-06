@@ -37,8 +37,8 @@ export default function ImageUploader({ images, onChange }: ImageUploaderProps) 
 
       const data = await res.json();
       return data.url || null;
-    } catch (err: any) {
-      toast.error(`Failed to upload "${file.name}": ${err.message}`);
+    } catch (err: unknown) {
+      toast.error(`Failed to upload "${file.name}": ${(err as Error).message}`);
       return null;
     }
   };

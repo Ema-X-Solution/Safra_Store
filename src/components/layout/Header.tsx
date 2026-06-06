@@ -32,8 +32,8 @@ export default function Header({ branding }: { branding?: CMSSettings['branding'
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link href="/" className="group flex items-center gap-2">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-safra-gold shadow-sm transition-transform group-hover:scale-105 overflow-hidden relative">
-            {branding?.logoUrl ? (
-              <Image src={branding.logoUrl} alt="Store Logo" fill className="object-cover" />
+            {branding?.logo ? (
+              <Image src={branding.logo} alt="Store Logo" fill className="object-cover" />
             ) : (
               <Leaf className="h-5 w-5 text-safra-dark" />
             )}

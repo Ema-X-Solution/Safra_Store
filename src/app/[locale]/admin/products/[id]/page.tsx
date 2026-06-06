@@ -239,7 +239,7 @@ export default function AdminProductEditPage({ params }: { params: Promise<{ loc
             <div className="space-y-4">
               <div className="space-y-1">
                 <label className="text-sm font-medium">Status</label>
-                <select value={status} onChange={e => setStatus(e.target.value as any)} className="w-full rounded-lg border border-safra-taupe/40 p-2">
+                <select value={status} onChange={e => setStatus(e.target.value as "active" | "draft" | "archived")} className="w-full rounded-lg border border-safra-taupe/40 p-2">
                   <option value="active">Active</option>
                   <option value="draft">Draft</option>
                   <option value="archived">Archived</option>

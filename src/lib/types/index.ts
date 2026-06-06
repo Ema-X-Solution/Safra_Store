@@ -1,4 +1,5 @@
-import { Locale } from "@/i18n/routing";
+import type { Locale } from "@/i18n/routing";
+export type { Locale };
 
 // ─── Bilingual helper ───────────────────────────────────────────────
 export type BilingualText = Record<Locale, string>;
@@ -206,6 +207,7 @@ export interface ContactMessage {
   id: string;
   name: string;
   email: string;
+  phone?: string;
   subject: string;
   message: string;
   read: boolean;
@@ -224,6 +226,7 @@ export interface BrandingSettings {
   logo: string;
   favicon: string;
   storeName: BilingualText;
+  description?: BilingualText;
 }
 
 export interface ContactInfo {

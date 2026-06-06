@@ -46,8 +46,8 @@ export default function SingleImageUploader({ value, onChange, label, aspectRati
       } else {
         throw new Error("No URL returned");
       }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to upload image");
+    } catch (err: unknown) {
+      toast.error((err as Error).message || "Failed to upload image");
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";

@@ -24,6 +24,15 @@ export default function CouponModal({ isOpen, onClose, coupon, onSave }: CouponM
     setLoading(true);
 
     const form = new FormData(e.currentTarget);
+    const expiryDateStr = form.get("expiryDate") as string;
+    const expiryDate = new Date(expiryDateStr);
+
+    if (expiryDate <= new Date()) {
+      import("sonner").then(({ toast }) => toast.error("Expiry date must be in the future"));
+      setLoading(false);
+      return;
+    }
+
     const activeStr = form.get("active") as string;
 
     const minOrderRaw = Number(form.get("minOrderValue"));
@@ -37,7 +46,7 @@ export default function CouponModal({ isOpen, onClose, coupon, onSave }: CouponM
         en: form.get("descEn") as string,
         ar: form.get("descAr") as string,
       },
-      discountType: form.get("discountType") as any,
+      discountType: form.get("discountType") as "percentage" | "fixed",
       discountValue: Number(form.get("discountValue")),
       expiryDate: new Date(form.get("expiryDate") as string),
       active: activeStr === "true",

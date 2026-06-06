@@ -21,8 +21,8 @@ export default async function Footer() {
           <div className="md:col-span-1">
             <div className="mb-4 flex items-center gap-2">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-safra-gold overflow-hidden relative shadow-sm">
-                {branding?.logoUrl ? (
-                  <Image src={branding.logoUrl} alt="Store Logo" fill className="object-cover" />
+                {branding?.logo ? (
+                  <Image src={branding.logo} alt="Store Logo" fill className="object-cover" />
                 ) : (
                   <Leaf className="h-5 w-5 text-safra-dark" />
                 )}

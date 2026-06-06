@@ -7,6 +7,8 @@ import {
   where,
   orderBy,
   onSnapshot,
+  addDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 import { getFirebaseDb } from "../config";
 import type { AdminNotification } from "@/lib/types";
@@ -29,4 +31,12 @@ export async function markAllNotificationsRead() {
     query(collection(getFirebaseDb(), COLLECTION), where("read", "==", false))
   );
   await Promise.all(snap.docs.map((d) => updateDoc(d.ref, { read: true })));
+}
+
+export async function createNotification(data: Omit<AdminNotification, "id" | "createdAt" | "read">) {
+  await addDoc(collection(getFirebaseDb(), COLLECTION), {
+    ...data,
+    read: false,
+    createdAt: serverTimestamp(),
+  });
 }

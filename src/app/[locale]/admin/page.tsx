@@ -57,7 +57,7 @@ export default function AdminDashboardPage() {
       if (o.status === "cancelled") return false;
       const d = "seconds" in o.createdAt
         ? new Date(o.createdAt.seconds * 1000)
-        : new Date(o.createdAt as any);
+        : new Date(o.createdAt as string | number | Date);
       if (d.getFullYear() !== selectedYear) return false;
       if (selectedMonth !== "all" && d.getMonth() !== Number(selectedMonth)) return false;
       return true;
@@ -68,7 +68,7 @@ export default function AdminDashboardPage() {
     return orders.filter(o => {
       const d = "seconds" in o.createdAt
         ? new Date(o.createdAt.seconds * 1000)
-        : new Date(o.createdAt as any);
+        : new Date(o.createdAt as string | number | Date);
       if (d.getFullYear() !== selectedYear) return false;
       if (selectedMonth !== "all" && d.getMonth() !== Number(selectedMonth)) return false;
       return true;

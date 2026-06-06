@@ -17,7 +17,7 @@ import type { Coupon, CouponInput } from "@/lib/types";
 const COLLECTION = "coupons";
 
 /** Remove all undefined values — Firebase rejects them */
-function stripUndefined<T extends Record<string, any>>(obj: T): Partial<T> {
+function stripUndefined<T extends object>(obj: T): Partial<T> {
   return Object.fromEntries(
     Object.entries(obj).filter(([, v]) => v !== undefined)
   ) as Partial<T>;
@@ -64,4 +64,13 @@ export async function updateCoupon(id: string, data: Partial<CouponInput>) {
 
 export async function deleteCoupon(id: string) {
   await deleteDoc(doc(getFirebaseDb(), COLLECTION, id));
+}
+
+export async function incrementCouponUsage(code: string) {
+  const coupon = await getCouponByCode(code);
+  if (!coupon) return;
+  const { increment } = await import("firebase/firestore");
+  await updateDoc(doc(getFirebaseDb(), COLLECTION, coupon.id), {
+    usageCount: increment(1)
+  });
 }

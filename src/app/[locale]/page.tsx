@@ -8,8 +8,10 @@ import { getCategoryName, getBilingualText } from "@/lib/types";
 import type { Locale } from "@/i18n/routing";
 import ProductCard from "@/components/products/ProductCard";
 import Button from "@/components/ui/Button";
-import { Leaf, Truck, ShieldCheck, HelpCircle, ChevronDown, Tag } from "lucide-react";
+import { Leaf, Truck, ShieldCheck, Tag } from "lucide-react";
 import Image from "next/image";
+import MarketingBanner from "@/components/home/MarketingBanner";
+import AnimatedFAQ from "@/components/home/AnimatedFAQ";
 
 export const dynamic = "force-dynamic";
 
@@ -30,33 +32,33 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     getSettings()
   ]);
 
-  const topFaqs = allFaqs.slice(0, 4);
+  const topFaqs = allFaqs.slice(0, 6);
   const heroSettings = settings?.hero;
 
   return (
     <>
       {/* ─── Hero Section ────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-safra-dark px-4 py-20 text-safra-cream sm:px-6 lg:px-8 min-h-[70vh] flex items-center">
+      <section className="relative overflow-hidden bg-safra-dark px-4 py-20 text-safra-cream sm:px-6 lg:px-8 min-h-[90vh] flex items-center">
         {heroSettings?.bannerImage ? (
           <Image
             src={heroSettings.bannerImage}
             alt="Hero Background"
             fill
-            className="object-cover opacity-40"
+            className="object-cover opacity-50 transition-transform duration-[20s] ease-out hover:scale-110"
             priority
           />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-safra-dark via-safra-olive to-safra-deep-gold opacity-90">
-            <div className="absolute -end-20 -top-20 h-96 w-96 rounded-full bg-safra-bright blur-3xl opacity-20" />
+            <div className="absolute -end-20 -top-20 h-96 w-96 rounded-full bg-safra-bright blur-3xl opacity-20 animate-pulse" />
             <div className="absolute -bottom-20 -start-20 h-96 w-96 rounded-full bg-safra-light blur-3xl opacity-20" />
           </div>
         )}
         <div className="relative mx-auto max-w-7xl w-full">
-          <div className="max-w-2xl">
-            <h1 className="text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl drop-shadow-md">
+          <div className="max-w-3xl">
+            <h1 className="text-5xl font-extrabold leading-tight sm:text-6xl lg:text-7xl drop-shadow-lg tracking-tight">
               {getBilingualText(heroSettings?.title, currentLocale, t("title"))}
             </h1>
-            <p className="mt-6 text-lg text-safra-cream/90 drop-shadow">
+            <p className="mt-6 text-xl text-safra-cream/95 drop-shadow-md max-w-2xl font-medium">
               {getBilingualText(heroSettings?.subtitle, currentLocale, t("subtitle"))}
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
@@ -88,19 +90,27 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </div>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {categories.map((category) => (
-              <Link key={category.id} href={`/products?category=${category.id}`} className="group relative overflow-hidden rounded-2xl bg-safra-light/30 border border-safra-taupe/20 transition-all hover:shadow-md hover:border-safra-gold">
-                <div className="aspect-square p-6 flex flex-col items-center justify-center text-center">
-                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-sm transition-transform group-hover:scale-110">
+              <Link key={category.id} href={`/products?category=${category.id}`} className="group relative overflow-hidden rounded-3xl bg-white border border-safra-taupe/10 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-safra-gold/30">
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-safra-light/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="aspect-square p-6 flex flex-col items-center justify-center text-center relative z-10">
+                  <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-2xl bg-safra-light/30 shadow-sm transition-all duration-300 group-hover:bg-safra-gold/10 group-hover:scale-110 group-hover:rotate-3">
                     {category.image ? (
-                      <Image src={category.image} alt={getCategoryName(category, currentLocale)} width={40} height={40} className="object-contain" />
+                      <Image src={category.image} alt={getCategoryName(category, currentLocale)} width={48} height={48} className="object-contain drop-shadow-sm" />
                     ) : (
-                      <Leaf className="h-8 w-8 text-safra-olive" />
+                      <Leaf className="h-10 w-10 text-safra-olive" />
                     )}
                   </div>
-                  <h3 className="font-semibold text-safra-dark">{getCategoryName(category, currentLocale)}</h3>
+                  <h3 className="font-bold text-safra-dark text-lg group-hover:text-safra-olive transition-colors">{getCategoryName(category, currentLocale)}</h3>
                 </div>
               </Link>
             ))}
+          </div>
+          <div className="mt-12 text-center">
+            <Link href="/categories">
+              <Button variant="outline" className="border-safra-olive text-safra-olive hover:bg-safra-olive hover:text-white rounded-full px-8">
+                {currentLocale === "ar" ? "عرض جميع التصنيفات" : "View All Categories"}
+              </Button>
+            </Link>
           </div>
         </section>
       )}
@@ -117,7 +127,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 </h2>
                 <p className="mt-2 text-safra-muted">{currentLocale === "ar" ? "أفضل الأسعار لفترة محدودة" : "Best prices for a limited time"}</p>
               </div>
-              <Link href="/products?sale=true" className="hidden sm:block text-red-600 font-medium hover:underline">
+              <Link href="/offers" className="hidden sm:block text-red-600 font-medium hover:underline">
                 {currentLocale === "ar" ? "شاهد كل العروض" : "View all offers"}
               </Link>
             </div>
@@ -132,13 +142,15 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               ))}
             </div>
             <div className="mt-8 text-center sm:hidden">
-              <Link href="/products?sale=true">
-                <Button variant="secondary" className="bg-red-100 text-red-700 hover:bg-red-200 border-none">{currentLocale === "ar" ? "شاهد كل العروض" : "View all offers"}</Button>
+              <Link href="/offers">
+                <Button variant="secondary" className="bg-red-100 text-red-700 hover:bg-red-200 border-none rounded-full w-full">{currentLocale === "ar" ? "شاهد كل العروض" : "View all offers"}</Button>
               </Link>
             </div>
           </div>
         </section>
       )}
+
+      <MarketingBanner />
 
       {/* ─── Featured Products Section ───────────────────────────────── */}
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -150,7 +162,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <p className="py-12 text-center text-safra-muted">{home("noProducts")}</p>
         ) : (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {featured.slice(0, 8).map((product) => (
+            {featured.filter((p) => !p.discountPrice || p.discountPrice <= 0).slice(0, 8).map((product) => (
               <ProductCard
                 key={product.id}
                 product={product}
@@ -189,32 +201,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* ─── Quick FAQ Section ───────────────────────────────────────── */}
-      {topFaqs.length > 0 && (
-        <section className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
-          <div className="mb-10 text-center">
-            <HelpCircle className="mx-auto h-12 w-12 text-safra-gold mb-4" />
-            <h2 className="text-3xl font-bold text-safra-dark">{currentLocale === "ar" ? "الأسئلة الشائعة" : "Frequently Asked Questions"}</h2>
-          </div>
-          <div className="space-y-4">
-            {topFaqs.map((faq) => (
-              <details key={faq.id} className="group rounded-xl border border-safra-taupe/30 bg-white p-6 shadow-sm [&_summary::-webkit-details-marker]:hidden">
-                <summary className="flex cursor-pointer items-center justify-between gap-1.5 font-semibold text-safra-dark">
-                  <span className="text-lg">{getBilingualText(faq.question, currentLocale)}</span>
-                  <ChevronDown className="h-5 w-5 shrink-0 transition duration-300 group-open:-rotate-180 text-safra-gold" />
-                </summary>
-                <p className="mt-4 leading-relaxed text-safra-muted">
-                  {getBilingualText(faq.answer, currentLocale)}
-                </p>
-              </details>
-            ))}
-          </div>
-          <div className="mt-8 text-center">
-            <Link href="/faq" className="text-safra-olive font-medium hover:text-safra-dark transition">
-              {currentLocale === "ar" ? "قراءة المزيد من الأسئلة ←" : "Read all FAQs →"}
-            </Link>
-          </div>
-        </section>
-      )}
+      <AnimatedFAQ 
+        faqs={topFaqs} 
+        locale={currentLocale} 
+        title={currentLocale === "ar" ? "الأسئلة الشائعة" : "Frequently Asked Questions"} 
+        readMoreText={currentLocale === "ar" ? "قراءة المزيد من الأسئلة ←" : "Read all FAQs →"} 
+      />
     </>
   );
 }

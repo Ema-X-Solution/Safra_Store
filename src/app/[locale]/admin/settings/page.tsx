@@ -92,7 +92,7 @@ export default function AdminSettingsPage() {
         branding: { storeName: { en: storeNameEn, ar: storeNameAr }, logo, favicon: "" },
         contact: { email, phone, whatsapp, address: { en: addressEn, ar: addressAr } },
         social: { facebook: fb, instagram: ig, twitter: x, linkedin: "" },
-        storeConfig: { currency, defaultLanguage: defaultLang as any, defaultShippingFee: 0 },
+        storeConfig: { currency, defaultLanguage: defaultLang as "en" | "ar", defaultShippingFee: 0 },
       });
       toast.success("Settings saved successfully");
     } catch (err) {

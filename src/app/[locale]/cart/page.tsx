@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useCart } from "@/lib/context/CartContext";
-import { getProductName } from "@/lib/types";
+import { getProductName, toDate } from "@/lib/types";
 import Price from "@/components/ui/Price";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
@@ -48,7 +48,7 @@ export default function CartPage() {
       }
       
       const now = new Date();
-      if (coupon.expiryDate && coupon.expiryDate.toDate() < now) {
+      if (coupon.expiryDate && toDate(coupon.expiryDate) < now) {
         toast.error(locale === "ar" ? "كود الخصم منتهي الصلاحية" : "Coupon is expired");
         return;
       }
