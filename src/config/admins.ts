@@ -1,6 +1,7 @@
 /** Admin emails — merged with NEXT_PUBLIC_ADMIN_EMAILS from .env */
 export const DEFAULT_ADMIN_EMAILS = ["andkpe12@gmail.com"];
 
+
 export function getAdminEmailList(): string[] {
   const fromEnv =
     typeof process !== "undefined"
