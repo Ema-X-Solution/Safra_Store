@@ -22,7 +22,7 @@ export default function LanguageSwitcher() {
           key={loc}
           onClick={() => switchLocale(loc)}
           className={cn(
-            "rounded-md px-3 py-1 text-sm font-medium transition-colors",
+            "rounded-md px-1.5 py-0.5 sm:px-3 sm:py-1 text-xs sm:text-sm font-medium transition-colors",
             locale === loc
               ? "bg-safra-gold text-safra-dark shadow-sm"
               : "text-safra-olive hover:text-safra-dark"

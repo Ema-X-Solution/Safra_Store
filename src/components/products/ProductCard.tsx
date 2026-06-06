@@ -87,8 +87,8 @@ export default function ProductCard({ product, category }: ProductCardProps) {
             <Price amount={hasDiscount ? product.discountPrice! : product.price} />
           </p>
           {hasDiscount && (
-            <p className="text-sm font-medium text-safra-muted line-through mb-0.5">
-              <Price amount={product.price} />
+            <p className="text-sm font-medium text-safra-muted mb-0.5">
+              <Price amount={product.price} strikethrough={true} />
             </p>
           )}
         </div>

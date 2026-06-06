@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "swiper/css";
+@import "swiper/css/navigation";
 
 @theme {
   /* Safra Store palette */
@@ -58,6 +60,7 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 html[lang="ar"] body {
@@ -84,4 +87,13 @@ html[lang="ar"] body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--safra-olive);
+}
+
+/* ── Utility: hide scrollbar but keep scroll functional ── */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

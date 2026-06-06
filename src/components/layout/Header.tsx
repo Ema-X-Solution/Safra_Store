@@ -29,7 +29,7 @@ export default function Header({ branding }: { branding?: CMSSettings['branding'
 
   return (
     <header className="sticky top-0 z-50 border-b border-safra-taupe/50 bg-safra-cream/95 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-3 py-3 sm:px-6 lg:px-8">
         <Link href="/" className="group flex items-center gap-2">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-safra-gold shadow-sm transition-transform group-hover:scale-105 overflow-hidden relative">
             {branding?.logo ? (
@@ -38,7 +38,7 @@ export default function Header({ branding }: { branding?: CMSSettings['branding'
               <Leaf className="h-5 w-5 text-safra-dark" />
             )}
           </div>
-          <span className="text-xl font-bold text-safra-dark">
+          <span className="text-base sm:text-xl font-bold text-safra-dark whitespace-nowrap">
             {branding?.storeName ? branding.storeName[locale as 'en' | 'ar'] : (
               locale === "ar" ? (
                 <>متجر <span className="text-safra-gold">سفرة</span></>
@@ -64,17 +64,17 @@ export default function Header({ branding }: { branding?: CMSSettings['branding'
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1 sm:gap-3">
           <LanguageSwitcher />
 
           <Link
             href="/wishlist"
-            className="relative rounded-lg p-2 text-safra-olive transition-colors hover:bg-safra-light/50 hover:text-safra-dark"
+            className="relative rounded-lg p-1.5 sm:p-2 text-safra-olive transition-colors hover:bg-safra-light/50 hover:text-safra-dark"
             aria-label={t("wishlist") || "Wishlist"}
           >
-            <Heart className="h-5 w-5" />
+            <Heart className="h-[18px] w-[18px] sm:h-5 sm:w-5" />
             {totalWishlistItems > 0 && (
-              <span className="absolute -end-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
+              <span className="absolute -end-0.5 -top-0.5 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-red-500 text-[10px] sm:text-xs font-bold text-white">
                 {totalWishlistItems}
               </span>
             )}
@@ -82,23 +82,23 @@ export default function Header({ branding }: { branding?: CMSSettings['branding'
 
           <Link
             href="/cart"
-            className="relative rounded-lg p-2 text-safra-olive transition-colors hover:bg-safra-light/50 hover:text-safra-dark"
+            className="relative rounded-lg p-1.5 sm:p-2 text-safra-olive transition-colors hover:bg-safra-light/50 hover:text-safra-dark"
             aria-label={t("cart")}
           >
-            <ShoppingCart className="h-5 w-5" />
+            <ShoppingCart className="h-[18px] w-[18px] sm:h-5 sm:w-5" />
             {totalItems > 0 && (
-              <span className="absolute -end-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-safra-bright text-xs font-bold text-safra-dark">
+              <span className="absolute -end-0.5 -top-0.5 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-safra-bright text-[10px] sm:text-xs font-bold text-safra-dark">
                 {totalItems}
               </span>
             )}
           </Link>
 
           <button
-            className="rounded-lg p-2 text-safra-olive md:hidden"
+            className="rounded-lg p-1.5 text-safra-olive md:hidden"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Menu"
           >
-            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileOpen ? <X className="h-[18px] w-[18px] sm:h-5 sm:w-5" /> : <Menu className="h-[18px] w-[18px] sm:h-5 sm:w-5" />}
           </button>
         </div>
       </div>

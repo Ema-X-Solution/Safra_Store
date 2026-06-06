@@ -8,10 +8,12 @@ import { getCategoryName, getBilingualText } from "@/lib/types";
 import type { Locale } from "@/i18n/routing";
 import ProductCard from "@/components/products/ProductCard";
 import Button from "@/components/ui/Button";
-import { Leaf, Truck, ShieldCheck, Tag } from "lucide-react";
+import { Leaf, Truck, ShieldCheck, Tag, Sparkles } from "lucide-react";
 import Image from "next/image";
 import MarketingBanner from "@/components/home/MarketingBanner";
 import AnimatedFAQ from "@/components/home/AnimatedFAQ";
+import CategorySlider from "@/components/home/CategorySlider";
+import ProductSlider from "@/components/home/ProductSlider";
 
 export const dynamic = "force-dynamic";
 
@@ -83,27 +85,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       {/* ─── Categories Section ──────────────────────────────────────── */}
       {categories.length > 0 && (
-        <section id="categories" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <section id="categories" className="mx-auto w-full px-4 py-16 sm:px-6 lg:px-8">
           <div className="mb-10 text-center">
             <h2 className="text-3xl font-bold text-safra-dark">{home("categoriesTitle")}</h2>
             <p className="mt-2 text-safra-muted">{home("categoriesSubtitle") || "Browse our fresh selections"}</p>
           </div>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-            {categories.map((category) => (
-              <Link key={category.id} href={`/products?category=${category.id}`} className="group relative overflow-hidden rounded-3xl bg-white border border-safra-taupe/10 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-safra-gold/30">
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-safra-light/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="aspect-square p-6 flex flex-col items-center justify-center text-center relative z-10">
-                  <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-2xl bg-safra-light/30 shadow-sm transition-all duration-300 group-hover:bg-safra-gold/10 group-hover:scale-110 group-hover:rotate-3">
-                    {category.image ? (
-                      <Image src={category.image} alt={getCategoryName(category, currentLocale)} width={48} height={48} className="object-contain drop-shadow-sm" />
-                    ) : (
-                      <Leaf className="h-10 w-10 text-safra-olive" />
-                    )}
-                  </div>
-                  <h3 className="font-bold text-safra-dark text-lg group-hover:text-safra-olive transition-colors">{getCategoryName(category, currentLocale)}</h3>
-                </div>
-              </Link>
-            ))}
+          <div className="w-full">
+            <CategorySlider categories={categories.slice(0, 12)} />
           </div>
           <div className="mt-12 text-center">
             <Link href="/categories">
@@ -132,15 +120,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </Link>
             </div>
             
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {discounted.slice(0, 4).map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  category={categories.find((c) => c.id === product.categoryId)}
-                />
-              ))}
-            </div>
+            <ProductSlider
+              products={discounted.slice(0, 12)}
+              categories={categories}
+              speed={3500}
+            />
             <div className="mt-8 text-center sm:hidden">
               <Link href="/offers">
                 <Button variant="secondary" className="bg-red-100 text-red-700 hover:bg-red-200 border-none rounded-full w-full">{currentLocale === "ar" ? "شاهد كل العروض" : "View all offers"}</Button>
@@ -153,28 +137,38 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <MarketingBanner />
 
       {/* ─── Featured Products Section ───────────────────────────────── */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mb-10 text-center">
-          <h2 className="text-3xl font-bold text-safra-dark">{home("featuredTitle")}</h2>
-          <p className="mt-2 text-safra-muted">{home("featuredSubtitle")}</p>
-        </div>
-        {featured.length === 0 ? (
-          <p className="py-12 text-center text-safra-muted">{home("noProducts")}</p>
-        ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {featured.filter((p) => !p.discountPrice || p.discountPrice <= 0).slice(0, 8).map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                category={categories.find((c) => c.id === product.categoryId)}
-              />
-            ))}
+      <section className="bg-safra-light/30 px-4 py-16 sm:px-6 lg:px-8 border-y border-safra-taupe/10">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-10 flex items-center justify-between">
+            <div>
+              <h2 className="text-3xl font-bold text-safra-dark flex items-center gap-2">
+                <Sparkles className="h-8 w-8 text-safra-olive" />
+                {home("featuredTitle")}
+              </h2>
+              <p className="mt-2 text-safra-muted">{home("featuredSubtitle")}</p>
+            </div>
+            <Link href="/products" className="hidden sm:block text-safra-olive font-medium hover:underline">
+              {home("viewAll")}
+            </Link>
           </div>
-        )}
-        <div className="mt-10 text-center">
-          <Link href="/products">
-            <Button variant="secondary">{home("viewAll")}</Button>
-          </Link>
+          
+          {featured.length === 0 ? (
+            <p className="py-12 text-center text-safra-muted">{home("noProducts")}</p>
+          ) : (
+            <ProductSlider
+              products={featured.filter((p) => !p.discountPrice || p.discountPrice <= 0).slice(0, 12)}
+              categories={categories}
+              speed={4000}
+            />
+          )}
+          
+          <div className="mt-8 text-center sm:hidden">
+            <Link href="/products">
+              <Button variant="secondary" className="bg-safra-gold/20 text-safra-dark hover:bg-safra-gold/30 border-none rounded-full w-full">
+                {home("viewAll")}
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 

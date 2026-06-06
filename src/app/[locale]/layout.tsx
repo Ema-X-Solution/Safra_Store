@@ -11,6 +11,8 @@ import Providers from "@/components/providers/Providers";
 import WhatsAppButton from "@/components/layout/WhatsAppButton";
 import { getSettings } from "@/lib/firebase/services/settings-service";
 import "../globals.css";
+import "swiper/css";
+import "swiper/css/navigation";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const cairo = Cairo({ subsets: ["arabic", "latin"], variable: "--font-cairo" });

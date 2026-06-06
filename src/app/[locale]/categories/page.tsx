@@ -45,12 +45,12 @@ export default async function CategoriesPage({ params }: { params: Promise<{ loc
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          <div className="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {categories.map((category) => (
               <Link 
                 key={category.id} 
                 href={`/products?category=${category.id}`} 
-                className="group relative overflow-hidden rounded-3xl bg-white border border-safra-taupe/10 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-safra-gold/30 flex flex-col items-center justify-center p-8 text-center"
+                className="group relative overflow-hidden rounded-3xl bg-white border border-safra-taupe/10 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-safra-gold/30 flex flex-col items-center justify-center p-5 sm:p-8 text-center"
               >
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-safra-light/20 opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-2xl bg-safra-light/30 shadow-sm transition-all duration-300 group-hover:bg-safra-gold/10 group-hover:scale-110 group-hover:rotate-3 relative z-10">

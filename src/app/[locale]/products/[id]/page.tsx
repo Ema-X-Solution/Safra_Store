@@ -79,9 +79,9 @@ export default function ProductDetailPage({
         </Link>
       </nav>
 
-      <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16">
         {/* Left Column: Image Gallery */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 min-w-0">
           <div className="group relative aspect-square w-full overflow-hidden rounded-3xl border border-safra-taupe/10 bg-white shadow-sm">
             {hasDiscount && (
               <div className="absolute top-4 start-4 z-20 flex items-center gap-1.5 rounded-full bg-red-500 px-3 py-1.5 text-sm font-bold text-white shadow-md">
@@ -130,7 +130,7 @@ export default function ProductDetailPage({
         </div>
 
         {/* Right Column: Product Info */}
-        <div className="flex flex-col text-start">
+        <div className="flex flex-col text-start min-w-0">
           {/* Header Info */}
           <div className="border-b border-safra-taupe/20 pb-8">
             {category && (
@@ -151,8 +151,8 @@ export default function ProductDetailPage({
                 <Price amount={hasDiscount ? product.discountPrice! : product.price} />
               </span>
               {hasDiscount && (
-                <span className="text-xl font-medium text-safra-muted line-through">
-                  <Price amount={product.price} />
+                <span className="text-xl font-medium text-safra-muted">
+                  <Price amount={product.price} strikethrough={true} />
                 </span>
               )}
             </div>

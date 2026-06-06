@@ -16,6 +16,13 @@ import type { Product, ProductInput } from "@/lib/types";
 
 const COLLECTION = "products";
 
+/** Remove all undefined values — Firebase rejects them */
+function stripUndefined<T extends Record<string, any>>(obj: T): Partial<T> {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([, v]) => v !== undefined)
+  ) as Partial<T>;
+}
+
 export async function getProducts(): Promise<Product[]> {
   try {
     const snap = await getDocs(collection(getFirebaseDb(), COLLECTION));
@@ -39,7 +46,7 @@ export async function getProductById(id: string): Promise<Product | null> {
 
 export async function createProduct(data: ProductInput): Promise<string> {
   const ref = await addDoc(collection(getFirebaseDb(), COLLECTION), {
-    ...data,
+    ...stripUndefined(data),
     createdAt: serverTimestamp(),
   });
   return ref.id;
@@ -47,7 +54,7 @@ export async function createProduct(data: ProductInput): Promise<string> {
 
 export async function updateProduct(id: string, data: Partial<ProductInput>) {
   await updateDoc(doc(getFirebaseDb(), COLLECTION, id), {
-    ...data,
+    ...stripUndefined(data),
     updatedAt: serverTimestamp(),
   });
 }
