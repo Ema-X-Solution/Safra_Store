@@ -8,7 +8,6 @@ import {
   deleteDoc,
   query,
   where,
-  orderBy,
   serverTimestamp,
   deleteField,
 } from "firebase/firestore";
@@ -19,7 +18,7 @@ const COLLECTION = "products";
 
 /** Remove undefined values (ignored) and convert null to deleteField() */
 function cleanData<T extends object>(obj: T): Partial<T> {
-  const result: any = {};
+  const result: Record<string, unknown> = {};
   for (const [k, v] of Object.entries(obj)) {
     if (v === null) {
       result[k] = deleteField();
@@ -27,7 +26,7 @@ function cleanData<T extends object>(obj: T): Partial<T> {
       result[k] = v;
     }
   }
-  return result;
+  return result as Partial<T>;
 }
 
 export async function getProducts(): Promise<Product[]> {
