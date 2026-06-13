@@ -8,12 +8,14 @@ import CategoryCard from "@/components/admin/categories/CategoryCard";
 import CategoryModal from "@/components/admin/categories/CategoryModal";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { getCategories, createCategory, updateCategory, deleteCategory } from "@/lib/firebase/services/categories-service";
+import { getProducts } from "@/lib/firebase/services/products-service";
 import type { Category, CategoryInput } from "@/lib/types";
 import { toast } from "sonner";
 
 export default function AdminCategoriesPage() {
   const t = useTranslations("admin");
   const [categories, setCategories] = useState<Category[]>([]);
+  const [productCounts, setProductCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   
   // Modal state
@@ -25,7 +27,17 @@ export default function AdminCategoriesPage() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      setCategories(await getCategories());
+      const [fetchedCategories, fetchedProducts] = await Promise.all([
+        getCategories(),
+        getProducts()
+      ]);
+      setCategories(fetchedCategories);
+      
+      const counts: Record<string, number> = {};
+      fetchedProducts.forEach(p => {
+        counts[p.categoryId] = (counts[p.categoryId] || 0) + 1;
+      });
+      setProductCounts(counts);
     } catch (err) {
       toast.error("Failed to load categories");
     } finally {
@@ -109,7 +121,7 @@ export default function AdminCategoriesPage() {
               category={category}
               onEdit={handleEdit}
               onDelete={handleDelete}
-              productsCount={0} // We can fetch this separately if needed
+              productsCount={productCounts[category.id] || 0}
             />
           ))}
         </div>

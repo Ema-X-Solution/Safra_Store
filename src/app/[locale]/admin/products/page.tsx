@@ -10,16 +10,20 @@ import { getCategories } from "@/lib/firebase/services/categories-service";
 import type { Product, Category } from "@/lib/types";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { toast } from "sonner";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 export default function AdminProductsPage() {
   const locale = useLocale() as "en" | "ar";
+  const t = useTranslations("admin");
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
+  
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
@@ -66,6 +70,15 @@ export default function AdminProductsPage() {
     return matchesSearch && matchesCat;
   });
 
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, categoryFilter]);
+
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -107,7 +120,57 @@ export default function AdminProductsPage() {
       {loading ? (
         <div className="flex h-40 items-center justify-center text-safra-muted">Loading...</div>
       ) : (
-        <ProductsTable products={filteredProducts} categories={categories} onDelete={handleDelete} />
+        <div className="space-y-4">
+          <ProductsTable products={paginatedProducts} categories={categories} onDelete={handleDelete} />
+          
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-xl border border-safra-taupe/40 shadow-sm text-sm text-safra-muted">
+            <div>
+              {t("showingProducts", {
+                start: filteredProducts.length === 0 ? 0 : startIndex + 1,
+                end: Math.min(startIndex + itemsPerPage, filteredProducts.length),
+                total: filteredProducts.length
+              })}
+            </div>
+            
+            {totalPages > 1 && (
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="ghost" 
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1 h-auto"
+                >
+                  {t("previous")}
+                </Button>
+                
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`h-8 w-8 rounded-lg flex items-center justify-center transition-colors ${
+                        currentPage === page 
+                          ? "bg-safra-gold text-safra-dark font-medium" 
+                          : "hover:bg-safra-light/30"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+
+                <Button 
+                  variant="ghost" 
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1 h-auto"
+                >
+                  {t("next")}
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
       )}
 
       <ConfirmDialog

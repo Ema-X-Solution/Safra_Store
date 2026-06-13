@@ -1,7 +1,8 @@
 @import "tailwindcss";
 @import "swiper/css";
 @import "swiper/css/navigation";
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900;1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 @theme {
   /* Safra Store palette */
@@ -31,8 +32,8 @@
   --color-input: #ffffff;
   --color-ring: #b9a81d;
 
-  --font-sans: var(--font-inter), system-ui, sans-serif;
-  --font-arabic: var(--font-cairo), system-ui, sans-serif;
+  --font-family-sans: 'Inter', system-ui, sans-serif;
+  --font-family-arabic: 'Cairo', system-ui, sans-serif;
 }
 
 :root {
@@ -58,14 +59,14 @@ html {
 body {
   background-color: var(--safra-cream);
   color: var(--safra-dark);
-  font-family: var(--font-sans);
+  font-family: var(--font-family-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
 html[lang="ar"] body {
-  font-family: var(--font-arabic);
+  font-family: var(--font-family-arabic);
 }
 
 ::selection {

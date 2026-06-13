@@ -241,6 +241,8 @@ export interface SocialMedia {
   instagram: string;
   linkedin: string;
   twitter: string;
+  snapchat: string;
+  tiktok: string;
 }
 
 export interface StoreConfig {

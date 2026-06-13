@@ -7,7 +7,8 @@ import { getSettings } from "@/lib/firebase/services/settings-service";
 import type { CMSSettings } from "@/lib/types";
 import Button from "@/components/ui/Button";
 import { toast } from "sonner";
-import { Send, Mail, Phone, MapPin, CheckCircle, Facebook, Instagram, Twitter, Linkedin, MessageCircle } from "lucide-react";
+import { Send, Mail, Phone, MapPin, CheckCircle, MessageCircle } from "lucide-react";
+import { FacebookIcon, InstagramIcon, TwitterIcon, LinkedinIcon, SnapchatIcon, TikTokIcon } from "@/components/ui/SocialIcons";
 
 export default function ContactPage() {
   const locale = useLocale() as "en" | "ar";
@@ -130,28 +131,38 @@ export default function ContactPage() {
             </div>
 
             {/* Social Links */}
-            {settings?.social && (settings.social.facebook || settings.social.instagram || settings.social.twitter || settings.social.linkedin) && (
+            {settings?.social && (settings.social.facebook || settings.social.instagram || settings.social.twitter || settings.social.linkedin || settings.social.snapchat || settings.social.tiktok) && (
               <div className="relative z-10 mt-16 pt-8 border-t border-safra-olive/30">
                 <p className="mb-4 text-sm font-medium text-safra-cream/80">{isAr ? "تابعنا على الشبكات الاجتماعية" : "Follow us on social media"}</p>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-wrap items-center gap-4">
                   {settings.social.facebook && (
                     <a href={settings.social.facebook} target="_blank" rel="noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full bg-safra-olive/40 text-safra-gold hover:bg-safra-gold hover:text-safra-dark transition-all hover:-translate-y-1">
-                      <Facebook className="h-5 w-5" />
+                      <FacebookIcon className="h-5 w-5" />
                     </a>
                   )}
                   {settings.social.instagram && (
                     <a href={settings.social.instagram} target="_blank" rel="noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full bg-safra-olive/40 text-safra-gold hover:bg-safra-gold hover:text-safra-dark transition-all hover:-translate-y-1">
-                      <Instagram className="h-5 w-5" />
+                      <InstagramIcon className="h-5 w-5" />
                     </a>
                   )}
                   {settings.social.twitter && (
                     <a href={settings.social.twitter} target="_blank" rel="noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full bg-safra-olive/40 text-safra-gold hover:bg-safra-gold hover:text-safra-dark transition-all hover:-translate-y-1">
-                      <Twitter className="h-5 w-5" />
+                      <TwitterIcon className="h-5 w-5" />
                     </a>
                   )}
                   {settings.social.linkedin && (
                     <a href={settings.social.linkedin} target="_blank" rel="noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full bg-safra-olive/40 text-safra-gold hover:bg-safra-gold hover:text-safra-dark transition-all hover:-translate-y-1">
-                      <Linkedin className="h-5 w-5" />
+                      <LinkedinIcon className="h-5 w-5" />
+                    </a>
+                  )}
+                  {settings.social.snapchat && (
+                    <a href={settings.social.snapchat} target="_blank" rel="noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full bg-safra-olive/40 text-safra-gold hover:bg-safra-gold hover:text-safra-dark transition-all hover:-translate-y-1">
+                      <SnapchatIcon className="h-5 w-5" />
+                    </a>
+                  )}
+                  {settings.social.tiktok && (
+                    <a href={settings.social.tiktok} target="_blank" rel="noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full bg-safra-olive/40 text-safra-gold hover:bg-safra-gold hover:text-safra-dark transition-all hover:-translate-y-1">
+                      <TikTokIcon className="h-5 w-5" />
                     </a>
                   )}
                 </div>

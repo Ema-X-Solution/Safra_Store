@@ -10,17 +10,24 @@ import {
   where,
   orderBy,
   serverTimestamp,
+  deleteField,
 } from "firebase/firestore";
 import { getFirebaseDb } from "../config";
 import type { Product, ProductInput } from "@/lib/types";
 
 const COLLECTION = "products";
 
-/** Remove all undefined values — Firebase rejects them */
-function stripUndefined<T extends object>(obj: T): Partial<T> {
-  return Object.fromEntries(
-    Object.entries(obj).filter(([, v]) => v !== undefined)
-  ) as Partial<T>;
+/** Remove undefined values (ignored) and convert null to deleteField() */
+function cleanData<T extends object>(obj: T): Partial<T> {
+  const result: any = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (v === null) {
+      result[k] = deleteField();
+    } else if (v !== undefined) {
+      result[k] = v;
+    }
+  }
+  return result;
 }
 
 export async function getProducts(): Promise<Product[]> {
@@ -46,7 +53,7 @@ export async function getProductById(id: string): Promise<Product | null> {
 
 export async function createProduct(data: ProductInput): Promise<string> {
   const ref = await addDoc(collection(getFirebaseDb(), COLLECTION), {
-    ...stripUndefined(data),
+    ...cleanData(data),
     createdAt: serverTimestamp(),
   });
   return ref.id;
@@ -54,7 +61,7 @@ export async function createProduct(data: ProductInput): Promise<string> {
 
 export async function updateProduct(id: string, data: Partial<ProductInput>) {
   await updateDoc(doc(getFirebaseDb(), COLLECTION, id), {
-    ...stripUndefined(data),
+    ...cleanData(data),
     updatedAt: serverTimestamp(),
   });
 }

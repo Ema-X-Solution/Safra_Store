@@ -35,6 +35,9 @@ export default function AdminSettingsPage() {
   const [fb, setFb] = useState("");
   const [ig, setIg] = useState("");
   const [x, setX] = useState("");
+  const [linkedin, setLinkedin] = useState("");
+  const [snapchat, setSnapchat] = useState("");
+  const [tiktok, setTiktok] = useState("");
 
   const [currency, setCurrency] = useState("SAR");
   const [defaultLang, setDefaultLang] = useState("ar");
@@ -65,6 +68,9 @@ export default function AdminSettingsPage() {
           setFb(data.social?.facebook || "");
           setIg(data.social?.instagram || "");
           setX(data.social?.twitter || "");
+          setLinkedin(data.social?.linkedin || "");
+          setSnapchat(data.social?.snapchat || "");
+          setTiktok(data.social?.tiktok || "");
 
           setCurrency(data.storeConfig?.currency || "SAR");
           setDefaultLang(data.storeConfig?.defaultLanguage || "ar");
@@ -91,7 +97,7 @@ export default function AdminSettingsPage() {
         },
         branding: { storeName: { en: storeNameEn, ar: storeNameAr }, logo, favicon: "" },
         contact: { email, phone, whatsapp, address: { en: addressEn, ar: addressAr } },
-        social: { facebook: fb, instagram: ig, twitter: x, linkedin: "" },
+        social: { facebook: fb, instagram: ig, twitter: x, linkedin, snapchat, tiktok },
         storeConfig: { currency, defaultLanguage: defaultLang as "en" | "ar", defaultShippingFee: 0 },
       });
       toast.success("Settings saved successfully");
@@ -171,8 +177,11 @@ export default function AdminSettingsPage() {
             <h3 className="font-semibold text-safra-dark">Social Media Links</h3>
             <div className="grid gap-4 sm:grid-cols-2">
               <Input name="fb" label="Facebook URL" value={fb} onChange={e => setFb(e.target.value)} />
-              <Input name="ig" label="Instagram URL" value={ig} onChange={e => setIg(e.target.value)} />
               <Input name="x" label="X (Twitter) URL" value={x} onChange={e => setX(e.target.value)} />
+              <Input name="ig" label="Instagram URL" value={ig} onChange={e => setIg(e.target.value)} />
+              <Input name="snapchat" label="Snapchat URL" value={snapchat} onChange={e => setSnapchat(e.target.value)} />
+              <Input name="linkedin" label="LinkedIn URL" value={linkedin} onChange={e => setLinkedin(e.target.value)} />
+              <Input name="tiktok" label="TikTok URL" value={tiktok} onChange={e => setTiktok(e.target.value)} />
             </div>
           </div>
         )}

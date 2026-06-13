@@ -16,9 +16,9 @@ export default function TopProducts({ products }: { products: Product[] }) {
   if (!products || products.length === 0) return null;
 
   return (
-    <div className="rounded-xl border border-safra-taupe/40 bg-white shadow-sm h-full flex flex-col">
+    <div className="rounded-xl border border-safra-taupe/40 bg-white shadow-sm h-full overflow-hidden flex flex-col">
       <div className="border-b border-safra-taupe/30 px-6 py-4 flex items-center justify-between shrink-0">
-        <h3 className="font-semibold text-safra-dark">Top Products</h3>
+        <h3 className="font-semibold text-safra-dark">{t("topProducts")}</h3>
         <Link href="/admin/products" className="text-sm font-medium text-safra-gold hover:underline">
           {t("viewAll")}
         </Link>

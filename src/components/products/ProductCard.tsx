@@ -74,12 +74,12 @@ export default function ProductCard({ product, category }: ProductCardProps) {
       </Link>
 
       <div className="flex flex-1 flex-col p-4">
-        <Link href={`/products/${product.id}`}>
-          <h3 className="font-semibold text-safra-dark transition-colors group-hover:text-safra-gold">
+        <Link href={`/products/${product.id}`} className="block overflow-hidden">
+          <h3 className="font-semibold text-safra-dark transition-colors group-hover:text-safra-gold truncate">
             {getProductName(product, locale)}
           </h3>
           {category && (
-            <p className="mt-0.5 text-xs text-safra-muted">{getCategoryName(category, locale)}</p>
+            <p className="mt-0.5 text-xs text-safra-muted truncate">{getCategoryName(category, locale)}</p>
           )}
         </Link>
         <div className="mt-1 flex items-end gap-2">

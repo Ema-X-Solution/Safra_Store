@@ -1,6 +1,7 @@
 import { getTranslations, getLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { Leaf, Mail, Phone, MapPin, Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
+import { Leaf, Mail, Phone, MapPin } from "lucide-react";
+import { FacebookIcon, InstagramIcon, TwitterIcon, LinkedinIcon, SnapchatIcon, TikTokIcon } from "@/components/ui/SocialIcons";
 import { getSettings } from "@/lib/firebase/services/settings-service";
 import Image from "next/image";
 
@@ -39,22 +40,32 @@ export default async function Footer() {
               <div className="mt-6 flex items-center gap-3">
                 {social.facebook && (
                   <a href={social.facebook} target="_blank" rel="noreferrer" className="flex h-8 w-8 items-center justify-center rounded-full bg-safra-olive/30 text-safra-gold hover:bg-safra-gold hover:text-safra-dark transition">
-                    <Facebook className="h-4 w-4" />
+                    <FacebookIcon className="h-4 w-4" />
                   </a>
                 )}
                 {social.instagram && (
                   <a href={social.instagram} target="_blank" rel="noreferrer" className="flex h-8 w-8 items-center justify-center rounded-full bg-safra-olive/30 text-safra-gold hover:bg-safra-gold hover:text-safra-dark transition">
-                    <Instagram className="h-4 w-4" />
+                    <InstagramIcon className="h-4 w-4" />
                   </a>
                 )}
                 {social.twitter && (
                   <a href={social.twitter} target="_blank" rel="noreferrer" className="flex h-8 w-8 items-center justify-center rounded-full bg-safra-olive/30 text-safra-gold hover:bg-safra-gold hover:text-safra-dark transition">
-                    <Twitter className="h-4 w-4" />
+                    <TwitterIcon className="h-4 w-4" />
                   </a>
                 )}
                 {social.linkedin && (
                   <a href={social.linkedin} target="_blank" rel="noreferrer" className="flex h-8 w-8 items-center justify-center rounded-full bg-safra-olive/30 text-safra-gold hover:bg-safra-gold hover:text-safra-dark transition">
-                    <Linkedin className="h-4 w-4" />
+                    <LinkedinIcon className="h-4 w-4" />
+                  </a>
+                )}
+                {social.snapchat && (
+                  <a href={social.snapchat} target="_blank" rel="noreferrer" className="flex h-8 w-8 items-center justify-center rounded-full bg-safra-olive/30 text-safra-gold hover:bg-safra-gold hover:text-safra-dark transition">
+                    <SnapchatIcon className="h-4 w-4" />
+                  </a>
+                )}
+                {social.tiktok && (
+                  <a href={social.tiktok} target="_blank" rel="noreferrer" className="flex h-8 w-8 items-center justify-center rounded-full bg-safra-olive/30 text-safra-gold hover:bg-safra-gold hover:text-safra-dark transition">
+                    <TikTokIcon className="h-4 w-4" />
                   </a>
                 )}
               </div>

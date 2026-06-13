@@ -144,7 +144,7 @@ export default function AdminDashboardPage() {
             selectedMonth={selectedMonth}
           />
         </div>
-        <div className="lg:col-span-1 h-full">
+        <div className="lg:col-span-1 h-[384px]">
           <TopProducts products={products} />
         </div>
       </div>
