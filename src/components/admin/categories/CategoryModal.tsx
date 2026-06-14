@@ -55,12 +55,14 @@ export default function CategoryModal({ isOpen, onClose, category, onSave }: Cat
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
-            <Input name="nameEn" label="Name (English)" defaultValue={category?.name?.en} required />
-            <Input name="nameAr" label="Name (Arabic)" defaultValue={category?.name?.ar} required dir="rtl" />
-            <Input name="descEn" label="Description (English)" defaultValue={category?.description?.en} />
-            <Input name="descAr" label="Description (Arabic)" defaultValue={category?.description?.ar} dir="rtl" />
-            <Input name="order" label="Sort Order" type="number" defaultValue={category?.order || 0} />
+            <Input name="nameEn" label="Name (English)" defaultValue={category?.name?.en} required langValidate="en" />
+            <Input name="nameAr" label="Name (Arabic)" defaultValue={category?.name?.ar} required dir="rtl" langValidate="ar" />
           </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Input name="descEn" label="Description (English)" defaultValue={category?.description?.en} langValidate="en" />
+            <Input name="descAr" label="Description (Arabic)" defaultValue={category?.description?.ar} dir="rtl" langValidate="ar" />
+          </div>
+          <Input name="order" label="Sort Order" type="number" defaultValue={category?.order || 0} />
           <SingleImageUploader label="Category Image" value={image} onChange={setImage} aspectRatio="video" />
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>

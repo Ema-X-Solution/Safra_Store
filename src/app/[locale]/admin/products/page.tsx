@@ -83,13 +83,13 @@ export default function AdminProductsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-safra-dark">Products</h1>
-          <p className="mt-1 text-sm text-safra-muted">Manage your product catalog.</p>
+          <h1 className="text-2xl font-bold text-safra-dark">{t("products")}</h1>
+          <p className="mt-1 text-sm text-safra-muted">{t("productsDesc")}</p>
         </div>
         <Link href="/admin/products/new">
           <Button className="gap-2">
             <Plus className="h-5 w-5" />
-            Add Product
+            {t("addProduct")}
           </Button>
         </Link>
       </div>
@@ -118,7 +118,7 @@ export default function AdminProductsPage() {
       </div>
 
       {loading ? (
-        <div className="flex h-40 items-center justify-center text-safra-muted">Loading...</div>
+        <div className="flex h-40 items-center justify-center text-safra-muted">{t("loading")}</div>
       ) : (
         <div className="space-y-4">
           <ProductsTable products={paginatedProducts} categories={categories} onDelete={handleDelete} />

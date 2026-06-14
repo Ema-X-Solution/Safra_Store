@@ -4,14 +4,16 @@ import { useEffect, useState, useCallback } from "react";
 import { Plus, Edit, Trash2, GripVertical } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import Textarea from "@/components/ui/Textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/Dialog";
 import { getFAQs, createFAQ, updateFAQ, deleteFAQ } from "@/lib/firebase/services/faq-service";
 import type { FAQ, FAQInput } from "@/lib/types";
 import { toast } from "sonner";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 export default function AdminFAQPage() {
+  const t = useTranslations("admin");
   const locale = useLocale() as "en" | "ar";
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [loading, setLoading] = useState(true);
@@ -93,20 +95,20 @@ export default function AdminFAQPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-safra-dark">FAQ Management</h1>
-          <p className="mt-1 text-sm text-safra-muted">Manage Frequently Asked Questions.</p>
+          <h1 className="text-2xl font-bold text-safra-dark">{t("faqManagement")}</h1>
+          <p className="mt-1 text-sm text-safra-muted">{t("faqDesc")}</p>
         </div>
         <Button onClick={handleAdd} className="gap-2">
           <Plus className="h-5 w-5" />
-          Add FAQ
+          {t("addFaq")}
         </Button>
       </div>
 
       {loading ? (
-        <div className="flex h-40 items-center justify-center text-safra-muted">Loading...</div>
+        <div className="flex h-40 items-center justify-center text-safra-muted">{t("loading")}</div>
       ) : faqs.length === 0 ? (
         <div className="rounded-xl border border-safra-taupe/40 bg-white p-12 text-center shadow-sm">
-          <p className="text-safra-muted">No FAQs found.</p>
+          <p className="text-safra-muted">{t("noFaqs")}</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -139,23 +141,17 @@ export default function AdminFAQPage() {
           </DialogHeader>
           <form onSubmit={handleSave} className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
-              <Input name="qEn" label="Question (English)" defaultValue={editingFaq?.question.en} required />
-              <Input name="qAr" label="Question (Arabic)" defaultValue={editingFaq?.question.ar} dir="rtl" required />
+              <Input name="qEn" label={t("questionEn")} defaultValue={editingFaq?.question.en} required langValidate="en" />
+              <Input name="qAr" label={t("questionAr")} defaultValue={editingFaq?.question.ar} dir="rtl" required langValidate="ar" />
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-1">
-                <label className="text-sm font-medium">Answer (English)</label>
-                <textarea name="aEn" defaultValue={editingFaq?.answer.en} required rows={4} className="w-full rounded-lg border border-safra-taupe/40 p-2 focus:ring-1 focus:ring-safra-gold" />
-              </div>
-              <div className="space-y-1">
-                <label className="text-sm font-medium">Answer (Arabic)</label>
-                <textarea name="aAr" defaultValue={editingFaq?.answer.ar} required rows={4} dir="rtl" className="w-full rounded-lg border border-safra-taupe/40 p-2 focus:ring-1 focus:ring-safra-gold" />
-              </div>
+              <Textarea name="aEn" label={t("answerEn")} defaultValue={editingFaq?.answer.en} required rows={4} langValidate="en" />
+              <Textarea name="aAr" label={t("answerAr")} defaultValue={editingFaq?.answer.ar} required rows={4} dir="rtl" langValidate="ar" />
             </div>
-            <Input name="order" label="Display Order" type="number" defaultValue={editingFaq?.order || faqs.length} />
+            <Input name="order" label={t("displayOrder")} type="number" defaultValue={editingFaq?.order || faqs.length} />
             <DialogFooter>
-              <Button type="button" variant="ghost" onClick={() => setModalOpen(false)}>Cancel</Button>
-              <Button type="submit">Save</Button>
+              <Button type="button" variant="ghost" onClick={() => setModalOpen(false)}>{t("cancel")}</Button>
+              <Button type="submit">{t("save")}</Button>
             </DialogFooter>
           </form>
         </DialogContent>

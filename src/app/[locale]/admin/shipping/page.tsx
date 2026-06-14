@@ -4,11 +4,14 @@ import { useEffect, useState } from "react";
 import { Save, Plus, Trash2 } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import Textarea from "@/components/ui/Textarea";
 import { getShippingInfo, updateShippingInfo } from "@/lib/firebase/services/shipping-service";
 import type { ShippingZone } from "@/lib/types";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export default function AdminShippingPage() {
+  const t = useTranslations("admin");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -96,23 +99,23 @@ export default function AdminShippingPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-safra-dark">Shipping Settings</h1>
-        <p className="mt-1 text-sm text-safra-muted">Manage shipping policies, fees, and delivery zones.</p>
+        <h1 className="text-2xl font-bold text-safra-dark">{t("shippingSettings")}</h1>
+        <p className="mt-1 text-sm text-safra-muted">{t("shippingDesc")}</p>
       </div>
 
       <form onSubmit={handleSave} className="space-y-6">
 
         {/* ─── Default Fee ───────────────────────────────────────────── */}
         <div className="rounded-xl border border-safra-taupe/40 bg-white p-6 shadow-sm">
-          <Input name="fee" label="Default Shipping Fee (Fallback)" type="number" step="0.01" value={fee} onChange={e => setFee(Number(e.target.value))} required />
-          <p className="mt-1 text-xs text-safra-muted">Used when no matching zone is found.</p>
+          <Input name="fee" label={t("defaultShippingFee")} type="number" step="0.01" value={fee} onChange={e => setFee(Number(e.target.value))} required />
+          <p className="mt-1 text-xs text-safra-muted">{t("defaultShippingFeeHint")}</p>
         </div>
 
         {/* ─── Shipping Zones ─────────────────────────────────────────── */}
         <div className="rounded-xl border border-safra-taupe/40 bg-white p-6 shadow-sm space-y-4">
           <div>
-            <h3 className="font-semibold text-safra-dark">Delivery Zones & Pricing</h3>
-            <p className="mt-1 text-sm text-safra-muted">Set a specific shipping fee for each delivery area (bilingual names).</p>
+            <h3 className="font-semibold text-safra-dark">{t("deliveryZones")}</h3>
+            <p className="mt-1 text-sm text-safra-muted">{t("deliveryZonesDesc")}</p>
           </div>
 
           {/* Zone List */}
@@ -126,7 +129,7 @@ export default function AdminShippingPage() {
                     <span className="text-safra-muted" dir="rtl">{zone.name.ar}</span>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-                    <span className="text-sm text-safra-muted">Fee:</span>
+                    <span className="text-sm text-safra-muted">{t("zoneFee")}:</span>
                     <input
                       type="number"
                       value={zone.fee}
@@ -148,39 +151,35 @@ export default function AdminShippingPage() {
             </div>
           ) : (
             <div className="rounded-lg border border-dashed border-safra-taupe/40 bg-safra-cream/10 p-6 text-center text-sm text-safra-muted">
-              No delivery zones added yet.
+              {t("noZones")}
             </div>
           )}
 
           {/* Add New Zone */}
           <div className="rounded-lg border border-safra-taupe/30 p-4 bg-safra-light/10 space-y-3">
-            <p className="text-sm font-medium text-safra-dark">Add New Zone</p>
+            <p className="text-sm font-medium text-safra-dark">{t("addNewZone")}</p>
             <div className="grid gap-3 sm:grid-cols-2">
-              <div>
-                <label className="mb-1 block text-xs text-safra-muted">Name (English)</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Cairo"
-                  value={newZoneEn}
-                  onChange={e => setNewZoneEn(e.target.value)}
-                  className="w-full rounded-lg border border-safra-taupe/40 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-safra-gold"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-xs text-safra-muted">Name (Arabic) — الاسم بالعربي</label>
-                <input
-                  type="text"
-                  placeholder="مثال: القاهرة"
-                  value={newZoneAr}
-                  onChange={e => setNewZoneAr(e.target.value)}
-                  dir="rtl"
-                  className="w-full rounded-lg border border-safra-taupe/40 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-safra-gold"
-                />
-              </div>
+              <Input
+                label="Name (English)"
+                type="text"
+                placeholder="e.g. Cairo"
+                value={newZoneEn}
+                onChange={e => setNewZoneEn(e.target.value)}
+                langValidate="en"
+              />
+              <Input
+                label="Name (Arabic) — الاسم بالعربي"
+                type="text"
+                placeholder="مثال: القاهرة"
+                value={newZoneAr}
+                onChange={e => setNewZoneAr(e.target.value)}
+                dir="rtl"
+                langValidate="ar"
+              />
             </div>
             <div className="flex items-end gap-3">
               <div>
-                <label className="mb-1 block text-xs text-safra-muted">Fee</label>
+                <label className="mb-1 block text-xs text-safra-muted">{t("zoneFee")}</label>
                 <input
                   type="number"
                   min={0}
@@ -196,7 +195,7 @@ export default function AdminShippingPage() {
                 className="flex items-center gap-2 rounded-lg bg-safra-gold px-4 py-2 text-sm font-medium text-safra-dark hover:opacity-90 transition"
               >
                 <Plus className="h-4 w-4" />
-                Add Zone
+                {t("addZone")}
               </button>
             </div>
           </div>
@@ -204,53 +203,35 @@ export default function AdminShippingPage() {
 
         {/* ─── Shipping Policy ────────────────────────────────────────── */}
         <div className="rounded-xl border border-safra-taupe/40 bg-white p-6 shadow-sm space-y-6">
-          <h3 className="font-semibold text-safra-dark">Shipping Policy</h3>
+          <h3 className="font-semibold text-safra-dark">{t("shippingPolicy")}</h3>
           <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-1">
-              <label className="text-sm font-medium">English</label>
-              <textarea value={policyEn} onChange={e => setPolicyEn(e.target.value)} rows={4} className="w-full rounded-lg border border-safra-taupe/40 p-2 focus:ring-1 focus:ring-safra-gold" />
-            </div>
-            <div className="space-y-1">
-              <label className="text-sm font-medium">Arabic</label>
-              <textarea value={policyAr} onChange={e => setPolicyAr(e.target.value)} rows={4} dir="rtl" className="w-full rounded-lg border border-safra-taupe/40 p-2 focus:ring-1 focus:ring-safra-gold" />
-            </div>
+            <Textarea label={t("english")} value={policyEn} onChange={e => setPolicyEn(e.target.value)} rows={4} langValidate="en" />
+            <Textarea label={t("arabic")} value={policyAr} onChange={e => setPolicyAr(e.target.value)} rows={4} dir="rtl" langValidate="ar" />
           </div>
         </div>
 
         {/* ─── Delivery Times ─────────────────────────────────────────── */}
         <div className="rounded-xl border border-safra-taupe/40 bg-white p-6 shadow-sm space-y-6">
-          <h3 className="font-semibold text-safra-dark">Delivery Times</h3>
+          <h3 className="font-semibold text-safra-dark">{t("deliveryTimes")}</h3>
           <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-1">
-              <label className="text-sm font-medium">English</label>
-              <textarea value={timesEn} onChange={e => setTimesEn(e.target.value)} rows={3} className="w-full rounded-lg border border-safra-taupe/40 p-2 focus:ring-1 focus:ring-safra-gold" />
-            </div>
-            <div className="space-y-1">
-              <label className="text-sm font-medium">Arabic</label>
-              <textarea value={timesAr} onChange={e => setTimesAr(e.target.value)} rows={3} dir="rtl" className="w-full rounded-lg border border-safra-taupe/40 p-2 focus:ring-1 focus:ring-safra-gold" />
-            </div>
+            <Textarea label={t("english")} value={timesEn} onChange={e => setTimesEn(e.target.value)} rows={3} langValidate="en" />
+            <Textarea label={t("arabic")} value={timesAr} onChange={e => setTimesAr(e.target.value)} rows={3} dir="rtl" langValidate="ar" />
           </div>
         </div>
 
         {/* ─── Delivery Areas (text) ──────────────────────────────────── */}
         <div className="rounded-xl border border-safra-taupe/40 bg-white p-6 shadow-sm space-y-6">
-          <h3 className="font-semibold text-safra-dark">Delivery Areas (Description)</h3>
+          <h3 className="font-semibold text-safra-dark">{t("deliveryAreas")}</h3>
           <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-1">
-              <label className="text-sm font-medium">English</label>
-              <textarea value={areasEn} onChange={e => setAreasEn(e.target.value)} rows={3} className="w-full rounded-lg border border-safra-taupe/40 p-2 focus:ring-1 focus:ring-safra-gold" />
-            </div>
-            <div className="space-y-1">
-              <label className="text-sm font-medium">Arabic</label>
-              <textarea value={areasAr} onChange={e => setAreasAr(e.target.value)} rows={3} dir="rtl" className="w-full rounded-lg border border-safra-taupe/40 p-2 focus:ring-1 focus:ring-safra-gold" />
-            </div>
+            <Textarea label={t("english")} value={areasEn} onChange={e => setAreasEn(e.target.value)} rows={3} langValidate="en" />
+            <Textarea label={t("arabic")} value={areasAr} onChange={e => setAreasAr(e.target.value)} rows={3} dir="rtl" langValidate="ar" />
           </div>
         </div>
 
         <div className="flex justify-end">
           <Button type="submit" loading={saving} className="gap-2">
             <Save className="h-4 w-4" />
-            Save Shipping Info
+            {t("saveShipping")}
           </Button>
         </div>
       </form>

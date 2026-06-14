@@ -7,8 +7,10 @@ import type { ContactMessage } from "@/lib/types";
 import { formatFirebaseDate } from "@/lib/types";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export default function AdminMessagesPage() {
+  const t = useTranslations("admin");
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
@@ -61,15 +63,15 @@ export default function AdminMessagesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-safra-dark">Contact Messages</h1>
-        <p className="mt-1 text-sm text-safra-muted">View messages from the store contact form.</p>
+        <h1 className="text-2xl font-bold text-safra-dark">{t("messagesTitle")}</h1>
+        <p className="mt-1 text-sm text-safra-muted">{t("messagesDesc")}</p>
       </div>
 
       {loading ? (
-        <div className="flex h-40 items-center justify-center text-safra-muted">Loading...</div>
+        <div className="flex h-40 items-center justify-center text-safra-muted">{t("loading")}</div>
       ) : messages.length === 0 ? (
         <div className="rounded-xl border border-safra-taupe/40 bg-white p-12 text-center shadow-sm">
-          <p className="text-safra-muted">No messages found.</p>
+          <p className="text-safra-muted">{t("noMessages")}</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -94,12 +96,12 @@ export default function AdminMessagesPage() {
                   {!msg.read && (
                     <button onClick={() => handleMarkRead(msg.id)} className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium text-safra-olive hover:bg-safra-light/50 hover:text-safra-dark transition">
                       <Check className="h-4 w-4" />
-                      Mark Read
+                      {t("markRead")}
                     </button>
                   )}
                   <button onClick={() => handleDelete(msg.id)} className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium text-red-500 hover:bg-red-50 transition">
                     <Trash2 className="h-4 w-4" />
-                    Delete
+                    {t("delete")}
                   </button>
                 </div>
               </div>

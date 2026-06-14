@@ -17,7 +17,7 @@ export default function CustomersTable({ customers }: CustomersTableProps) {
   if (!customers || customers.length === 0) {
     return (
       <div className="rounded-xl border border-safra-taupe/40 bg-white p-12 text-center shadow-sm">
-        <p className="text-safra-muted">No customers found.</p>
+        <p className="text-safra-muted">{t("noCustomersFound")}</p>
       </div>
     );
   }
@@ -28,11 +28,11 @@ export default function CustomersTable({ customers }: CustomersTableProps) {
         <table className="w-full text-sm">
           <thead className="bg-safra-light/20 text-start text-safra-olive">
             <tr>
-              <th className="px-6 py-3 font-medium">Customer</th>
-              <th className="px-6 py-3 font-medium">Contact</th>
-              <th className="px-6 py-3 font-medium">Orders</th>
-              <th className="px-6 py-3 font-medium">Total Spent</th>
-              <th className="px-6 py-3 font-medium">Last Order</th>
+              <th className="px-6 py-3 font-medium">{t("customerCol")}</th>
+              <th className="px-6 py-3 font-medium">{t("contactCol")}</th>
+              <th className="px-6 py-3 font-medium">{t("ordersCol")}</th>
+              <th className="px-6 py-3 font-medium">{t("totalSpentCol")}</th>
+              <th className="px-6 py-3 font-medium">{t("lastOrderCol")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-safra-taupe/20">

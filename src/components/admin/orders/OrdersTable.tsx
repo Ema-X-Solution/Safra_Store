@@ -17,7 +17,7 @@ export default function OrdersTable({ orders }: OrdersTableProps) {
   if (!orders || orders.length === 0) {
     return (
       <div className="rounded-xl border border-safra-taupe/40 bg-white p-12 text-center shadow-sm">
-        <p className="text-safra-muted">No orders found.</p>
+        <p className="text-safra-muted">{t("noOrdersFound")}</p>
       </div>
     );
   }
@@ -28,13 +28,13 @@ export default function OrdersTable({ orders }: OrdersTableProps) {
         <table className="w-full text-sm">
           <thead className="bg-safra-light/20 text-start text-safra-olive">
             <tr>
-              <th className="px-6 py-3 font-medium">Order ID</th>
-              <th className="px-6 py-3 font-medium">Customer</th>
-              <th className="px-6 py-3 font-medium">Date</th>
-              <th className="px-6 py-3 font-medium">Status</th>
-              <th className="px-6 py-3 font-medium">Payment</th>
-              <th className="px-6 py-3 font-medium">Total</th>
-              <th className="px-6 py-3 font-medium text-end">Actions</th>
+              <th className="px-6 py-3 font-medium">{t("orderId")}</th>
+              <th className="px-6 py-3 font-medium">{t("customerCol")}</th>
+              <th className="px-6 py-3 font-medium">{t("dateCol")}</th>
+              <th className="px-6 py-3 font-medium">{t("statusCol")}</th>
+              <th className="px-6 py-3 font-medium">{t("paymentCol")}</th>
+              <th className="px-6 py-3 font-medium">{t("totalCol")}</th>
+              <th className="px-6 py-3 font-medium text-end">{t("actionsCol")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-safra-taupe/20">
@@ -77,7 +77,7 @@ export default function OrdersTable({ orders }: OrdersTableProps) {
                     className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium text-safra-olive hover:bg-safra-light/50 hover:text-safra-dark"
                   >
                     <Eye className="h-4 w-4" />
-                    View
+                    {t("view")}
                   </Link>
                 </td>
               </tr>

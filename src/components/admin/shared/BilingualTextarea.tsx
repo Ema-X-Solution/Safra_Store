@@ -8,30 +8,32 @@ interface BilingualTextareaProps {
   rows?: number;
 }
 
+import Textarea from "@/components/ui/Textarea";
+
 export default function BilingualTextarea({ nameEn, nameAr, label, defaultValueEn, defaultValueAr, required, rows = 4 }: BilingualTextareaProps) {
   return (
     <div className="space-y-4 rounded-xl border border-safra-taupe/40 bg-safra-cream/20 p-4">
       <h4 className="text-sm font-semibold text-safra-dark">{label}</h4>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-1">
-          <label className="text-sm font-medium text-safra-dark">English</label>
-          <textarea
+      <div className="flex flex-col gap-4">
+        <div className="flex-1">
+          <Textarea
             name={nameEn}
+            label="English"
             defaultValue={defaultValueEn}
             required={required}
             rows={rows}
-            className="w-full rounded-lg border border-safra-taupe/40 bg-white px-3 py-2 text-safra-dark focus:border-safra-gold focus:outline-none focus:ring-1 focus:ring-safra-gold custom-scrollbar"
+            langValidate="en"
           />
         </div>
-        <div className="space-y-1">
-          <label className="text-sm font-medium text-safra-dark">Arabic</label>
-          <textarea
+        <div className="flex-1 border-t border-safra-taupe/20 pt-4 sm:border-t-0 sm:pt-0">
+          <Textarea
             name={nameAr}
+            label="Arabic"
             defaultValue={defaultValueAr}
             required={required}
             rows={rows}
             dir="rtl"
-            className="w-full rounded-lg border border-safra-taupe/40 bg-white px-3 py-2 text-safra-dark focus:border-safra-gold focus:outline-none focus:ring-1 focus:ring-safra-gold custom-scrollbar"
+            langValidate="ar"
           />
         </div>
       </div>

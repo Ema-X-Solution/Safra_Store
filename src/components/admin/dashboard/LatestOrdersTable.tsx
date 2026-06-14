@@ -33,7 +33,7 @@ export default function LatestOrdersTable({ orders }: LatestOrdersTableProps) {
         <table className="w-full text-sm">
           <thead className="bg-safra-light/20 text-start text-safra-olive">
             <tr>
-              <th className="px-6 py-3 font-medium">ID</th>
+              <th className="px-6 py-3 font-medium">{t("orderId")}</th>
               <th className="px-6 py-3 font-medium">{t("customer")}</th>
               <th className="px-6 py-3 font-medium">{t("status")}</th>
               <th className="px-6 py-3 font-medium">{t("date")}</th>

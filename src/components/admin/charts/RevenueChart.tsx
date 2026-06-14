@@ -51,7 +51,7 @@ export default function RevenueChart({ orders, selectedYear, selectedMonth }: Re
   }, [orders, selectedYear, selectedMonth]);
 
   return (
-    <div className="rounded-xl border border-safra-taupe/40 bg-white p-6 shadow-sm h-full flex flex-col">
+    <div className="rounded-xl border border-safra-taupe/40 bg-white p-6 shadow-sm h-full flex flex-col min-w-0 overflow-hidden">
       <h3 className="mb-4 font-semibold text-safra-dark shrink-0">Revenue Overview</h3>
       <div className="h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">

@@ -137,14 +137,14 @@ export default function AdminDashboardPage() {
 
       {/* ─── Chart + Top Products ───────────────────────────────────── */}
       <div className="grid gap-6 lg:grid-cols-3 items-stretch">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 min-w-0">
           <RevenueChart
             orders={orders}
             selectedYear={selectedYear}
             selectedMonth={selectedMonth}
           />
         </div>
-        <div className="lg:col-span-1 h-[384px]">
+        <div className="lg:col-span-1 h-[384px] min-w-0">
           <TopProducts products={products} />
         </div>
       </div>

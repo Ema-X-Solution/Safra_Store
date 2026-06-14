@@ -21,14 +21,14 @@ export default function ProductsTable({ products, categories, onDelete }: Produc
   if (!products || products.length === 0) {
     return (
       <div className="rounded-xl border border-safra-taupe/40 bg-white p-12 text-center shadow-sm">
-        <p className="text-safra-muted">No products found.</p>
+        <p className="text-safra-muted">{t("noProductsFound")}</p>
       </div>
     );
   }
 
   const getCatName = (id: string) => {
     const c = categories.find(c => c.id === id);
-    return c ? c.name[locale] : "Unknown";
+    return c ? c.name[locale] : t("unknown");
   };
 
   return (
@@ -37,12 +37,12 @@ export default function ProductsTable({ products, categories, onDelete }: Produc
         <table className="w-full text-sm">
           <thead className="bg-safra-light/20 text-start text-safra-olive">
             <tr>
-              <th className="px-6 py-3 font-medium">Product</th>
-              <th className="px-6 py-3 font-medium">Category</th>
-              <th className="px-6 py-3 font-medium">Price</th>
-              <th className="px-6 py-3 font-medium">Stock</th>
-              <th className="px-6 py-3 font-medium">Status</th>
-              <th className="px-6 py-3 font-medium text-end">Actions</th>
+              <th className="px-6 py-3 font-medium">{t("product")}</th>
+              <th className="px-6 py-3 font-medium">{t("category")}</th>
+              <th className="px-6 py-3 font-medium">{t("price")}</th>
+              <th className="px-6 py-3 font-medium">{t("stock")}</th>
+              <th className="px-6 py-3 font-medium">{t("statusLabel")}</th>
+              <th className="px-6 py-3 font-medium text-end">{t("actionsCol")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-safra-taupe/20">
@@ -61,8 +61,8 @@ export default function ProductsTable({ products, categories, onDelete }: Produc
                     <div>
                       <p className="font-medium text-safra-dark">{getProductName(product, locale)}</p>
                       <div className="flex gap-2 text-xs">
-                        {product.featured && <span className="text-safra-gold">Featured</span>}
-                        {product.bestSeller && <span className="text-orange-500">Best Seller</span>}
+                        {product.featured && <span className="text-safra-gold">{t("featured_badge")}</span>}
+                        {product.bestSeller && <span className="text-orange-500">{t("bestSeller_badge")}</span>}
                       </div>
                     </div>
                   </div>
@@ -91,7 +91,7 @@ export default function ProductsTable({ products, categories, onDelete }: Produc
                       "bg-yellow-100 text-yellow-700"
                     }`}
                   >
-                    {product.status || "active"}
+                    {product.status === "draft" ? t("statusDraft") : product.status === "archived" ? t("statusArchived") : t("statusActive")}
                   </span>
                 </td>
                 <td className="px-6 py-3 text-end">

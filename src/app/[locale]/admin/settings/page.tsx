@@ -7,8 +7,10 @@ import Input from "@/components/ui/Input";
 import SingleImageUploader from "@/components/admin/shared/SingleImageUploader";
 import { getSettings, updateSettings } from "@/lib/firebase/services/settings-service";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export default function AdminSettingsPage() {
+  const t = useTranslations("admin");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState("homepage");
@@ -108,12 +110,12 @@ export default function AdminSettingsPage() {
     }
   };
 
-  if (loading) return <div className="flex h-40 items-center justify-center text-safra-muted">Loading...</div>;
+  if (loading) return <div className="flex h-40 items-center justify-center text-safra-muted">{t("loading")}</div>;
 
   return (
     <div className="mx-auto max-w-4xl space-y-6 pb-20">
       <div>
-        <h1 className="text-2xl font-bold text-safra-dark">CMS Settings</h1>
+        <h1 className="text-2xl font-bold text-safra-dark">{t("settings")}</h1>
         <p className="mt-1 text-sm text-safra-muted">Manage global store configurations and content.</p>
       </div>
 
@@ -124,7 +126,8 @@ export default function AdminSettingsPage() {
             onClick={() => setActiveTab(tab)}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${activeTab === tab ? 'bg-safra-gold text-safra-dark' : 'text-safra-olive hover:bg-safra-light/30'}`}
           >
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            {t(`${tab}Tab` as any)}
           </button>
         ))}
       </div>
@@ -133,69 +136,69 @@ export default function AdminSettingsPage() {
         
         {activeTab === "homepage" && (
           <div className="rounded-xl border border-safra-taupe/40 bg-white p-6 shadow-sm space-y-6 animate-in fade-in zoom-in-95 duration-200">
-            <h3 className="font-semibold text-safra-dark">Hero Section</h3>
+            <h3 className="font-semibold text-safra-dark">{t("heroSection")}</h3>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Input name="htEn" label="Title (English)" value={heroTitleEn} onChange={e => setHeroTitleEn(e.target.value)} />
-              <Input name="htAr" label="Title (Arabic)" value={heroTitleAr} onChange={e => setHeroTitleAr(e.target.value)} dir="rtl" />
-              <Input name="hsEn" label="Subtitle (English)" value={heroSubEn} onChange={e => setHeroSubEn(e.target.value)} />
-              <Input name="hsAr" label="Subtitle (Arabic)" value={heroSubAr} onChange={e => setHeroSubAr(e.target.value)} dir="rtl" />
-              <Input name="hcEn" label="CTA Text (English)" value={heroCtaEn} onChange={e => setHeroCtaEn(e.target.value)} />
-              <Input name="hcAr" label="CTA Text (Arabic)" value={heroCtaAr} onChange={e => setHeroCtaAr(e.target.value)} dir="rtl" />
+              <Input name="htEn" label={t("titleEn")} value={heroTitleEn} onChange={e => setHeroTitleEn(e.target.value)} langValidate="en" />
+              <Input name="htAr" label={t("titleAr")} value={heroTitleAr} onChange={e => setHeroTitleAr(e.target.value)} dir="rtl" langValidate="ar" />
+              <Input name="hsEn" label={t("subtitleEn")} value={heroSubEn} onChange={e => setHeroSubEn(e.target.value)} langValidate="en" />
+              <Input name="hsAr" label={t("subtitleAr")} value={heroSubAr} onChange={e => setHeroSubAr(e.target.value)} dir="rtl" langValidate="ar" />
+              <Input name="hcEn" label={t("ctaEn")} value={heroCtaEn} onChange={e => setHeroCtaEn(e.target.value)} langValidate="en" />
+              <Input name="hcAr" label={t("ctaAr")} value={heroCtaAr} onChange={e => setHeroCtaAr(e.target.value)} dir="rtl" langValidate="ar" />
             </div>
-            <SingleImageUploader label="Banner Image" value={heroImage} onChange={setHeroImage} aspectRatio="video" />
+            <SingleImageUploader label={t("bannerImage")} value={heroImage} onChange={setHeroImage} aspectRatio="video" />
           </div>
         )}
 
         {activeTab === "branding" && (
           <div className="rounded-xl border border-safra-taupe/40 bg-white p-6 shadow-sm space-y-6 animate-in fade-in zoom-in-95 duration-200">
-            <h3 className="font-semibold text-safra-dark">Branding</h3>
+            <h3 className="font-semibold text-safra-dark">{t("branding")}</h3>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Input name="snEn" label="Store Name (English)" value={storeNameEn} onChange={e => setStoreNameEn(e.target.value)} />
-              <Input name="snAr" label="Store Name (Arabic)" value={storeNameAr} onChange={e => setStoreNameAr(e.target.value)} dir="rtl" />
+              <Input name="snEn" label={t("storeNameEn")} value={storeNameEn} onChange={e => setStoreNameEn(e.target.value)} langValidate="en" />
+              <Input name="snAr" label={t("storeNameAr")} value={storeNameAr} onChange={e => setStoreNameAr(e.target.value)} dir="rtl" langValidate="ar" />
             </div>
-            <SingleImageUploader label="Logo" value={logo} onChange={setLogo} aspectRatio="square" />
+            <SingleImageUploader label={t("logo")} value={logo} onChange={setLogo} aspectRatio="square" />
           </div>
         )}
 
         {activeTab === "contact" && (
           <div className="rounded-xl border border-safra-taupe/40 bg-white p-6 shadow-sm space-y-6 animate-in fade-in zoom-in-95 duration-200">
-            <h3 className="font-semibold text-safra-dark">Contact Information</h3>
+            <h3 className="font-semibold text-safra-dark">{t("contactInfo")}</h3>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Input name="em" label="Email Address" type="email" value={email} onChange={e => setEmail(e.target.value)} />
-              <Input name="ph" label="Phone Number" value={phone} onChange={e => setPhone(e.target.value)} />
-              <Input name="wa" label="WhatsApp Number" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} />
+              <Input name="em" label={t("emailAddress")} type="email" value={email} onChange={e => setEmail(e.target.value)} />
+              <Input name="ph" label={t("phoneNumber")} value={phone} onChange={e => setPhone(e.target.value)} />
+              <Input name="wa" label={t("whatsappNumber")} value={whatsapp} onChange={e => setWhatsapp(e.target.value)} />
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Input name="adEn" label="Address (English)" value={addressEn} onChange={e => setAddressEn(e.target.value)} />
-              <Input name="adAr" label="Address (Arabic)" value={addressAr} onChange={e => setAddressAr(e.target.value)} dir="rtl" />
+              <Input name="adEn" label={t("addressEn")} value={addressEn} onChange={e => setAddressEn(e.target.value)} langValidate="en" />
+              <Input name="adAr" label={t("addressAr")} value={addressAr} onChange={e => setAddressAr(e.target.value)} dir="rtl" langValidate="ar" />
             </div>
           </div>
         )}
 
         {activeTab === "social" && (
           <div className="rounded-xl border border-safra-taupe/40 bg-white p-6 shadow-sm space-y-6 animate-in fade-in zoom-in-95 duration-200">
-            <h3 className="font-semibold text-safra-dark">Social Media Links</h3>
+            <h3 className="font-semibold text-safra-dark">{t("socialMediaLinks")}</h3>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Input name="fb" label="Facebook URL" value={fb} onChange={e => setFb(e.target.value)} />
-              <Input name="x" label="X (Twitter) URL" value={x} onChange={e => setX(e.target.value)} />
-              <Input name="ig" label="Instagram URL" value={ig} onChange={e => setIg(e.target.value)} />
-              <Input name="snapchat" label="Snapchat URL" value={snapchat} onChange={e => setSnapchat(e.target.value)} />
-              <Input name="linkedin" label="LinkedIn URL" value={linkedin} onChange={e => setLinkedin(e.target.value)} />
-              <Input name="tiktok" label="TikTok URL" value={tiktok} onChange={e => setTiktok(e.target.value)} />
+              <Input name="fb" label={t("facebookUrl")} value={fb} onChange={e => setFb(e.target.value)} />
+              <Input name="x" label={t("twitterUrl")} value={x} onChange={e => setX(e.target.value)} />
+              <Input name="ig" label={t("instagramUrl")} value={ig} onChange={e => setIg(e.target.value)} />
+              <Input name="snapchat" label={t("snapchatUrl")} value={snapchat} onChange={e => setSnapchat(e.target.value)} />
+              <Input name="linkedin" label={t("linkedinUrl")} value={linkedin} onChange={e => setLinkedin(e.target.value)} />
+              <Input name="tiktok" label={t("tiktokUrl")} value={tiktok} onChange={e => setTiktok(e.target.value)} />
             </div>
           </div>
         )}
 
         {activeTab === "config" && (
           <div className="rounded-xl border border-safra-taupe/40 bg-white p-6 shadow-sm space-y-6 animate-in fade-in zoom-in-95 duration-200">
-            <h3 className="font-semibold text-safra-dark">Store Configuration</h3>
+            <h3 className="font-semibold text-safra-dark">{t("storeConfig")}</h3>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Input name="cur" label="Currency Code (e.g. SAR, USD)" value={currency} onChange={e => setCurrency(e.target.value)} />
+              <Input name="cur" label={t("currencyCode")} value={currency} onChange={e => setCurrency(e.target.value)} />
               <div className="space-y-1">
-                <label className="text-sm font-medium text-safra-dark">Default Language</label>
+                <label className="text-sm font-medium text-safra-dark">{t("defaultLanguage")}</label>
                 <select value={defaultLang} onChange={e => setDefaultLang(e.target.value)} className="w-full rounded-lg border border-safra-taupe/40 bg-white px-3 py-2 focus:border-safra-gold focus:outline-none focus:ring-1 focus:ring-safra-gold">
-                  <option value="en">English</option>
-                  <option value="ar">Arabic</option>
+                  <option value="en">{t("english")}</option>
+                  <option value="ar">{t("arabic")}</option>
                 </select>
               </div>
             </div>
@@ -206,7 +209,7 @@ export default function AdminSettingsPage() {
           <div className="mx-auto flex max-w-4xl items-center justify-end">
             <Button type="submit" loading={saving} className="gap-2">
               <Save className="h-4 w-4" />
-              Save Settings
+              {t("saveSettings")}
             </Button>
           </div>
         </div>

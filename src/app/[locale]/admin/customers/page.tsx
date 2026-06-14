@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { Search, Plus } from "lucide-react";
 import Button from "@/components/ui/Button";
 import CustomersTable from "@/components/admin/customers/CustomersTable";
@@ -10,6 +11,7 @@ import type { Customer } from "@/lib/types";
 import { toast } from "sonner";
 
 export default function AdminCustomersPage() {
+  const t = useTranslations("admin");
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -52,12 +54,12 @@ export default function AdminCustomersPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-safra-dark">Customers</h1>
-          <p className="mt-1 text-sm text-safra-muted">View and manage your store customers.</p>
+          <h1 className="text-2xl font-bold text-safra-dark">{t("customers")}</h1>
+          <p className="mt-1 text-sm text-safra-muted">{t("customersDesc")}</p>
         </div>
         <Button onClick={() => setModalOpen(true)} className="gap-2">
           <Plus className="h-5 w-5" />
-          Add Customer
+          {t("addCustomer")}
         </Button>
       </div>
 
@@ -66,7 +68,7 @@ export default function AdminCustomersPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-safra-muted" />
           <input
             type="text"
-            placeholder="Search by name, email, or phone..."
+            placeholder={t("searchCustomers")}
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="w-full pl-9 pr-4 py-2 rounded-lg border border-safra-taupe/40 focus:outline-none focus:ring-1 focus:ring-safra-gold"
@@ -75,7 +77,7 @@ export default function AdminCustomersPage() {
       </div>
 
       {loading ? (
-        <div className="flex h-40 items-center justify-center text-safra-muted">Loading...</div>
+        <div className="flex h-40 items-center justify-center text-safra-muted">{t("loading")}</div>
       ) : (
         <CustomersTable customers={filteredCustomers} />
       )}

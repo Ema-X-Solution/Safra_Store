@@ -18,7 +18,7 @@ export default function CouponsTable({ coupons, onEdit, onDelete }: CouponsTable
   if (!coupons || coupons.length === 0) {
     return (
       <div className="rounded-xl border border-safra-taupe/40 bg-white p-12 text-center shadow-sm">
-        <p className="text-safra-muted">No coupons found.</p>
+        <p className="text-safra-muted">{t("noCoupons")}</p>
       </div>
     );
   }
@@ -29,12 +29,12 @@ export default function CouponsTable({ coupons, onEdit, onDelete }: CouponsTable
         <table className="w-full text-sm">
           <thead className="bg-safra-light/20 text-start text-safra-olive">
             <tr>
-              <th className="px-6 py-3 font-medium">Code</th>
-              <th className="px-6 py-3 font-medium">Discount</th>
-              <th className="px-6 py-3 font-medium">Usage Limit</th>
-              <th className="px-6 py-3 font-medium">Expiry</th>
-              <th className="px-6 py-3 font-medium">Status</th>
-              <th className="px-6 py-3 font-medium text-end">Actions</th>
+              <th className="px-6 py-3 font-medium">{t("couponCode")}</th>
+              <th className="px-6 py-3 font-medium">{t("couponDiscount")}</th>
+              <th className="px-6 py-3 font-medium">{t("usageLimit")}</th>
+              <th className="px-6 py-3 font-medium">{t("couponExpiry")}</th>
+              <th className="px-6 py-3 font-medium">{t("couponStatus")}</th>
+              <th className="px-6 py-3 font-medium text-end">{t("actionsCol")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-safra-taupe/20">
@@ -60,7 +60,7 @@ export default function CouponsTable({ coupons, onEdit, onDelete }: CouponsTable
                       coupon.active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
                     }`}
                   >
-                    {coupon.active ? "Active" : "Inactive"}
+                    {coupon.active ? t("couponActive") : t("couponInactive")}
                   </span>
                 </td>
                 <td className="px-6 py-3 text-end">

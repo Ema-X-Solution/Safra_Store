@@ -6,6 +6,7 @@ import { ArrowLeft, Save } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import Textarea from "@/components/ui/Textarea";
 import BilingualInput from "@/components/admin/shared/BilingualInput";
 import BilingualTextarea from "@/components/admin/shared/BilingualTextarea";
 import ImageUploader from "@/components/admin/products/ImageUploader";
@@ -183,26 +184,20 @@ export default function AdminProductEditPage({ params }: { params: Promise<{ loc
             <h3 className="font-semibold text-safra-dark">{t("basicInfo")}</h3>
             <div className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
-                <Input name="nameEn" label={t("nameEn")} value={nameEn} onChange={e => setNameEn(e.target.value)} required />
-                <Input name="nameAr" label={t("nameAr")} value={nameAr} onChange={e => setNameAr(e.target.value)} required dir="rtl" />
+                <Input name="nameEn" label={t("nameEn")} value={nameEn} onChange={e => setNameEn(e.target.value)} required langValidate="en" />
+                <Input name="nameAr" label={t("nameAr")} value={nameAr} onChange={e => setNameAr(e.target.value)} required dir="rtl" langValidate="ar" />
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
-                <Input name="slugEn" label={t("slugEn")} value={slugEn} onChange={e => setSlugEn(e.target.value)} />
-                <Input name="slugAr" label={t("slugAr")} value={slugAr} onChange={e => setSlugAr(e.target.value)} dir="rtl" />
+                <Input name="slugEn" label={t("slugEn")} value={slugEn} onChange={e => setSlugEn(e.target.value)} langValidate="en" />
+                <Input name="slugAr" label={t("slugAr")} value={slugAr} onChange={e => setSlugAr(e.target.value)} dir="rtl" langValidate="ar" />
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
-                <Input name="shortDescEn" label={t("shortDescEn")} value={shortDescEn} onChange={e => setShortDescEn(e.target.value)} />
-                <Input name="shortDescAr" label={t("shortDescAr")} value={shortDescAr} onChange={e => setShortDescAr(e.target.value)} dir="rtl" />
+                <Input name="shortDescEn" label={t("shortDescEn")} value={shortDescEn} onChange={e => setShortDescEn(e.target.value)} langValidate="en" />
+                <Input name="shortDescAr" label={t("shortDescAr")} value={shortDescAr} onChange={e => setShortDescAr(e.target.value)} dir="rtl" langValidate="ar" />
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-1">
-                  <label className="text-sm font-medium">{t("descriptionEn")}</label>
-                  <textarea rows={5} value={descEn} onChange={e => setDescEn(e.target.value)} className="w-full rounded-lg border border-safra-taupe/40 p-2" />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-sm font-medium">{t("descriptionAr")}</label>
-                  <textarea rows={5} value={descAr} onChange={e => setDescAr(e.target.value)} className="w-full rounded-lg border border-safra-taupe/40 p-2" dir="rtl" />
-                </div>
+                <Textarea label={t("descriptionEn")} rows={5} value={descEn} onChange={e => setDescEn(e.target.value)} langValidate="en" />
+                <Textarea label={t("descriptionAr")} rows={5} value={descAr} onChange={e => setDescAr(e.target.value)} dir="rtl" langValidate="ar" />
               </div>
             </div>
           </div>
@@ -224,12 +219,12 @@ export default function AdminProductEditPage({ params }: { params: Promise<{ loc
             <h3 className="font-semibold text-safra-dark">{t("seo")}</h3>
             <div className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
-                <Input name="seoTitleEn" label={t("metaTitleEn")} value={seoTitleEn} onChange={e => setSeoTitleEn(e.target.value)} />
-                <Input name="seoTitleAr" label={t("metaTitleAr")} value={seoTitleAr} onChange={e => setSeoTitleAr(e.target.value)} dir="rtl" />
+                <Input name="seoTitleEn" label={t("metaTitleEn")} value={seoTitleEn} onChange={e => setSeoTitleEn(e.target.value)} langValidate="en" />
+                <Input name="seoTitleAr" label={t("metaTitleAr")} value={seoTitleAr} onChange={e => setSeoTitleAr(e.target.value)} dir="rtl" langValidate="ar" />
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
-                <Input name="seoDescEn" label={t("metaDescEn")} value={seoDescEn} onChange={e => setSeoDescEn(e.target.value)} />
-                <Input name="seoDescAr" label={t("metaDescAr")} value={seoDescAr} onChange={e => setSeoDescAr(e.target.value)} dir="rtl" />
+                <Input name="seoDescEn" label={t("metaDescEn")} value={seoDescEn} onChange={e => setSeoDescEn(e.target.value)} langValidate="en" />
+                <Input name="seoDescAr" label={t("metaDescAr")} value={seoDescAr} onChange={e => setSeoDescAr(e.target.value)} dir="rtl" langValidate="ar" />
               </div>
             </div>
           </div>

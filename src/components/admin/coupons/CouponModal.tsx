@@ -86,8 +86,8 @@ export default function CouponModal({ isOpen, onClose, coupon, onSave }: CouponM
               </select>
             </div>
 
-            <Input name="descEn" label="Description (English)" defaultValue={coupon?.description?.en} required />
-            <Input name="descAr" label="Description (Arabic)" defaultValue={coupon?.description?.ar} dir="rtl" required />
+            <Input name="descEn" label="Description (English)" defaultValue={coupon?.description?.en} required langValidate="en" />
+            <Input name="descAr" label="Description (Arabic)" defaultValue={coupon?.description?.ar} dir="rtl" required langValidate="ar" />
             
             <div className="space-y-1">
               <label className="text-sm font-medium text-safra-dark">Discount Type</label>

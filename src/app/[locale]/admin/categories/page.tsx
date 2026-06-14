@@ -103,7 +103,7 @@ export default function AdminCategoriesPage() {
         </div>
         <Button onClick={handleAdd} className="gap-2">
           <Plus className="h-5 w-5" />
-          Add Category
+          {t("addCategory")}
         </Button>
       </div>
 
@@ -111,7 +111,7 @@ export default function AdminCategoriesPage() {
         <div className="flex h-40 items-center justify-center text-safra-muted">{t("loading")}</div>
       ) : categories.length === 0 ? (
         <div className="rounded-xl border border-safra-taupe/40 bg-white p-12 text-center shadow-sm">
-          <p className="text-safra-muted">No categories found. Create your first category to get started.</p>
+          <p className="text-safra-muted">{t("noCategories")}</p>
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

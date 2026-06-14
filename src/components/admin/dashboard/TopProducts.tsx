@@ -33,7 +33,7 @@ export default function TopProducts({ products }: { products: Product[] }) {
               <p className="truncate font-medium text-safra-dark">
                 {getProductName(product, locale)}
               </p>
-              <p className="text-sm text-safra-muted">{product.stock} in stock</p>
+              <p className="text-sm text-safra-muted">{product.stock} {t("inStockLabel")}</p>
             </div>
             <div className="text-end font-medium text-safra-deep-gold">
               <Price amount={product.discountPrice || product.price} />

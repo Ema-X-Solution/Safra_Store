@@ -10,11 +10,12 @@ import { getOrderById, updateOrderStatus } from "@/lib/firebase/services/orders-
 import type { Order, OrderStatus } from "@/lib/types";
 import { formatFirebaseDateTime, formatFirebaseDate } from "@/lib/types";
 import { toast } from "sonner";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 export default function AdminOrderDetailPage({ params }: { params: Promise<{ locale: string; id: string }> }) {
   const { id } = use(params);
   const locale = useLocale() as "en" | "ar";
+  const t = useTranslations("admin");
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -53,8 +54,8 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ loc
     }
   };
 
-  if (loading) return <div className="flex h-40 items-center justify-center">Loading...</div>;
-  if (!order) return <div className="p-8 text-center text-safra-muted">Order not found</div>;
+  if (loading) return <div className="flex h-40 items-center justify-center">{t("loading")}</div>;
+  if (!order) return <div className="p-8 text-center text-safra-muted">{t("noOrdersFound")}</div>;
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
@@ -75,7 +76,7 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ loc
           {/* Order Items */}
           <div className="rounded-xl border border-safra-taupe/40 bg-white shadow-sm overflow-hidden">
             <div className="border-b border-safra-taupe/30 px-6 py-4">
-              <h3 className="font-semibold text-safra-dark">Order Items</h3>
+              <h3 className="font-semibold text-safra-dark">{t("orderItems")}</h3>
             </div>
             <div className="divide-y divide-safra-taupe/20">
               {order.items.map((item, i) => (
@@ -122,7 +123,7 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ loc
           {/* Timeline */}
           <div className="rounded-xl border border-safra-taupe/40 bg-white shadow-sm overflow-hidden">
             <div className="border-b border-safra-taupe/30 px-6 py-4">
-              <h3 className="font-semibold text-safra-dark">Status History</h3>
+              <h3 className="font-semibold text-safra-dark">{t("statusLabel")}</h3>
             </div>
             <div className="p-6">
               <div className="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-safra-taupe/40">
@@ -176,7 +177,7 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ loc
           {/* Customer Info */}
           <div className="rounded-xl border border-safra-taupe/40 bg-white shadow-sm overflow-hidden">
             <div className="border-b border-safra-taupe/30 px-6 py-4">
-              <h3 className="font-semibold text-safra-dark">Customer Info</h3>
+              <h3 className="font-semibold text-safra-dark">{t("customerInfo")}</h3>
             </div>
             <div className="p-6 space-y-4 text-sm">
               <div>

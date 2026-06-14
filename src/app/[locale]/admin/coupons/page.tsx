@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { Plus } from "lucide-react";
 import Button from "@/components/ui/Button";
 import CouponsTable from "@/components/admin/coupons/CouponsTable";
@@ -11,6 +12,7 @@ import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { toast } from "sonner";
 
 export default function AdminCouponsPage() {
+  const t = useTranslations("admin");
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(true);
   
@@ -74,17 +76,17 @@ export default function AdminCouponsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-safra-dark">Coupons</h1>
-          <p className="mt-1 text-sm text-safra-muted">Manage store discount coupons.</p>
+          <h1 className="text-2xl font-bold text-safra-dark">{t("coupons")}</h1>
+          <p className="mt-1 text-sm text-safra-muted">{t("couponsDesc")}</p>
         </div>
         <Button onClick={handleAdd} className="gap-2">
           <Plus className="h-5 w-5" />
-          Add Coupon
+          {t("addCoupon")}
         </Button>
       </div>
 
       {loading ? (
-        <div className="flex h-40 items-center justify-center text-safra-muted">Loading...</div>
+        <div className="flex h-40 items-center justify-center text-safra-muted">{t("loading")}</div>
       ) : (
         <CouponsTable coupons={coupons} onEdit={handleEdit} onDelete={handleDelete} />
       )}
@@ -100,8 +102,8 @@ export default function AdminCouponsPage() {
         isOpen={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}
         onConfirm={confirmDelete}
-        title="Delete Coupon"
-        description="Are you sure you want to delete this coupon? This cannot be undone."
+        title={t("deleteCoupon")}
+        description={t("deleteCouponConfirm")}
         loading={deleting}
       />
     </div>

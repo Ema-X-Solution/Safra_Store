@@ -52,7 +52,7 @@ export default function AdminOrdersPage() {
         <Link href="/admin/orders/new">
           <Button className="gap-2">
             <Plus className="h-5 w-5" />
-            Add Order
+            {t("addOrder")}
           </Button>
         </Link>
       </div>
@@ -62,7 +62,7 @@ export default function AdminOrdersPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-safra-muted" />
           <input
             type="text"
-            placeholder="Search by order ID, name, or phone..."
+            placeholder={t("searchOrders")}
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="w-full pl-9 pr-4 py-2 rounded-lg border border-safra-taupe/40 focus:outline-none focus:ring-1 focus:ring-safra-gold"
@@ -73,12 +73,12 @@ export default function AdminOrdersPage() {
           onChange={e => setStatusFilter(e.target.value)}
           className="rounded-lg border border-safra-taupe/40 bg-white px-4 py-2 focus:outline-none focus:ring-1 focus:ring-safra-gold"
         >
-          <option value="">All Statuses</option>
-          <option value="pending">Pending</option>
-          <option value="processing">Processing</option>
-          <option value="shipped">Shipped</option>
-          <option value="delivered">Delivered</option>
-          <option value="cancelled">Cancelled</option>
+          <option value="">{t("allStatuses")}</option>
+          <option value="pending">{t("status.pending")}</option>
+          <option value="processing">{t("status.processing")}</option>
+          <option value="shipped">{t("status.shipped")}</option>
+          <option value="delivered">{t("status.delivered")}</option>
+          <option value="cancelled">{t("status.cancelled")}</option>
         </select>
       </div>
 
