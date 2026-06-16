@@ -4,9 +4,9 @@ import { fetchCategories } from "@/lib/categories";
 import { getFeaturedProducts, getDiscountedProducts } from "@/lib/firebase/services/products-service";
 import { getFAQs } from "@/lib/firebase/services/faq-service";
 import { getSettings } from "@/lib/firebase/services/settings-service";
-import { getCategoryName, getBilingualText } from "@/lib/types";
+import { getBilingualText } from "@/lib/types";
 import type { Locale } from "@/i18n/routing";
-import ProductCard from "@/components/products/ProductCard";
+
 import Button from "@/components/ui/Button";
 import { Leaf, Truck, ShieldCheck, Tag, Sparkles } from "lucide-react";
 import Image from "next/image";

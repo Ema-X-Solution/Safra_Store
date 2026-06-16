@@ -131,7 +131,7 @@ export default function AdminProductEditPage({ params }: { params: Promise<{ loc
         shortDescription: { en: shortDescEn, ar: shortDescAr },
         description: { en: descEn, ar: descAr },
         price: Number(price),
-        discountPrice: hasDiscount && discountPrice ? Number(discountPrice) : null as unknown as number,
+        discountPrice: hasDiscount && discountPrice ? Number(discountPrice) : undefined,
         image: images[0],
         images,
         categoryId,
@@ -154,8 +154,15 @@ export default function AdminProductEditPage({ params }: { params: Promise<{ loc
         await updateProduct(id, data);
         toast.success("Product updated successfully");
       }
-    } catch (err) {
-      toast.error("Failed to save product");
+    } catch (err: unknown) {
+      console.error("❌ Save product error:", err);
+      const msg =
+        err instanceof Error
+          ? err.message
+          : typeof err === "object" && err !== null && "code" in err
+          ? String((err as { code: unknown }).code)
+          : "Failed to save product";
+      toast.error(msg);
     } finally {
       setSaving(false);
     }

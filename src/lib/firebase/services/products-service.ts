@@ -16,7 +16,18 @@ import type { Product, ProductInput } from "@/lib/types";
 
 const COLLECTION = "products";
 
-/** Remove undefined values (ignored) and convert null to deleteField() */
+/** For CREATE: skip null and undefined values entirely (deleteField is not valid in addDoc) */
+function cleanForCreate<T extends object>(obj: T): Partial<T> {
+  const result: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (v !== null && v !== undefined) {
+      result[k] = v;
+    }
+  }
+  return result as Partial<T>;
+}
+
+/** For UPDATE: convert null to deleteField() so fields are removed from the document */
 function cleanData<T extends object>(obj: T): Partial<T> {
   const result: Record<string, unknown> = {};
   for (const [k, v] of Object.entries(obj)) {
@@ -51,11 +62,16 @@ export async function getProductById(id: string): Promise<Product | null> {
 }
 
 export async function createProduct(data: ProductInput): Promise<string> {
-  const ref = await addDoc(collection(getFirebaseDb(), COLLECTION), {
-    ...cleanData(data),
-    createdAt: serverTimestamp(),
-  });
-  return ref.id;
+  try {
+    const ref = await addDoc(collection(getFirebaseDb(), COLLECTION), {
+      ...cleanForCreate(data),
+      createdAt: serverTimestamp(),
+    });
+    return ref.id;
+  } catch (error) {
+    console.error("createProduct failed:", error);
+    throw error;
+  }
 }
 
 export async function updateProduct(id: string, data: Partial<ProductInput>) {

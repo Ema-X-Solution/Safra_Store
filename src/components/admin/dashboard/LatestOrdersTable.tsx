@@ -35,7 +35,7 @@ export default function LatestOrdersTable({ orders }: LatestOrdersTableProps) {
             <tr>
               <th className="px-6 py-3 font-medium">{t("orderId")}</th>
               <th className="px-6 py-3 font-medium">{t("customer")}</th>
-              <th className="px-6 py-3 font-medium">{t("status")}</th>
+              <th className="px-6 py-3 font-medium">{t("statusCol")}</th>
               <th className="px-6 py-3 font-medium">{t("date")}</th>
               <th className="px-6 py-3 font-medium">{t("total")}</th>
             </tr>
