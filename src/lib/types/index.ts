@@ -28,6 +28,7 @@ export interface Product {
   image: string;
   images: string[];
   categoryId: string;
+  subcategoryId?: string;
   stock: number;
   status: ProductStatus;
   featured?: boolean;
@@ -48,6 +49,7 @@ export interface ProductInput {
   image: string;
   images: string[];
   categoryId: string;
+  subcategoryId?: string;
   stock: number;
   status: ProductStatus;
   featured?: boolean;
@@ -68,6 +70,27 @@ export interface Category {
 }
 
 export interface CategoryInput {
+  name: BilingualText;
+  description?: BilingualText;
+  slug: string;
+  image?: string;
+  order: number;
+}
+
+// ─── SubCategory ────────────────────────────────────────────────────
+export interface SubCategory {
+  id: string;
+  categoryId: string;
+  name: BilingualText;
+  description?: BilingualText;
+  slug: string;
+  image?: string;
+  order?: number;
+  createdAt?: FirebaseTimestamp;
+}
+
+export interface SubCategoryInput {
+  categoryId: string;
   name: BilingualText;
   description?: BilingualText;
   slug: string;

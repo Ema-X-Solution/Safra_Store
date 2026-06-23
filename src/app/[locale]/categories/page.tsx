@@ -46,25 +46,43 @@ export default async function CategoriesPage({ params }: { params: Promise<{ loc
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {categories.map((category) => (
-              <Link 
-                key={category.id} 
-                href={`/products?category=${category.id}`} 
-                className="group relative overflow-hidden rounded-3xl bg-white border border-safra-taupe/10 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-safra-gold/30 flex flex-col items-center justify-center p-5 sm:p-8 text-center"
-              >
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-safra-light/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-2xl bg-safra-light/30 shadow-sm transition-all duration-300 group-hover:bg-safra-gold/10 group-hover:scale-110 group-hover:rotate-3 relative z-10">
-                  {category.image ? (
-                    <Image src={category.image} alt={getCategoryName(category, currentLocale)} width={64} height={64} className="object-contain drop-shadow-sm" />
-                  ) : (
-                    <Leaf className="h-12 w-12 text-safra-olive" />
-                  )}
-                </div>
-                <h3 className="font-bold text-safra-dark text-xl group-hover:text-safra-olive transition-colors relative z-10">
-                  {getCategoryName(category, currentLocale)}
-                </h3>
-              </Link>
-            ))}
+            {categories.map((category) => {
+              const categoryName = getCategoryName(category, currentLocale);
+              return (
+                <Link 
+                  key={category.id} 
+                  href={`/categories/${category.id}`} 
+                  className="group relative flex flex-col items-center overflow-hidden rounded-2xl bg-white border border-safra-taupe/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-safra-gold/30 h-full w-full"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-safra-light/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl" />
+
+                  <div className="w-full flex flex-col items-center justify-center text-center p-4 sm:p-5 gap-3 relative z-10">
+                    <div className="rounded-xl overflow-hidden shadow-sm transition-all duration-300 group-hover:scale-105 group-hover:shadow-md flex-shrink-0"
+                         style={{ width: 150, height: 150 }}>
+                      {category.image ? (
+                        <Image
+                          src={category.image}
+                          alt={categoryName}
+                          width={150}
+                          height={150}
+                          className="object-cover w-full h-full"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-safra-light/30">
+                          <Leaf className="h-10 w-10 text-safra-olive" />
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col items-center gap-1">
+                      <h2 className="font-bold text-safra-dark text-base sm:text-lg leading-tight group-hover:text-safra-olive transition-colors line-clamp-2">
+                        {categoryName}
+                      </h2>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         )}
       </div>

@@ -1,8 +1,11 @@
 import { setRequestLocale } from "next-intl/server";
 import { fetchCategories } from "@/lib/categories";
 import { getDiscountedProducts } from "@/lib/firebase/services/products-service";
+import { getFirebaseDb } from "@/lib/firebase/config";
+import { collection, getDocs } from "firebase/firestore";
 import ProductGrid from "@/components/products/ProductGrid";
 import type { Locale } from "@/i18n/routing";
+import type { SubCategory } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +26,14 @@ export default async function OffersPage({ params }: { params: Promise<{ locale:
     getDiscountedProducts(),
     fetchCategories()
   ]);
+
+  let subCategories: SubCategory[] = [];
+  try {
+    const subCategoriesSnap = await getDocs(collection(getFirebaseDb(), "subcategories"));
+    subCategories = subCategoriesSnap.docs.map(d => ({ id: d.id, ...d.data() } as SubCategory));
+  } catch (error) {
+    console.error("Failed to load subcategories:", error);
+  }
 
   return (
     <div className="bg-safra-light/10 min-h-screen">
@@ -73,7 +84,7 @@ export default async function OffersPage({ params }: { params: Promise<{ locale:
 
       {/* Grid */}
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <ProductGrid products={products} categories={categories} showFilter />
+        <ProductGrid products={products} categories={categories} subCategories={subCategories} showFilter />
       </div>
     </div>
   );

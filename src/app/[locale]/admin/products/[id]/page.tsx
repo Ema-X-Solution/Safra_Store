@@ -13,7 +13,8 @@ import ImageUploader from "@/components/admin/products/ImageUploader";
 import SpecificationsEditor from "@/components/admin/products/SpecificationsEditor";
 import { getProductById, createProduct, updateProduct } from "@/lib/firebase/services/products-service";
 import { getCategories } from "@/lib/firebase/services/categories-service";
-import type { ProductInput, ProductSpecification, ProductSEO, Category } from "@/lib/types";
+import { getSubCategories } from "@/lib/firebase/services/subcategories-service";
+import type { ProductInput, ProductSpecification, ProductSEO, Category, SubCategory } from "@/lib/types";
 import { toast } from "sonner";
 import { useLocale, useTranslations } from "next-intl";
 
@@ -44,6 +45,8 @@ export default function AdminProductEditPage({ params }: { params: Promise<{ loc
   const [stock, setStock] = useState(0);
   const [status, setStatus] = useState<"active" | "draft" | "archived">("active");
   const [categoryId, setCategoryId] = useState("");
+  const [subcategoryId, setSubcategoryId] = useState("");
+  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
   const [featured, setFeatured] = useState(false);
   const [bestSeller, setBestSeller] = useState(false);
   const [images, setImages] = useState<string[]>([]);
@@ -79,6 +82,7 @@ export default function AdminProductEditPage({ params }: { params: Promise<{ loc
             setStock(product.stock || 0);
             setStatus(product.status || "active");
             setCategoryId(product.categoryId || "");
+            setSubcategoryId(product.subcategoryId || "");
             setFeatured(product.featured || false);
             setBestSeller(product.bestSeller || false);
             setImages(product.images || (product.image ? [product.image] : []));
@@ -101,6 +105,26 @@ export default function AdminProductEditPage({ params }: { params: Promise<{ loc
     load();
   }, [id, isNew, router]);
 
+  useEffect(() => {
+    async function loadSubs() {
+      if (!categoryId) {
+        setSubCategories([]);
+        return;
+      }
+      try {
+        const subs = await getSubCategories(categoryId);
+        setSubCategories(subs);
+        // If the current subcategoryId is not in the new list, clear it
+        if (!subs.find((s) => s.id === subcategoryId)) {
+          setSubcategoryId("");
+        }
+      } catch (err) {
+        console.error("Failed to load subcategories", err);
+      }
+    }
+    loadSubs();
+  }, [categoryId]);
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (images.length === 0) {
@@ -109,6 +133,10 @@ export default function AdminProductEditPage({ params }: { params: Promise<{ loc
     }
     if (!categoryId) {
       toast.error("Please select a category");
+      return;
+    }
+    if (subCategories.length > 0 && !subcategoryId) {
+      toast.error(isAr ? "الرجاء اختيار قسم فرعي" : "Please select a subcategory");
       return;
     }
     
@@ -135,6 +163,7 @@ export default function AdminProductEditPage({ params }: { params: Promise<{ loc
         image: images[0],
         images,
         categoryId,
+        subcategoryId: subcategoryId || undefined,
         stock: Number(stock),
         status,
         featured,
@@ -306,6 +335,17 @@ export default function AdminProductEditPage({ params }: { params: Promise<{ loc
                   ))}
                 </select>
               </div>
+              {subCategories.length > 0 && (
+                <div className="space-y-1 animate-in fade-in slide-in-from-top-2">
+                  <label className="text-sm font-medium">{t("subcategory") || "Subcategory"}</label>
+                  <select value={subcategoryId} onChange={e => setSubcategoryId(e.target.value)} className="w-full rounded-lg border border-safra-taupe/40 p-2">
+                    <option value="">{isAr ? "اختر القسم الفرعي" : "Select Subcategory"}</option>
+                    {subCategories.map(s => (
+                      <option key={s.id} value={s.id}>{s.name[locale]}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
               <div className="flex items-center gap-2 mt-4">
                 <input type="checkbox" id="featured" checked={featured} onChange={e => setFeatured(e.target.checked)} className="h-4 w-4 rounded border-safra-taupe text-safra-gold" />
                 <label htmlFor="featured" className="text-sm">{t("featuredProduct")}</label>

@@ -4,17 +4,18 @@ import { useTranslations, useLocale } from "next-intl";
 import { Edit, Trash2, Eye } from "lucide-react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import type { Product, Category } from "@/lib/types";
+import type { Product, Category, SubCategory } from "@/lib/types";
 import { getProductName, formatFirebaseDate } from "@/lib/types";
 import Price from "@/components/ui/Price";
 
 interface ProductsTableProps {
   products: Product[];
   categories: Category[];
+  subCategories: SubCategory[];
   onDelete: (id: string) => void;
 }
 
-export default function ProductsTable({ products, categories, onDelete }: ProductsTableProps) {
+export default function ProductsTable({ products, categories, subCategories, onDelete }: ProductsTableProps) {
   const t = useTranslations("admin");
   const locale = useLocale() as "en" | "ar";
 
@@ -29,6 +30,12 @@ export default function ProductsTable({ products, categories, onDelete }: Produc
   const getCatName = (id: string) => {
     const c = categories.find(c => c.id === id);
     return c ? c.name[locale] : t("unknown");
+  };
+
+  const getSubCatName = (id?: string) => {
+    if (!id) return null;
+    const s = subCategories.find(s => s.id === id);
+    return s ? s.name[locale] : null;
   };
 
   return (
@@ -67,7 +74,14 @@ export default function ProductsTable({ products, categories, onDelete }: Produc
                     </div>
                   </div>
                 </td>
-                <td className="px-6 py-3 text-safra-dark">{getCatName(product.categoryId)}</td>
+                <td className="px-6 py-3 text-safra-dark">
+                  <div className="flex flex-col">
+                    <span>{getCatName(product.categoryId)}</span>
+                    {getSubCatName(product.subcategoryId) && (
+                      <span className="text-xs text-safra-olive">{getSubCatName(product.subcategoryId)}</span>
+                    )}
+                  </div>
+                </td>
                 <td className="px-6 py-3 font-medium text-safra-dark">
                   <div className="flex flex-col">
                     {product.discountPrice ? (

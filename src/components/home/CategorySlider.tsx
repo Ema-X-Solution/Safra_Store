@@ -40,7 +40,7 @@ export default function CategorySlider({ categories }: { categories: Category[] 
           <SwiperSlide key={category.id} className="h-auto">
             <div className="h-full p-1.5">
               <Link
-                href={`/products?category=${category.id}`}
+                href={`/categories/${category.id}`}
                 className="group relative flex flex-col items-center overflow-hidden rounded-2xl bg-white border border-safra-taupe/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-safra-gold/30 h-full w-full"
               >
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-safra-light/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl" />

@@ -65,5 +65,12 @@ export async function deleteCategory(id: string) {
     batch.delete(productDoc.ref);
   });
 
+  // Find all subcategories in this category and add their deletion to batch
+  const subQ = query(collection(db, "subcategories"), where("categoryId", "==", id));
+  const subSnap = await getDocs(subQ);
+  subSnap.forEach((subDoc) => {
+    batch.delete(subDoc.ref);
+  });
+
   await batch.commit();
 }

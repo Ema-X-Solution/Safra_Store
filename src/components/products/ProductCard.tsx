@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { Product, Category, getProductName, getCategoryName } from "@/lib/types";
+import { Product, Category, SubCategory, getProductName, getCategoryName } from "@/lib/types";
 import { useCart } from "@/lib/context/CartContext";
 import { useWishlist } from "@/lib/context/WishlistContext";
 import Price from "@/components/ui/Price";
@@ -15,9 +15,10 @@ import { cn } from "@/lib/utils";
 interface ProductCardProps {
   product: Product;
   category?: Category;
+  subCategory?: SubCategory;
 }
 
-export default function ProductCard({ product, category }: ProductCardProps) {
+export default function ProductCard({ product, category, subCategory }: ProductCardProps) {
   const t = useTranslations("products");
   const locale = useLocale() as Locale;
   const isAr = locale === "ar";
@@ -79,7 +80,10 @@ export default function ProductCard({ product, category }: ProductCardProps) {
             {getProductName(product, locale)}
           </h3>
           {category && (
-            <p className="mt-0.5 text-xs text-safra-muted truncate">{getCategoryName(category, locale)}</p>
+            <p className="mt-0.5 text-xs text-safra-muted truncate">
+              {getCategoryName(category, locale)}
+              {subCategory && ` > ${subCategory.name[locale]}`}
+            </p>
           )}
         </Link>
         <div className="mt-1 flex items-end gap-2">

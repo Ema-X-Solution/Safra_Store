@@ -4,7 +4,8 @@ import { useEffect, useState, use } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { getProductById } from "@/lib/firebase/services/products-service";
 import { getCategories } from "@/lib/firebase/services/categories-service";
-import type { Product, Category } from "@/lib/types";
+import { getSubCategoryById } from "@/lib/firebase/services/subcategories-service";
+import type { Product, Category, SubCategory } from "@/lib/types";
 import ProductDetailView from "@/components/admin/products/ProductDetailView";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -18,6 +19,7 @@ export default function AdminProductViewPage({
   const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [subCategory, setSubCategory] = useState<SubCategory | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,6 +33,10 @@ export default function AdminProductViewPage({
         }
         setProduct(prod);
         setCategories(cats);
+        if (prod.subcategoryId) {
+          const sub = await getSubCategoryById(prod.subcategoryId);
+          setSubCategory(sub);
+        }
       } catch {
         toast.error("Failed to load product");
         router.push("/admin/products");
@@ -54,5 +60,5 @@ export default function AdminProductViewPage({
 
   const category = categories.find((c) => c.id === product.categoryId);
 
-  return <ProductDetailView product={product} category={category} />;
+  return <ProductDetailView product={product} category={category} subCategory={subCategory} />;
 }

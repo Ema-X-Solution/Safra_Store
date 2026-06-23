@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { Product, Category, getCategoryName } from "@/lib/types";
+import { Product, Category, SubCategory, getCategoryName } from "@/lib/types";
 import type { Locale } from "@/i18n/routing";
 import ProductCard from "./ProductCard";
 import { cn } from "@/lib/utils";
@@ -12,12 +12,13 @@ import { SlidersHorizontal } from "lucide-react";
 interface ProductGridProps {
   products: Product[];
   categories: Category[];
+  subCategories?: SubCategory[];
   showFilter?: boolean;
 }
 
 type SortOption = "default" | "price_asc" | "price_desc" | "newest";
 
-export default function ProductGrid({ products, categories, showFilter = false }: ProductGridProps) {
+export default function ProductGrid({ products, categories, subCategories = [], showFilter = false }: ProductGridProps) {
   const t = useTranslations("products");
   const locale = useLocale() as Locale;
   const isAr = locale === "ar";
@@ -27,6 +28,7 @@ export default function ProductGrid({ products, categories, showFilter = false }
   const pathname = usePathname();
 
   const [activeCategory, setActiveCategory] = useState("All");
+  const [activeSubCategory, setActiveSubCategory] = useState("All");
   const [showSaleOnly, setShowSaleOnly] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>("default");
 
@@ -35,15 +37,28 @@ export default function ProductGrid({ products, categories, showFilter = false }
     const catId = searchParams.get("category");
     if (catId) {
       setActiveCategory(catId);
+    } else {
+      setActiveCategory("All");
     }
+    
+    const subId = searchParams.get("subcategory");
+    if (subId) {
+      setActiveSubCategory(subId);
+    } else {
+      setActiveSubCategory("All");
+    }
+
     const sale = searchParams.get("sale");
     if (sale === "true") {
       setShowSaleOnly(true);
+    } else {
+      setShowSaleOnly(false);
     }
   }, [searchParams]);
 
   const handleCategoryChange = (catId: string) => {
     setActiveCategory(catId);
+    setActiveSubCategory("All"); // Reset subcategory when category changes
     
     // Update URL without refresh
     const params = new URLSearchParams(searchParams.toString());
@@ -51,6 +66,18 @@ export default function ProductGrid({ products, categories, showFilter = false }
       params.delete("category");
     } else {
       params.set("category", catId);
+    }
+    params.delete("subcategory"); // Clear subcategory param
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const handleSubCategoryChange = (subId: string) => {
+    setActiveSubCategory(subId);
+    const params = new URLSearchParams(searchParams.toString());
+    if (subId === "All") {
+      params.delete("subcategory");
+    } else {
+      params.set("subcategory", subId);
     }
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
@@ -61,6 +88,11 @@ export default function ProductGrid({ products, categories, showFilter = false }
     // Filter by Category
     if (activeCategory !== "All") {
       result = result.filter((p) => p.categoryId === activeCategory);
+    }
+
+    // Filter by SubCategory
+    if (activeSubCategory !== "All") {
+      result = result.filter((p) => p.subcategoryId === activeSubCategory);
     }
 
     // Filter by Sale
@@ -82,7 +114,12 @@ export default function ProductGrid({ products, categories, showFilter = false }
     }
 
     return result;
-  }, [products, activeCategory, showSaleOnly, sortBy]);
+  }, [products, activeCategory, activeSubCategory, showSaleOnly, sortBy]);
+
+  const currentSubCategories = useMemo(() => {
+    if (activeCategory === "All") return [];
+    return subCategories.filter(s => s.categoryId === activeCategory).sort((a, b) => (a.order || 0) - (b.order || 0));
+  }, [subCategories, activeCategory]);
 
   return (
     <div>
@@ -136,6 +173,37 @@ export default function ProductGrid({ products, categories, showFilter = false }
         </div>
       )}
 
+      {/* Subcategory Filter Row (if active category has subcategories) */}
+      {showFilter && currentSubCategories.length > 0 && (
+        <div className="mb-8 flex flex-wrap gap-2 animate-in fade-in slide-in-from-top-2">
+          <button
+            onClick={() => handleSubCategoryChange("All")}
+            className={cn(
+              "rounded-full px-3 py-1.5 text-xs font-medium transition-colors border",
+              activeSubCategory === "All"
+                ? "bg-safra-taupe/20 text-safra-dark border-safra-taupe/30"
+                : "bg-transparent text-safra-muted border-safra-taupe/20 hover:bg-safra-light/10"
+            )}
+          >
+            {t("filterAll")}
+          </button>
+          {currentSubCategories.map((sub) => (
+            <button
+              key={sub.id}
+              onClick={() => handleSubCategoryChange(sub.id)}
+              className={cn(
+                "rounded-full px-3 py-1.5 text-xs font-medium transition-colors border",
+                activeSubCategory === sub.id
+                  ? "bg-safra-taupe/20 text-safra-dark border-safra-taupe/30"
+                  : "bg-transparent text-safra-muted border-safra-taupe/20 hover:bg-safra-light/10"
+              )}
+            >
+              {sub.name[locale]}
+            </button>
+          ))}
+        </div>
+      )}
+
       {processedProducts.length === 0 ? (
         <div className="py-20 text-center">
           <p className="text-xl text-safra-muted mb-4">{t("notFound")}</p>
@@ -153,6 +221,7 @@ export default function ProductGrid({ products, categories, showFilter = false }
               key={product.id}
               product={product}
               category={categories.find((c) => c.id === product.categoryId)}
+              subCategory={subCategories.find((s) => s.id === product.subcategoryId)}
             />
           ))}
         </div>

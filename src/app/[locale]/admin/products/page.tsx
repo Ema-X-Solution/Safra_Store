@@ -7,7 +7,8 @@ import Button from "@/components/ui/Button";
 import ProductsTable from "@/components/admin/products/ProductsTable";
 import { getProducts, deleteProduct } from "@/lib/firebase/services/products-service";
 import { getCategories } from "@/lib/firebase/services/categories-service";
-import type { Product, Category } from "@/lib/types";
+import { getSubCategories } from "@/lib/firebase/services/subcategories-service";
+import type { Product, Category, SubCategory } from "@/lib/types";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { toast } from "sonner";
 import { useLocale, useTranslations } from "next-intl";
@@ -17,6 +18,7 @@ export default function AdminProductsPage() {
   const t = useTranslations("admin");
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
   const [loading, setLoading] = useState(true);
   
   const [search, setSearch] = useState("");
@@ -34,6 +36,11 @@ export default function AdminProductsPage() {
       const [prods, cats] = await Promise.all([getProducts(), getCategories()]);
       setProducts(prods);
       setCategories(cats);
+      
+      const subsPromises = cats.map(c => getSubCategories(c.id));
+      const subsArrays = await Promise.all(subsPromises);
+      const allSubs = subsArrays.flat();
+      setSubCategories(allSubs);
     } catch (err) {
       toast.error("Failed to load products");
     } finally {
@@ -121,7 +128,7 @@ export default function AdminProductsPage() {
         <div className="flex h-40 items-center justify-center text-safra-muted">{t("loading")}</div>
       ) : (
         <div className="space-y-4">
-          <ProductsTable products={paginatedProducts} categories={categories} onDelete={handleDelete} />
+          <ProductsTable products={paginatedProducts} categories={categories} subCategories={subCategories} onDelete={handleDelete} />
           
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-xl border border-safra-taupe/40 shadow-sm text-sm text-safra-muted">
             <div>

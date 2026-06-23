@@ -22,7 +22,7 @@ import {
 import Button from "@/components/ui/Button";
 import Price from "@/components/ui/Price";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
-import type { Product, Category } from "@/lib/types";
+import type { Product, Category, SubCategory } from "@/lib/types";
 import { formatFirebaseDate, toDate } from "@/lib/types";
 import { deleteProduct } from "@/lib/firebase/services/products-service";
 import { toast } from "sonner";
@@ -30,9 +30,10 @@ import { toast } from "sonner";
 interface ProductDetailViewProps {
   product: Product;
   category: Category | undefined;
+  subCategory?: SubCategory | null;
 }
 
-export default function ProductDetailView({ product, category }: ProductDetailViewProps) {
+export default function ProductDetailView({ product, category, subCategory }: ProductDetailViewProps) {
   const router = useRouter();
   const [activeImage, setActiveImage] = useState(0);
   const [activeTab, setActiveTab] = useState<"en" | "ar">("en");
@@ -133,6 +134,7 @@ export default function ProductDetailView({ product, category }: ProductDetailVi
         {category && (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-safra-cream px-3 py-1 text-xs font-semibold text-safra-olive">
             <Tag className="h-3 w-3" /> {category.name.en}
+            {subCategory && ` > ${subCategory.name.en}`}
           </span>
         )}
         {product.createdAt && (
@@ -285,16 +287,31 @@ export default function ProductDetailView({ product, category }: ProductDetailVi
               <h3 className="flex items-center gap-2 text-sm font-semibold text-safra-dark mb-3">
                 <Layers className="h-4 w-4 text-safra-olive" /> Category
               </h3>
-              <div className="flex items-center gap-3">
-                {category.image && (
-                  <div className="relative h-10 w-10 overflow-hidden rounded-lg">
-                    <Image src={category.image} alt={category.name.en} fill className="object-cover" />
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-3">
+                  {category.image && (
+                    <div className="relative h-10 w-10 overflow-hidden rounded-lg">
+                      <Image src={category.image} alt={category.name.en} fill className="object-cover" />
+                    </div>
+                  )}
+                  <div>
+                    <p className="font-medium text-safra-dark">{category.name.en}</p>
+                    <p className="text-xs text-safra-muted">{category.name.ar}</p>
+                  </div>
+                </div>
+                {subCategory && (
+                  <div className="flex items-center gap-3 pl-8 border-l-2 border-safra-taupe/30 ml-4">
+                    {subCategory.image && (
+                      <div className="relative h-8 w-8 overflow-hidden rounded-md">
+                        <Image src={subCategory.image} alt={subCategory.name.en} fill className="object-cover" />
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-sm font-medium text-safra-dark">{subCategory.name.en}</p>
+                      <p className="text-[10px] text-safra-muted">{subCategory.name.ar}</p>
+                    </div>
                   </div>
                 )}
-                <div>
-                  <p className="font-medium text-safra-dark">{category.name.en}</p>
-                  <p className="text-xs text-safra-muted">{category.name.ar}</p>
-                </div>
               </div>
             </div>
           )}

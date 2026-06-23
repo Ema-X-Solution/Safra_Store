@@ -6,8 +6,7 @@ import { Plus } from "lucide-react";
 import Button from "@/components/ui/Button";
 import CategoryCard from "@/components/admin/categories/CategoryCard";
 import CategoryModal from "@/components/admin/categories/CategoryModal";
-import ConfirmDialog from "@/components/ui/ConfirmDialog";
-import { getCategories, createCategory, updateCategory, deleteCategory } from "@/lib/firebase/services/categories-service";
+import { getCategories, createCategory } from "@/lib/firebase/services/categories-service";
 import { getProducts } from "@/lib/firebase/services/products-service";
 import type { Category, CategoryInput } from "@/lib/types";
 import { toast } from "sonner";
@@ -20,9 +19,6 @@ export default function AdminCategoriesPage() {
   
   // Modal state
   const [modalOpen, setModalOpen] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
-  const [deleting, setDeleting] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -50,43 +46,13 @@ export default function AdminCategoriesPage() {
   }, [load]);
 
   const handleAdd = () => {
-    setEditingCategory(null);
     setModalOpen(true);
-  };
-
-  const handleEdit = (category: Category) => {
-    setEditingCategory(category);
-    setModalOpen(true);
-  };
-
-  const handleDelete = (id: string) => {
-    setDeleteTarget(id);
-  };
-
-  const confirmDelete = async () => {
-    if (!deleteTarget) return;
-    setDeleting(true);
-    try {
-      await deleteCategory(deleteTarget);
-      toast.success("Category deleted successfully");
-      load();
-    } catch (err) {
-      toast.error("Failed to delete category");
-    } finally {
-      setDeleting(false);
-      setDeleteTarget(null);
-    }
   };
 
   const handleSave = async (data: CategoryInput) => {
     try {
-      if (editingCategory) {
-        await updateCategory(editingCategory.id, data);
-        toast.success("Category updated successfully");
-      } else {
-        await createCategory(data);
-        toast.success("Category created successfully");
-      }
+      await createCategory(data);
+      toast.success("Category created successfully");
       load();
     } catch (err) {
       toast.error("Failed to save category");
@@ -119,8 +85,8 @@ export default function AdminCategoriesPage() {
             <CategoryCard
               key={category.id}
               category={category}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
+              onEdit={() => {}} // Removed from card, handled in details page
+              onDelete={() => {}} // Removed from card, handled in details page
               productsCount={productCounts[category.id] || 0}
             />
           ))}
@@ -130,17 +96,8 @@ export default function AdminCategoriesPage() {
       <CategoryModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        category={editingCategory}
+        category={null}
         onSave={handleSave}
-      />
-
-      <ConfirmDialog
-        isOpen={!!deleteTarget}
-        onClose={() => setDeleteTarget(null)}
-        onConfirm={confirmDelete}
-        title="Delete Category"
-        description="Are you sure you want to delete this category? WARNING: This will also permanently delete ALL products associated with this category!"
-        loading={deleting}
       />
     </div>
   );

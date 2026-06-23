@@ -6,7 +6,8 @@ import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { fetchProductById } from "@/lib/products";
 import { fetchCategories } from "@/lib/categories";
-import { getProductName, getProductDescription, getCategoryName, getBilingualText, type Product, type Category } from "@/lib/types";
+import { getSubCategoryById } from "@/lib/firebase/services/subcategories-service";
+import { getProductName, getProductDescription, getCategoryName, getBilingualText, type Product, type Category, type SubCategory } from "@/lib/types";
 import { useCart } from "@/lib/context/CartContext";
 import { useWishlist } from "@/lib/context/WishlistContext";
 import Price from "@/components/ui/Price";
@@ -31,6 +32,7 @@ export default function ProductDetailPage({
   
   const [product, setProduct] = useState<Product | null>(null);
   const [category, setCategory] = useState<Category | null>(null);
+  const [subCategory, setSubCategory] = useState<SubCategory | null>(null);
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
   const [activeImage, setActiveImage] = useState<string>("");
@@ -41,6 +43,11 @@ export default function ProductDetailPage({
       if (p) {
         setCategory(cats.find((c) => c.id === p.categoryId) ?? null);
         setActiveImage(p.images?.[0] || p.image);
+        if (p.subcategoryId) {
+          getSubCategoryById(p.subcategoryId).then((sub) => {
+            setSubCategory(sub);
+          });
+        }
       }
       setLoading(false);
     });
@@ -134,12 +141,25 @@ export default function ProductDetailPage({
           {/* Header Info */}
           <div className="border-b border-safra-taupe/20 pb-8">
             {category && (
-              <Link
-                href={`/products?category=${category.id}`}
-                className="mb-4 inline-flex items-center rounded-full border border-safra-gold/20 bg-safra-light/40 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-safra-olive transition-colors hover:bg-safra-gold hover:text-white"
-              >
-                {getCategoryName(category, locale)}
-              </Link>
+              <div className="flex flex-wrap items-center gap-2 mb-4">
+                <Link
+                  href={`/products?category=${category.id}`}
+                  className="inline-flex items-center rounded-full border border-safra-gold/20 bg-safra-light/40 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-safra-olive transition-colors hover:bg-safra-gold hover:text-white"
+                >
+                  {getCategoryName(category, locale)}
+                </Link>
+                {subCategory && (
+                  <>
+                    <span className="text-safra-muted text-sm">&gt;</span>
+                    <Link
+                      href={`/products?category=${category.id}&subcategory=${subCategory.id}`}
+                      className="inline-flex items-center rounded-full border border-safra-taupe/20 bg-safra-cream/50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-safra-dark transition-colors hover:bg-safra-taupe/30"
+                    >
+                      {subCategory.name[locale]}
+                    </Link>
+                  </>
+                )}
+              </div>
             )}
             
             <h1 className="text-3xl font-extrabold tracking-tight text-safra-dark sm:text-5xl lg:leading-tight">
