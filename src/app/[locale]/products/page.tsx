@@ -5,6 +5,7 @@ import { getFirebaseDb } from "@/lib/firebase/config";
 import { collection, getDocs } from "firebase/firestore";
 import ProductGrid from "@/components/products/ProductGrid";
 import type { SubCategory } from "@/lib/types";
+import { toDate } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,14 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
   let subCategories: SubCategory[] = [];
   try {
     const subCategoriesSnap = await getDocs(collection(getFirebaseDb(), "subcategories"));
-    subCategories = subCategoriesSnap.docs.map(d => ({ id: d.id, ...d.data() } as SubCategory));
+    subCategories = subCategoriesSnap.docs.map(d => {
+      const data = d.data();
+      return { 
+        id: d.id, 
+        ...data, 
+        createdAt: data.createdAt ? toDate(data.createdAt) : undefined 
+      } as SubCategory;
+    });
   } catch (error) {
     console.error("Failed to load subcategories:", error);
   }
