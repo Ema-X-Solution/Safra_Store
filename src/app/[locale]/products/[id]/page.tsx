@@ -7,12 +7,12 @@ import { Link } from "@/i18n/navigation";
 import { fetchProductById } from "@/lib/products";
 import { fetchCategories } from "@/lib/categories";
 import { getSubCategoryById } from "@/lib/firebase/services/subcategories-service";
-import { getProductName, getProductDescription, getCategoryName, getBilingualText, type Product, type Category, type SubCategory } from "@/lib/types";
+import { getProductName, getProductDescription, getCategoryName, getBilingualText, type Product, type Category, type SubCategory, type ProductWeight } from "@/lib/types";
 import { useCart } from "@/lib/context/CartContext";
 import { useWishlist } from "@/lib/context/WishlistContext";
 import Price from "@/components/ui/Price";
 import Button from "@/components/ui/Button";
-import { ArrowLeft, Minus, Plus, ShoppingCart, Tag, Heart, Info, Box } from "lucide-react";
+import { ArrowLeft, Minus, Plus, ShoppingCart, Tag, Heart, Info, Box, Scale } from "lucide-react";
 import type { Locale } from "@/i18n/routing";
 import { use, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -36,6 +36,7 @@ export default function ProductDetailPage({
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
   const [activeImage, setActiveImage] = useState<string>("");
+  const [selectedWeight, setSelectedWeight] = useState<ProductWeight | null>(null);
 
   useEffect(() => {
     Promise.all([fetchProductById(id), fetchCategories()]).then(([p, cats]) => {
@@ -43,6 +44,10 @@ export default function ProductDetailPage({
       if (p) {
         setCategory(cats.find((c) => c.id === p.categoryId) ?? null);
         setActiveImage(p.images?.[0] || p.image);
+        // Auto-select first weight if product has multiple weights
+        if (p.hasMultipleWeights && p.weights && p.weights.length > 0) {
+          setSelectedWeight(p.weights[0]);
+        }
         if (p.subcategoryId) {
           getSubCategoryById(p.subcategoryId).then((sub) => {
             setSubCategory(sub);
@@ -65,7 +70,10 @@ export default function ProductDetailPage({
 
   const inStock = product.stock > 0;
   const images = product.images?.length > 0 ? product.images : [product.image];
-  const hasDiscount = product.discountPrice !== undefined && product.discountPrice > 0;
+  // Price logic: use selected weight's price if applicable
+  const displayPrice = product.hasMultipleWeights && selectedWeight ? selectedWeight.price : product.price;
+  const displayDiscountPrice = product.hasMultipleWeights && selectedWeight ? selectedWeight.discountPrice : product.discountPrice;
+  const hasDiscount = displayDiscountPrice !== undefined && displayDiscountPrice > 0 && displayDiscountPrice < displayPrice;
   const inWish = isInWishlist(product.id);
 
   const handleWishlist = () => {
@@ -168,16 +176,59 @@ export default function ProductDetailPage({
             
             <div className="mt-6 flex flex-wrap items-baseline gap-4">
               <span className="text-4xl font-black text-safra-deep-gold">
-                <Price amount={hasDiscount ? product.discountPrice! : product.price} />
+                <Price amount={hasDiscount ? displayDiscountPrice! : displayPrice} />
               </span>
               {hasDiscount && (
                 <span className="text-xl font-medium text-safra-muted">
-                  <Price amount={product.price} strikethrough={true} />
+                  <Price amount={displayPrice} strikethrough={true} />
                 </span>
               )}
             </div>
           </div>
           
+          {/* Weights Selector */}
+          {product.hasMultipleWeights && product.weights && product.weights.length > 0 && (
+            <div className="mt-6">
+              <div className="flex items-center gap-2 mb-3">
+                <Scale className="h-4 w-4 text-safra-olive" />
+                <p className="text-sm font-semibold text-safra-dark">
+                  {isAr ? "اختر الوزن" : "Select Weight"}
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {product.weights.map((w) => {
+                  const isSelected = selectedWeight?.id === w.id;
+                  const hasWDiscount = w.discountPrice && w.discountPrice < w.price;
+                  return (
+                    <button
+                      key={w.id}
+                      onClick={() => setSelectedWeight(w)}
+                      className={cn(
+                        "flex flex-col items-center rounded-xl border-2 px-4 py-2.5 text-sm transition-all",
+                        isSelected
+                          ? "border-safra-gold bg-safra-gold/10 text-safra-dark shadow-md"
+                          : "border-safra-taupe/30 bg-white text-safra-muted hover:border-safra-gold/60 hover:text-safra-dark"
+                      )}
+                    >
+                      <span className="font-bold text-base">{w.value} {w.unit}</span>
+                      <span className={cn("text-xs mt-0.5", isSelected ? "text-safra-olive" : "text-safra-muted")}>
+                        {hasWDiscount ? (
+                          <>
+                            <span className="font-semibold"><Price amount={w.discountPrice!} /></span>
+                            {" "}
+                            <span className="line-through opacity-70"><Price amount={w.price} /></span>
+                          </>
+                        ) : (
+                          <Price amount={w.price} />
+                        )}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Stock Status */}
           <div className="mt-6 flex items-center">
             <div className={cn(
@@ -243,8 +294,12 @@ export default function ProductDetailPage({
                     </button>
                   </div>
                   <Button 
-                    onClick={() => addItem(product, qty)} 
+                    onClick={() => {
+                      if (product.hasMultipleWeights && !selectedWeight) return;
+                      addItem(product, qty, selectedWeight ?? undefined);
+                    }} 
                     className="h-14 flex-1 gap-3 text-lg font-bold shadow-md hover:-translate-y-0.5 hover:shadow-lg transition-all"
+                    disabled={product.hasMultipleWeights && !selectedWeight}
                   >
                     <ShoppingCart className="h-6 w-6" />
                     {t("addToCart")}

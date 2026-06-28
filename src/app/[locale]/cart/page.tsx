@@ -81,9 +81,21 @@ export default function CartPage() {
 
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="space-y-4 lg:col-span-2">
-          {items.map(({ product, quantity }) => (
+          {items.map(({ product, quantity, selectedWeight }) => {
+            // Determine effective price for this cart item
+            const effectivePrice = selectedWeight
+              ? (selectedWeight.discountPrice && selectedWeight.discountPrice < selectedWeight.price
+                  ? selectedWeight.discountPrice
+                  : selectedWeight.price)
+              : (product.discountPrice || product.price);
+            const originalPrice = selectedWeight ? selectedWeight.price : product.price;
+            const hasItemDiscount = selectedWeight
+              ? !!(selectedWeight.discountPrice && selectedWeight.discountPrice < selectedWeight.price)
+              : !!(product.discountPrice && product.discountPrice < product.price);
+            const cartKey = selectedWeight ? `${product.id}__${selectedWeight.id}` : product.id;
+            return (
             <div
-              key={product.id}
+              key={cartKey}
               className="flex gap-4 rounded-xl border border-safra-taupe/40 bg-white p-4 shadow-sm"
             >
               <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-lg">
@@ -101,17 +113,22 @@ export default function CartPage() {
                     <h3 className="font-semibold text-safra-dark">
                       {getProductName(product, locale)}
                     </h3>
-                    <p className="text-safra-deep-gold font-medium">
-                      <Price amount={product.discountPrice || product.price} />
-                      {product.discountPrice && (
+                    {selectedWeight && (
+                      <span className="inline-block mt-0.5 rounded-full bg-safra-light/60 border border-safra-taupe/30 px-2 py-0.5 text-xs font-medium text-safra-olive">
+                        {selectedWeight.value} {selectedWeight.unit}
+                      </span>
+                    )}
+                    <p className="mt-1 text-safra-deep-gold font-medium">
+                      <Price amount={effectivePrice} />
+                      {hasItemDiscount && (
                         <span className="ml-2 text-sm text-safra-muted line-through">
-                          <Price amount={product.price} />
+                          <Price amount={originalPrice} />
                         </span>
                       )}
                     </p>
                   </div>
                   <button
-                    onClick={() => removeItem(product.id)}
+                    onClick={() => removeItem(product.id, selectedWeight?.id)}
                     className="text-safra-muted transition-colors hover:text-red-600"
                     aria-label={t("remove")}
                   >
@@ -122,14 +139,14 @@ export default function CartPage() {
                   <span className="text-sm text-safra-muted">{t("quantity")}:</span>
                   <div className="flex items-center rounded-md border border-safra-taupe">
                     <button
-                      onClick={() => updateQuantity(product.id, quantity - 1)}
+                      onClick={() => updateQuantity(product.id, quantity - 1, selectedWeight?.id)}
                       className="p-1.5 text-safra-olive hover:text-safra-dark"
                     >
                       <Minus className="h-3 w-3" />
                     </button>
                     <span className="min-w-[1.5rem] text-center text-sm">{quantity}</span>
                     <button
-                      onClick={() => updateQuantity(product.id, quantity + 1)}
+                      onClick={() => updateQuantity(product.id, quantity + 1, selectedWeight?.id)}
                       className="p-1.5 text-safra-olive hover:text-safra-dark"
                     >
                       <Plus className="h-3 w-3" />
@@ -138,7 +155,8 @@ export default function CartPage() {
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="space-y-6">

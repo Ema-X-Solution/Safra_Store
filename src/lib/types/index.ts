@@ -12,6 +12,14 @@ export interface ProductSpecification {
   value: BilingualText;
 }
 
+export interface ProductWeight {
+  id: string;
+  value: number;
+  unit: "g" | "kg";
+  price: number;
+  discountPrice?: number;
+}
+
 export interface ProductSEO {
   metaTitle: BilingualText;
   metaDescription: BilingualText;
@@ -25,6 +33,8 @@ export interface Product {
   description: BilingualText;
   price: number;
   discountPrice?: number;
+  hasMultipleWeights?: boolean;
+  weights?: ProductWeight[];
   image: string;
   images: string[];
   categoryId: string;
@@ -46,6 +56,8 @@ export interface ProductInput {
   description: BilingualText;
   price: number;
   discountPrice?: number;
+  hasMultipleWeights?: boolean;
+  weights?: ProductWeight[];
   image: string;
   images: string[];
   categoryId: string;
@@ -122,6 +134,7 @@ export interface OrderItem {
   discountPrice?: number;
   image: string;
   quantity: number;
+  selectedWeight?: ProductWeight;
 }
 
 export interface ShippingAddress {
@@ -300,6 +313,7 @@ export interface AdminNotification {
 export interface CartItem {
   product: Product;
   quantity: number;
+  selectedWeight?: ProductWeight;
 }
 
 // ─── User ───────────────────────────────────────────────────────────

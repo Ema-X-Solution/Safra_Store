@@ -14,9 +14,10 @@ import SpecificationsEditor from "@/components/admin/products/SpecificationsEdit
 import { getProductById, createProduct, updateProduct } from "@/lib/firebase/services/products-service";
 import { getCategories } from "@/lib/firebase/services/categories-service";
 import { getSubCategories } from "@/lib/firebase/services/subcategories-service";
-import type { ProductInput, ProductSpecification, ProductSEO, Category, SubCategory } from "@/lib/types";
+import type { ProductInput, ProductSpecification, ProductSEO, Category, SubCategory, ProductWeight } from "@/lib/types";
 import { toast } from "sonner";
 import { useLocale, useTranslations } from "next-intl";
+import { Plus, Trash2 } from "lucide-react";
 
 export default function AdminProductEditPage({ params }: { params: Promise<{ locale: string; id: string }> }) {
   const { id } = use(params);
@@ -42,6 +43,8 @@ export default function AdminProductEditPage({ params }: { params: Promise<{ loc
   const [price, setPrice] = useState(0);
   const [hasDiscount, setHasDiscount] = useState(false);
   const [discountPrice, setDiscountPrice] = useState<number | "">("");
+  const [hasMultipleWeights, setHasMultipleWeights] = useState(false);
+  const [weights, setWeights] = useState<ProductWeight[]>([]);
   const [stock, setStock] = useState(0);
   const [status, setStatus] = useState<"active" | "draft" | "archived">("active");
   const [categoryId, setCategoryId] = useState("");
@@ -79,6 +82,8 @@ export default function AdminProductEditPage({ params }: { params: Promise<{ loc
             setPrice(product.price || 0);
             setHasDiscount(product.discountPrice !== undefined && product.discountPrice > 0);
             setDiscountPrice(product.discountPrice || "");
+            setHasMultipleWeights(product.hasMultipleWeights || false);
+            setWeights(product.weights || []);
             setStock(product.stock || 0);
             setStatus(product.status || "active");
             setCategoryId(product.categoryId || "");
@@ -140,14 +145,35 @@ export default function AdminProductEditPage({ params }: { params: Promise<{ loc
       return;
     }
     
-    if (hasDiscount) {
-      if (!discountPrice || Number(discountPrice) <= 0) {
-        toast.error(isAr ? "الرجاء إدخال سعر التخفيض" : "Please enter a valid discount price");
+    if (hasMultipleWeights) {
+      if (weights.length === 0) {
+        toast.error(isAr ? "الرجاء إضافة وزن واحد على الأقل" : "Please add at least one weight");
         return;
       }
-      if (Number(discountPrice) >= Number(price)) {
-        toast.error(isAr ? "سعر التخفيض يجب أن يكون أقل من السعر الأساسي" : "Discount price must be less than the main price");
-        return;
+      for (const w of weights) {
+        if (!w.value || w.value <= 0) {
+          toast.error(isAr ? "الرجاء إدخال قيمة صحيحة للوزن" : "Please enter a valid weight value");
+          return;
+        }
+        if (!w.price || w.price <= 0) {
+          toast.error(isAr ? "الرجاء إدخال سعر صحيح للوزن" : "Please enter a valid price for the weight");
+          return;
+        }
+        if (w.discountPrice && w.discountPrice >= w.price) {
+          toast.error(isAr ? "سعر التخفيض يجب أن يكون أقل من السعر الأساسي للوزن" : "Discount price must be less than the main price for the weight");
+          return;
+        }
+      }
+    } else {
+      if (hasDiscount) {
+        if (!discountPrice || Number(discountPrice) <= 0) {
+          toast.error(isAr ? "الرجاء إدخال سعر التخفيض" : "Please enter a valid discount price");
+          return;
+        }
+        if (Number(discountPrice) >= Number(price)) {
+          toast.error(isAr ? "سعر التخفيض يجب أن يكون أقل من السعر الأساسي" : "Discount price must be less than the main price");
+          return;
+        }
       }
     }
 
@@ -158,8 +184,12 @@ export default function AdminProductEditPage({ params }: { params: Promise<{ loc
         slug: { en: slugEn || nameEn.toLowerCase().replace(/\s+/g, '-'), ar: slugAr || nameAr.replace(/\s+/g, '-') },
         shortDescription: { en: shortDescEn, ar: shortDescAr },
         description: { en: descEn, ar: descAr },
-        price: Number(price),
-        discountPrice: hasDiscount && discountPrice ? Number(discountPrice) : undefined,
+        price: hasMultipleWeights ? (weights.length > 0 ? weights[0].price : 0) : Number(price),
+        discountPrice: hasMultipleWeights 
+          ? (weights.length > 0 && weights[0].discountPrice ? weights[0].discountPrice : undefined)
+          : (hasDiscount && discountPrice ? Number(discountPrice) : undefined),
+        hasMultipleWeights,
+        weights: hasMultipleWeights ? weights : [],
         image: images[0],
         images,
         categoryId,
@@ -274,40 +304,157 @@ export default function AdminProductEditPage({ params }: { params: Promise<{ loc
           <div className="rounded-xl border border-safra-taupe/40 bg-white p-6 shadow-sm space-y-6">
             <h3 className="font-semibold text-safra-dark">{t("pricingInventory")}</h3>
             <div className="space-y-4">
-              <Input name="price" label={t("price")} type="number" step="0.01" value={price} onChange={e => setPrice(Number(e.target.value))} required />
-              
-              <div className="flex items-center gap-2 pt-2">
+
+              <div className="flex items-center gap-2 mb-4 pb-4 border-b border-safra-taupe/20">
                 <input 
                   type="checkbox" 
-                  id="hasDiscount" 
-                  checked={hasDiscount} 
+                  id="hasMultipleWeights" 
+                  checked={hasMultipleWeights} 
                   onChange={e => {
-                    setHasDiscount(e.target.checked);
-                    if (!e.target.checked) setDiscountPrice("");
+                    setHasMultipleWeights(e.target.checked);
+                    if (e.target.checked && weights.length === 0) {
+                      setWeights([{ id: `w-${Date.now()}`, value: 0, unit: "g", price: 0 }]);
+                    }
                   }} 
                   className="h-4 w-4 rounded border-safra-taupe text-safra-gold focus:ring-safra-gold" 
                 />
-                <label htmlFor="hasDiscount" className="text-sm font-medium text-safra-dark cursor-pointer select-none">
-                  {isAr ? "يوجد تخفيض على هذا المنتج؟" : "Product has discount?"}
+                <label htmlFor="hasMultipleWeights" className="text-sm font-medium text-safra-dark cursor-pointer select-none">
+                  {isAr ? "المنتج له أوزان/أحجام متعددة؟" : "Product has multiple sizes/weights?"}
                 </label>
               </div>
 
-              {hasDiscount && (
-                <div className="animate-in fade-in slide-in-from-top-2">
-                  <Input 
-                    name="discountPrice" 
-                    label={t("discountPrice")} 
-                    type="number" 
-                    step="0.01" 
-                    value={discountPrice} 
-                    onChange={e => setDiscountPrice(e.target.value ? Number(e.target.value) : "")} 
-                    required 
-                  />
-                  {Number(discountPrice) >= price && discountPrice !== "" && (
-                    <p className="mt-1 text-xs text-red-500">
-                      {isAr ? "سعر التخفيض يجب أن يكون أقل من السعر الأساسي" : "Discount price must be less than the main price"}
-                    </p>
+              {!hasMultipleWeights ? (
+                <>
+                  <Input name="price" label={t("price")} type="number" step="0.01" value={price} onChange={e => setPrice(Number(e.target.value))} required />
+                  
+                  <div className="flex items-center gap-2 pt-2">
+                    <input 
+                      type="checkbox" 
+                      id="hasDiscount" 
+                      checked={hasDiscount} 
+                      onChange={e => {
+                        setHasDiscount(e.target.checked);
+                        if (!e.target.checked) setDiscountPrice("");
+                      }} 
+                      className="h-4 w-4 rounded border-safra-taupe text-safra-gold focus:ring-safra-gold" 
+                    />
+                    <label htmlFor="hasDiscount" className="text-sm font-medium text-safra-dark cursor-pointer select-none">
+                      {isAr ? "يوجد تخفيض على هذا المنتج؟" : "Product has discount?"}
+                    </label>
+                  </div>
+
+                  {hasDiscount && (
+                    <div className="animate-in fade-in slide-in-from-top-2">
+                      <Input 
+                        name="discountPrice" 
+                        label={t("discountPrice")} 
+                        type="number" 
+                        step="0.01" 
+                        value={discountPrice} 
+                        onChange={e => setDiscountPrice(e.target.value ? Number(e.target.value) : "")} 
+                        required 
+                      />
+                      {Number(discountPrice) >= price && discountPrice !== "" && (
+                        <p className="mt-1 text-xs text-red-500">
+                          {isAr ? "سعر التخفيض يجب أن يكون أقل من السعر الأساسي" : "Discount price must be less than the main price"}
+                        </p>
+                      )}
+                    </div>
                   )}
+                </>
+              ) : (
+                <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-safra-dark">
+                      {isAr ? "الأوزان والأسعار" : "Weights & Prices"}
+                    </label>
+                  </div>
+                  
+                  {weights.map((w, index) => (
+                    <div key={w.id} className="relative rounded-lg border border-safra-taupe/40 bg-safra-light/10 p-4 space-y-4">
+                      <button
+                        type="button"
+                        onClick={() => setWeights(weights.filter((_, i) => i !== index))}
+                        className="absolute top-2 end-2 text-safra-muted hover:text-red-500 transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label className="text-xs font-medium text-safra-dark">{isAr ? "الوزن" : "Weight"}</label>
+                          <input 
+                            type="number" 
+                            value={w.value || ""} 
+                            onChange={(e) => {
+                              const newWeights = [...weights];
+                              newWeights[index].value = Number(e.target.value);
+                              setWeights(newWeights);
+                            }}
+                            className="w-full rounded-md border border-safra-taupe/40 px-3 py-1.5 text-sm"
+                            required
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-medium text-safra-dark">{isAr ? "الوحدة" : "Unit"}</label>
+                          <select
+                            value={w.unit}
+                            onChange={(e) => {
+                              const newWeights = [...weights];
+                              newWeights[index].unit = e.target.value as "g" | "kg";
+                              setWeights(newWeights);
+                            }}
+                            className="w-full rounded-md border border-safra-taupe/40 px-3 py-1.5 text-sm"
+                          >
+                            <option value="g">{isAr ? "جرام" : "g"}</option>
+                            <option value="kg">{isAr ? "كيلوجرام" : "kg"}</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label className="text-xs font-medium text-safra-dark">{isAr ? "السعر" : "Price"}</label>
+                          <input 
+                            type="number" 
+                            step="0.01"
+                            value={w.price || ""} 
+                            onChange={(e) => {
+                              const newWeights = [...weights];
+                              newWeights[index].price = Number(e.target.value);
+                              setWeights(newWeights);
+                            }}
+                            className="w-full rounded-md border border-safra-taupe/40 px-3 py-1.5 text-sm"
+                            required
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-medium text-safra-dark">{isAr ? "سعر التخفيض" : "Discount Price"}</label>
+                          <input 
+                            type="number" 
+                            step="0.01"
+                            value={w.discountPrice || ""} 
+                            onChange={(e) => {
+                              const newWeights = [...weights];
+                              newWeights[index].discountPrice = e.target.value ? Number(e.target.value) : undefined;
+                              setWeights(newWeights);
+                            }}
+                            className="w-full rounded-md border border-safra-taupe/40 px-3 py-1.5 text-sm"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => setWeights([...weights, { id: `w-${Date.now()}`, value: 0, unit: "g", price: 0 }])}
+                    className="w-full border-dashed"
+                  >
+                    <Plus className="h-4 w-4 me-2" />
+                    {isAr ? "إضافة وزن آخر" : "Add another weight"}
+                  </Button>
                 </div>
               )}
 

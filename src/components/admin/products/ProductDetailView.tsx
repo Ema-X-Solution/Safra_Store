@@ -226,26 +226,56 @@ export default function ProductDetailView({ product, category, subCategory }: Pr
             <h3 className="flex items-center gap-2 text-sm font-semibold text-safra-dark">
               <BarChart2 className="h-4 w-4 text-safra-olive" /> Pricing & Inventory
             </h3>
-            <div className="flex items-end gap-3">
-              {hasDiscount ? (
-                <>
+
+            {product.hasMultipleWeights && product.weights && product.weights.length > 0 ? (
+              <div className="space-y-2">
+                <p className="text-xs text-safra-muted font-medium uppercase tracking-wide">Weights & Prices</p>
+                {product.weights.map((w) => {
+                  const hasWDiscount = w.discountPrice && w.discountPrice < w.price;
+                  const wDiscPct = hasWDiscount ? Math.round(((w.price - w.discountPrice!) / w.price) * 100) : 0;
+                  return (
+                    <div key={w.id} className="flex items-center justify-between rounded-lg bg-safra-light/30 px-3 py-2 border border-safra-taupe/20">
+                      <span className="font-semibold text-safra-dark text-sm">
+                        {w.value} {w.unit}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        {hasWDiscount ? (
+                          <>
+                            <span className="font-bold text-safra-dark"><Price amount={w.discountPrice!} /></span>
+                            <span className="text-xs text-safra-muted line-through"><Price amount={w.price} /></span>
+                            <span className="rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] font-bold text-red-600">-{wDiscPct}%</span>
+                          </>
+                        ) : (
+                          <span className="font-bold text-safra-dark"><Price amount={w.price} /></span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="flex items-end gap-3">
+                {hasDiscount ? (
+                  <>
+                    <span className="text-3xl font-bold text-safra-dark">
+                      <Price amount={product.discountPrice!} />
+                    </span>
+                    <span className="text-lg text-safra-muted line-through">
+                      <Price amount={product.price} />
+                    </span>
+                    <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-bold text-red-600">
+                      -{discountPct}%
+                    </span>
+                  </>
+                ) : (
                   <span className="text-3xl font-bold text-safra-dark">
-                    <Price amount={product.discountPrice!} />
-                  </span>
-                  <span className="text-lg text-safra-muted line-through">
                     <Price amount={product.price} />
                   </span>
-                  <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-bold text-red-600">
-                    -{discountPct}%
-                  </span>
-                </>
-              ) : (
-                <span className="text-3xl font-bold text-safra-dark">
-                  <Price amount={product.price} />
-                </span>
-              )}
-            </div>
-            {hasDiscount && (
+                )}
+              </div>
+            )}
+
+            {!product.hasMultipleWeights && hasDiscount && (
               <p className="text-xs text-safra-muted">
                 You save <Price amount={product.price - product.discountPrice!} />
               </p>

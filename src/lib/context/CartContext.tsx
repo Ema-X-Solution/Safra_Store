@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from "react";
-import type { Product, CartItem } from "@/lib/types";
+import type { Product, CartItem, ProductWeight } from "@/lib/types";
 
 export interface AppliedCoupon {
   code: string;
@@ -10,9 +10,9 @@ export interface AppliedCoupon {
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (product: Product, quantity?: number) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  addItem: (product: Product, quantity?: number, selectedWeight?: ProductWeight) => void;
+  removeItem: (productId: string, weightId?: string) => void;
+  updateQuantity: (productId: string, quantity: number, weightId?: string) => void;
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
@@ -49,32 +49,44 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [items, appliedCoupon, hydrated]);
 
-  const addItem = useCallback((product: Product, quantity = 1) => {
+  const addItem = useCallback((product: Product, quantity = 1, selectedWeight?: ProductWeight) => {
     setItems((prev) => {
-      const existing = prev.find((i) => i.product.id === product.id);
+      // Match by product id AND weight id (if any) so different weights are separate cart rows
+      const cartKey = selectedWeight ? `${product.id}__${selectedWeight.id}` : product.id;
+      const existing = prev.find((i) => {
+        const key = i.selectedWeight ? `${i.product.id}__${i.selectedWeight.id}` : i.product.id;
+        return key === cartKey;
+      });
       if (existing) {
-        return prev.map((i) =>
-          i.product.id === product.id
+        return prev.map((i) => {
+          const key = i.selectedWeight ? `${i.product.id}__${i.selectedWeight.id}` : i.product.id;
+          return key === cartKey
             ? { ...i, quantity: Math.min(i.quantity + quantity, product.stock) }
-            : i
-        );
+            : i;
+        });
       }
-      return [...prev, { product, quantity }];
+      return [...prev, { product, quantity, selectedWeight }];
     });
   }, []);
 
-  const removeItem = useCallback((productId: string) => {
-    setItems((prev) => prev.filter((i) => i.product.id !== productId));
+  const removeItem = useCallback((productId: string, weightId?: string) => {
+    setItems((prev) => prev.filter((i) => {
+      const key = i.selectedWeight ? `${i.product.id}__${i.selectedWeight.id}` : i.product.id;
+      const targetKey = weightId ? `${productId}__${weightId}` : productId;
+      return key !== targetKey;
+    }));
   }, []);
 
-  const updateQuantity = useCallback((productId: string, quantity: number) => {
+  const updateQuantity = useCallback((productId: string, quantity: number, weightId?: string) => {
     setItems((prev) =>
       prev
-        .map((i) =>
-          i.product.id === productId
+        .map((i) => {
+          const key = i.selectedWeight ? `${i.product.id}__${i.selectedWeight.id}` : i.product.id;
+          const targetKey = weightId ? `${productId}__${weightId}` : productId;
+          return key === targetKey
             ? { ...i, quantity: Math.max(1, Math.min(quantity, i.product.stock)) }
-            : i
-        )
+            : i;
+        })
         .filter((i) => i.quantity > 0)
     );
   }, []);
@@ -85,7 +97,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
-  const totalPrice = items.reduce((sum, i) => sum + (i.product.discountPrice || i.product.price) * i.quantity, 0);
+  // Use selectedWeight price if available, otherwise product price
+  const totalPrice = items.reduce((sum, i) => {
+    const priceToUse = i.selectedWeight
+      ? (i.selectedWeight.discountPrice && i.selectedWeight.discountPrice < i.selectedWeight.price
+          ? i.selectedWeight.discountPrice
+          : i.selectedWeight.price)
+      : (i.product.discountPrice || i.product.price);
+    return sum + priceToUse * i.quantity;
+  }, 0);
 
   return (
     <CartContext.Provider
