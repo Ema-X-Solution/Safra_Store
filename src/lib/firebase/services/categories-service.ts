@@ -9,17 +9,43 @@ import {
   where,
   serverTimestamp,
   writeBatch,
+  Timestamp,
 } from "firebase/firestore";
 import { getFirebaseDb } from "../config";
 import type { Category, CategoryInput } from "@/lib/types";
 
 const COLLECTION = "categories";
 
+function convertFirestoreTimestamps(data: any): any {
+  if (!data) return data;
+  
+  const result: any = { ...data };
+  
+  if (result.createdAt && result.createdAt instanceof Timestamp) {
+    result.createdAt = {
+      seconds: result.createdAt.seconds,
+      nanoseconds: result.createdAt.nanoseconds,
+    };
+  }
+  
+  if (result.updatedAt && result.updatedAt instanceof Timestamp) {
+    result.updatedAt = {
+      seconds: result.updatedAt.seconds,
+      nanoseconds: result.updatedAt.nanoseconds,
+    };
+  }
+  
+  return result;
+}
+
 export async function getCategories(): Promise<Category[]> {
   try {
     const snap = await getDocs(collection(getFirebaseDb(), COLLECTION));
     return snap.docs
-      .map((d) => ({ id: d.id, ...d.data() } as Category))
+      .map((d) => ({
+        id: d.id,
+        ...convertFirestoreTimestamps(d.data()),
+      } as Category))
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   } catch (error) {
     console.error("Failed to fetch categories:", error);
@@ -31,7 +57,10 @@ export async function getCategoryById(id: string): Promise<Category | null> {
   try {
     const snap = await getDoc(doc(getFirebaseDb(), COLLECTION, id));
     if (!snap.exists()) return null;
-    return { id: snap.id, ...snap.data() } as Category;
+    return {
+      id: snap.id,
+      ...convertFirestoreTimestamps(snap.data()),
+    } as Category;
   } catch (error) {
     console.error(`Failed to fetch category ${id}:`, error);
     return null;

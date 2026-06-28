@@ -33,16 +33,23 @@ export default function ProductCard({ product, category, subCategory }: ProductC
   const { addItem } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   
-  const inStock = product.stock > 0;
   const inWish = isInWishlist(product.id);
   const hasDiscount = product.discountPrice !== undefined && product.discountPrice > 0;
   const hasWeights = product.hasMultipleWeights && product.weights && product.weights.length > 0;
+  
+  // Determine overall stock status - if any weight has stock, product is in stock
+  const hasAnyStock = hasWeights 
+    ? product.weights!.some(w => (w.stock ?? 0) > 0)
+    : product.stock > 0;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedWeight, setSelectedWeight] = useState<ProductWeight | null>(
     hasWeights ? product.weights![0] : null
   );
   const [qty, setQty] = useState(1);
+  
+  // For selected weight in modal
+  const currentWeightStock = selectedWeight ? (selectedWeight.stock ?? 0) : product.stock;
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -91,17 +98,17 @@ export default function ProductCard({ product, category, subCategory }: ProductC
 
         <Link href={`/products/${product.id}`} className="relative aspect-square overflow-hidden bg-safra-cream">
           <Image
-            src={product.image}
-            alt={getProductName(product, locale)}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-          />
-          {!inStock && (
-            <span className="absolute inset-0 flex items-center justify-center bg-safra-dark/60 text-sm font-medium text-safra-cream z-10">
-              {t("outOfStock")}
-            </span>
-          )}
+              src={product.image}
+              alt={getProductName(product, locale)}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+            />
+            {!hasAnyStock && (
+              <span className="absolute inset-0 flex items-center justify-center bg-safra-dark/60 text-sm font-medium text-safra-cream z-10">
+                {t("outOfStock")}
+              </span>
+            )}
         </Link>
 
         <div className="flex flex-1 flex-col p-4">
@@ -129,10 +136,10 @@ export default function ProductCard({ product, category, subCategory }: ProductC
           <Button
             className="mt-4 w-full pt-2 pb-2"
             size="sm"
-            disabled={!inStock}
+            disabled={!hasAnyStock}
             onClick={handleAddToCart}
           >
-            {inStock ? t("addToCart") : t("outOfStock")}
+            {hasAnyStock ? t("addToCart") : t("outOfStock")}
           </Button>
         </div>
       </article>
@@ -154,15 +161,19 @@ export default function ProductCard({ product, category, subCategory }: ProductC
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {product.weights.map((w) => {
+                  {product.weights!.map((w) => {
                     const isSelected = selectedWeight?.id === w.id;
                     const hasWDiscount = w.discountPrice && w.discountPrice < w.price;
+                    const weightInStock = (w.stock ?? 0) > 0;
+                    
                     return (
                       <button
                         key={w.id}
                         onClick={() => setSelectedWeight(w)}
+                        disabled={!weightInStock}
                         className={cn(
                           "flex flex-col items-center rounded-xl border-2 px-4 py-2.5 text-sm transition-all flex-1",
+                          !weightInStock && "opacity-50 cursor-not-allowed",
                           isSelected
                             ? "border-safra-gold bg-safra-gold/10 text-safra-dark shadow-md"
                             : "border-safra-taupe/30 bg-white text-safra-muted hover:border-safra-gold/60 hover:text-safra-dark"
@@ -180,6 +191,9 @@ export default function ProductCard({ product, category, subCategory }: ProductC
                             <Price amount={w.price} />
                           )}
                         </span>
+                        {!weightInStock && (
+                          <span className="text-xs text-red-500 mt-1">{t("outOfStock")}</span>
+                        )}
                       </button>
                     );
                   })}
@@ -196,9 +210,9 @@ export default function ProductCard({ product, category, subCategory }: ProductC
               >
                 <Minus className="h-5 w-5" />
               </button>
-              <span className="text-center text-xl font-bold text-safra-dark">{qty}</span>
+              <span className="text-center text-lg font-bold text-safra-dark">{qty}</span>
               <button
-                onClick={() => setQty(Math.min(product.stock, qty + 1))}
+                onClick={() => setQty(Math.min(currentWeightStock, qty + 1))}
                 className="flex h-10 w-10 items-center justify-center rounded-lg text-safra-olive transition-colors hover:bg-white hover:text-safra-dark hover:shadow-sm"
                 aria-label="Increase"
               >

@@ -68,7 +68,12 @@ export default function ProductDetailPage({
 
   if (!product) notFound();
 
-  const inStock = product.stock > 0;
+  // Determine stock based on whether we have multiple weights
+  const currentStock = product.hasMultipleWeights && selectedWeight 
+    ? (selectedWeight.stock ?? 0) 
+    : product.stock;
+  
+  const inStock = currentStock > 0;
   const images = product.images?.length > 0 ? product.images : [product.image];
   // Price logic: use selected weight's price if applicable
   const displayPrice = product.hasMultipleWeights && selectedWeight ? selectedWeight.price : product.price;
@@ -199,12 +204,16 @@ export default function ProductDetailPage({
                 {product.weights.map((w) => {
                   const isSelected = selectedWeight?.id === w.id;
                   const hasWDiscount = w.discountPrice && w.discountPrice < w.price;
+                  const weightInStock = (w.stock ?? 0) > 0;
+                  
                   return (
                     <button
                       key={w.id}
-                      onClick={() => setSelectedWeight(w)}
+                      onClick={() => weightInStock && setSelectedWeight(w)}
+                      disabled={!weightInStock}
                       className={cn(
                         "flex flex-col items-center rounded-xl border-2 px-4 py-2.5 text-sm transition-all",
+                        !weightInStock && "opacity-50 cursor-not-allowed",
                         isSelected
                           ? "border-safra-gold bg-safra-gold/10 text-safra-dark shadow-md"
                           : "border-safra-taupe/30 bg-white text-safra-muted hover:border-safra-gold/60 hover:text-safra-dark"
@@ -222,6 +231,9 @@ export default function ProductDetailPage({
                           <Price amount={w.price} />
                         )}
                       </span>
+                      {!weightInStock && (
+                        <span className="text-xs text-red-500 mt-1">{t("outOfStock")}</span>
+                      )}
                     </button>
                   );
                 })}
@@ -236,7 +248,7 @@ export default function ProductDetailPage({
               inStock ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
             )}>
               <span className={cn("h-2 w-2 rounded-full", inStock ? "bg-green-500" : "bg-red-500")} />
-              {inStock ? t("itemsLeft", { count: product.stock }) : t("outOfStock")}
+              {inStock ? t("itemsLeft", { count: currentStock }) : t("outOfStock")}
             </div>
           </div>
 
@@ -286,7 +298,7 @@ export default function ProductDetailPage({
                     </button>
                     <span className="w-12 text-center text-lg font-bold text-safra-dark">{qty}</span>
                     <button
-                      onClick={() => setQty(Math.min(product.stock, qty + 1))}
+                      onClick={() => setQty(Math.min(currentStock, qty + 1))}
                       className="flex h-8 w-8 items-center justify-center rounded-lg text-safra-olive transition-colors hover:bg-white hover:text-safra-dark hover:shadow-sm"
                       aria-label="Increase"
                     >

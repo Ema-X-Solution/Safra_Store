@@ -313,7 +313,7 @@ export default function AdminProductEditPage({ params }: { params: Promise<{ loc
                   onChange={e => {
                     setHasMultipleWeights(e.target.checked);
                     if (e.target.checked && weights.length === 0) {
-                      setWeights([{ id: `w-${Date.now()}`, value: 0, unit: "g", price: 0 }]);
+                      setWeights([{ id: `w-${Date.now()}`, value: 0, unit: "g", price: 0, stock: 0 }]);
                     }
                   }} 
                   className="h-4 w-4 rounded border-safra-taupe text-safra-gold focus:ring-safra-gold" 
@@ -443,13 +443,28 @@ export default function AdminProductEditPage({ params }: { params: Promise<{ loc
                           />
                         </div>
                       </div>
+
+                      <div className="space-y-1">
+                        <label className="text-xs font-medium text-safra-dark">{isAr ? "المخزون" : "Stock"}</label>
+                        <input 
+                          type="number" 
+                          value={w.stock ?? ""} 
+                          onChange={(e) => {
+                            const newWeights = [...weights];
+                            newWeights[index].stock = e.target.value ? Number(e.target.value) : undefined;
+                            setWeights(newWeights);
+                          }}
+                          className="w-full rounded-md border border-safra-taupe/40 px-3 py-1.5 text-sm"
+                          placeholder={isAr ? "أدخل المخزون" : "Enter stock"}
+                        />
+                      </div>
                     </div>
                   ))}
                   
                   <Button 
                     type="button" 
                     variant="outline" 
-                    onClick={() => setWeights([...weights, { id: `w-${Date.now()}`, value: 0, unit: "g", price: 0 }])}
+                    onClick={() => setWeights([...weights, { id: `w-${Date.now()}`, value: 0, unit: "g", price: 0, stock: 0 }])}
                     className="w-full border-dashed"
                   >
                     <Plus className="h-4 w-4 me-2" />
@@ -458,7 +473,9 @@ export default function AdminProductEditPage({ params }: { params: Promise<{ loc
                 </div>
               )}
 
-              <Input name="stock" label={t("stockQty")} type="number" value={stock} onChange={e => setStock(Number(e.target.value))} required />
+              {!hasMultipleWeights && (
+                <Input name="stock" label={t("stockQty")} type="number" value={stock} onChange={e => setStock(Number(e.target.value))} required />
+              )}
             </div>
           </div>
 

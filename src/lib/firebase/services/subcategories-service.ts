@@ -1,8 +1,30 @@
-import { collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, serverTimestamp, query, where, orderBy, writeBatch } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, serverTimestamp, query, where, orderBy, writeBatch, Timestamp } from "firebase/firestore";
 import { getFirebaseDb } from "@/lib/firebase/config";
 import type { SubCategory, SubCategoryInput, Product } from "@/lib/types";
 
 const COLLECTION = "subcategories";
+
+function convertFirestoreTimestamps(data: any): any {
+  if (!data) return data;
+  
+  const result: any = { ...data };
+  
+  if (result.createdAt && result.createdAt instanceof Timestamp) {
+    result.createdAt = {
+      seconds: result.createdAt.seconds,
+      nanoseconds: result.createdAt.nanoseconds,
+    };
+  }
+  
+  if (result.updatedAt && result.updatedAt instanceof Timestamp) {
+    result.updatedAt = {
+      seconds: result.updatedAt.seconds,
+      nanoseconds: result.updatedAt.nanoseconds,
+    };
+  }
+  
+  return result;
+}
 
 export async function getSubCategories(categoryId: string): Promise<SubCategory[]> {
   const db = getFirebaseDb();
@@ -12,7 +34,10 @@ export async function getSubCategories(categoryId: string): Promise<SubCategory[
   );
   
   const snap = await getDocs(q);
-  const results = snap.docs.map((d) => ({ id: d.id, ...d.data() } as SubCategory));
+  const results = snap.docs.map((d) => ({
+    id: d.id,
+    ...convertFirestoreTimestamps(d.data()),
+  } as SubCategory));
   return results.sort((a, b) => (a.order || 0) - (b.order || 0));
 }
 
@@ -20,7 +45,10 @@ export async function getSubCategoryById(id: string): Promise<SubCategory | null
   const db = getFirebaseDb();
   const snap = await getDoc(doc(db, COLLECTION, id));
   if (!snap.exists()) return null;
-  return { id: snap.id, ...snap.data() } as SubCategory;
+  return {
+    id: snap.id,
+    ...convertFirestoreTimestamps(snap.data()),
+  } as SubCategory;
 }
 
 export async function createSubCategory(data: SubCategoryInput): Promise<string> {

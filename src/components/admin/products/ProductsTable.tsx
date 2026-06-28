@@ -83,20 +83,55 @@ export default function ProductsTable({ products, categories, subCategories, onD
                   </div>
                 </td>
                 <td className="px-6 py-3 font-medium text-safra-dark">
-                  <div className="flex flex-col">
-                    {product.discountPrice ? (
-                      <>
-                        <Price amount={product.discountPrice} />
-                        <span className="text-xs text-safra-muted line-through">
-                          <Price amount={product.price} />
-                        </span>
-                      </>
-                    ) : (
-                      <Price amount={product.price} />
-                    )}
-                  </div>
+                  {product.hasMultipleWeights && product.weights && product.weights.length > 0 ? (
+                    <div className="flex flex-col gap-1">
+                      {product.weights.map((w, idx) => (
+                        <div key={idx} className="text-xs flex flex-col">
+                          <span className="flex items-center gap-1">
+                            <span className="text-safra-muted">{w.value} {w.unit}:</span>
+                            {w.discountPrice ? (
+                              <>
+                                <Price amount={w.discountPrice} />
+                                <span className="text-safra-muted line-through">
+                                  <Price amount={w.price} />
+                                </span>
+                              </>
+                            ) : (
+                              <Price amount={w.price} />
+                            )}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col">
+                      {product.discountPrice ? (
+                        <>
+                          <Price amount={product.discountPrice} />
+                          <span className="text-xs text-safra-muted line-through">
+                            <Price amount={product.price} />
+                          </span>
+                        </>
+                      ) : (
+                        <Price amount={product.price} />
+                      )}
+                    </div>
+                  )}
                 </td>
-                <td className="px-6 py-3 text-safra-olive">{product.stock}</td>
+                <td className="px-6 py-3 text-safra-olive">
+                  {product.hasMultipleWeights && product.weights && product.weights.length > 0 ? (
+                    <div className="flex flex-col gap-1">
+                      {product.weights.map((w, idx) => (
+                        <div key={idx} className="text-xs flex items-center gap-1">
+                          <span className="text-safra-muted">{w.value} {w.unit}:</span>
+                          <span className="font-medium">{w.stock ?? 0}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <span>{product.stock}</span>
+                  )}
+                </td>
                 <td className="px-6 py-3">
                   <span
                     className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${

@@ -18,6 +18,7 @@ export interface ProductWeight {
   unit: "g" | "kg";
   price: number;
   discountPrice?: number;
+  stock?: number;
 }
 
 export interface ProductSEO {

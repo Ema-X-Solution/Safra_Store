@@ -8,16 +8,42 @@ import {
   query,
   orderBy,
   serverTimestamp,
+  Timestamp,
 } from "firebase/firestore";
 import { getFirebaseDb } from "../config";
 import type { FAQ, FAQInput } from "@/lib/types";
 
 const COLLECTION = "faqs";
 
+function convertFirestoreTimestamps(data: any): any {
+  if (!data) return data;
+  
+  const result: any = { ...data };
+  
+  if (result.createdAt && result.createdAt instanceof Timestamp) {
+    result.createdAt = {
+      seconds: result.createdAt.seconds,
+      nanoseconds: result.createdAt.nanoseconds,
+    };
+  }
+  
+  if (result.updatedAt && result.updatedAt instanceof Timestamp) {
+    result.updatedAt = {
+      seconds: result.updatedAt.seconds,
+      nanoseconds: result.updatedAt.nanoseconds,
+    };
+  }
+  
+  return result;
+}
+
 export async function getFAQs(): Promise<FAQ[]> {
   try {
     const snap = await getDocs(query(collection(getFirebaseDb(), COLLECTION), orderBy("order", "asc")));
-    return snap.docs.map((d) => ({ id: d.id, ...d.data() } as FAQ));
+    return snap.docs.map((d) => ({
+      id: d.id,
+      ...convertFirestoreTimestamps(d.data()),
+    } as FAQ));
   } catch (error) {
     console.error("Failed to fetch FAQs:", error);
     return [];
