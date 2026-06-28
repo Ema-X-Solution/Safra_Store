@@ -17,10 +17,10 @@ import type { Product, ProductInput } from "@/lib/types";
 
 const COLLECTION = "products";
 
-function convertFirestoreTimestamps(data: any): any {
+function convertFirestoreTimestamps<T extends Record<string, unknown>>(data: T): T {
   if (!data) return data;
   
-  const result: any = { ...data };
+  const result: Record<string, unknown> = { ...data };
   
   if (result.createdAt && result.createdAt instanceof Timestamp) {
     result.createdAt = {
@@ -36,7 +36,7 @@ function convertFirestoreTimestamps(data: any): any {
     };
   }
   
-  return result;
+  return result as T;
 }
 
 /** For CREATE: skip null and undefined values entirely (deleteField is not valid in addDoc) */

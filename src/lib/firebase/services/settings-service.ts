@@ -11,10 +11,10 @@ import type { CMSSettings } from "@/lib/types";
 const DOC_ID = "main";
 const COLLECTION = "settings";
 
-function convertFirestoreTimestamps(data: any): any {
+function convertFirestoreTimestamps<T extends Record<string, unknown>>(data: T): T {
   if (!data) return data;
   
-  const result: any = { ...data };
+  const result: Record<string, unknown> = { ...data };
   
   if (result.createdAt && result.createdAt instanceof Timestamp) {
     result.createdAt = {
@@ -30,7 +30,7 @@ function convertFirestoreTimestamps(data: any): any {
     };
   }
   
-  return result;
+  return result as T;
 }
 
 export async function getSettings(): Promise<CMSSettings | null> {

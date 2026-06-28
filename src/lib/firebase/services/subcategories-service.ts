@@ -1,13 +1,13 @@
-import { collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, serverTimestamp, query, where, orderBy, writeBatch, Timestamp } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, serverTimestamp, query, where, writeBatch, Timestamp } from "firebase/firestore";
 import { getFirebaseDb } from "@/lib/firebase/config";
-import type { SubCategory, SubCategoryInput, Product } from "@/lib/types";
+import type { SubCategory, SubCategoryInput } from "@/lib/types";
 
 const COLLECTION = "subcategories";
 
-function convertFirestoreTimestamps(data: any): any {
+function convertFirestoreTimestamps<T extends Record<string, unknown>>(data: T): T {
   if (!data) return data;
   
-  const result: any = { ...data };
+  const result: Record<string, unknown> = { ...data };
   
   if (result.createdAt && result.createdAt instanceof Timestamp) {
     result.createdAt = {
@@ -23,7 +23,7 @@ function convertFirestoreTimestamps(data: any): any {
     };
   }
   
-  return result;
+  return result as T;
 }
 
 export async function getSubCategories(categoryId: string): Promise<SubCategory[]> {

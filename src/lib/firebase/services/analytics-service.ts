@@ -1,6 +1,6 @@
-import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { getFirebaseDb } from "../config";
-import type { Order, Product } from "@/lib/types";
+import type { Order } from "@/lib/types";
 
 export interface DashboardStats {
   productsCount: number;

@@ -15,10 +15,10 @@ import type { FAQ, FAQInput } from "@/lib/types";
 
 const COLLECTION = "faqs";
 
-function convertFirestoreTimestamps(data: any): any {
+function convertFirestoreTimestamps<T extends Record<string, unknown>>(data: T): T {
   if (!data) return data;
   
-  const result: any = { ...data };
+  const result: Record<string, unknown> = { ...data };
   
   if (result.createdAt && result.createdAt instanceof Timestamp) {
     result.createdAt = {
@@ -34,7 +34,7 @@ function convertFirestoreTimestamps(data: any): any {
     };
   }
   
-  return result;
+  return result as T;
 }
 
 export async function getFAQs(): Promise<FAQ[]> {
