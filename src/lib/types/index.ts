@@ -5,7 +5,7 @@ export type { Locale };
 export type BilingualText = Record<Locale, string>;
 
 // ─── Product ────────────────────────────────────────────────────────
-export type ProductStatus = "active" | "draft" | "archived";
+export type ProductStatus = "active" | "inactive";
 
 export interface ProductSpecification {
   key: BilingualText;

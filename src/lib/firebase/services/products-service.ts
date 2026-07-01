@@ -69,7 +69,7 @@ export async function getProducts(): Promise<Product[]> {
     return snap.docs.map((d) => ({
       id: d.id,
       ...convertFirestoreTimestamps(d.data()),
-    } as Product));
+    } as Product)).filter(p => p.status !== "inactive");
   } catch (error) {
     console.error("Failed to fetch products:", error);
     return [];
@@ -124,7 +124,7 @@ export async function getFeaturedProducts(): Promise<Product[]> {
     return snap.docs.map((d) => ({
       id: d.id,
       ...convertFirestoreTimestamps(d.data()),
-    } as Product));
+    } as Product)).filter(p => p.status !== "inactive");
   } catch (error) {
     console.error("Failed to fetch featured products:", error);
     return [];
@@ -141,7 +141,7 @@ export async function getProductsByCategory(categoryId: string): Promise<Product
     return snap.docs.map((d) => ({
       id: d.id,
       ...convertFirestoreTimestamps(d.data()),
-    } as Product));
+    } as Product)).filter(p => p.status !== "inactive");
   } catch (error) {
     console.error(`Failed to fetch products for category ${categoryId}:`, error);
     return [];
@@ -158,7 +158,7 @@ export async function getDiscountedProducts(): Promise<Product[]> {
     return snap.docs.map((d) => ({
       id: d.id,
       ...convertFirestoreTimestamps(d.data()),
-    } as Product));
+    } as Product)).filter(p => p.status !== "inactive");
   } catch (error) {
     console.error("Failed to fetch discounted products:", error);
     return [];

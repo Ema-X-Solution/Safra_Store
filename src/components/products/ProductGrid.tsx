@@ -179,10 +179,10 @@ export default function ProductGrid({ products, categories, subCategories = [], 
           <button
             onClick={() => handleSubCategoryChange("All")}
             className={cn(
-              "rounded-full px-3 py-1.5 text-xs font-medium transition-colors border",
+              "rounded-full px-4 py-2 text-sm font-medium transition-colors border",
               activeSubCategory === "All"
-                ? "bg-safra-taupe/20 text-safra-dark border-safra-taupe/30"
-                : "bg-transparent text-safra-muted border-safra-taupe/20 hover:bg-safra-light/10"
+                ? "bg-safra-gold text-safra-dark border-safra-gold shadow-sm"
+                : "bg-white text-safra-olive border-safra-taupe/30 hover:bg-safra-light/20"
             )}
           >
             {t("filterAll")}
@@ -192,10 +192,10 @@ export default function ProductGrid({ products, categories, subCategories = [], 
               key={sub.id}
               onClick={() => handleSubCategoryChange(sub.id)}
               className={cn(
-                "rounded-full px-3 py-1.5 text-xs font-medium transition-colors border",
+                "rounded-full px-4 py-2 text-sm font-medium transition-colors border",
                 activeSubCategory === sub.id
-                  ? "bg-safra-taupe/20 text-safra-dark border-safra-taupe/30"
-                  : "bg-transparent text-safra-muted border-safra-taupe/20 hover:bg-safra-light/10"
+                  ? "bg-safra-gold text-safra-dark border-safra-gold shadow-sm"
+                  : "bg-white text-safra-olive border-safra-taupe/30 hover:bg-safra-light/20"
               )}
             >
               {sub.name[locale]}

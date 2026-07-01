@@ -23,6 +23,7 @@ export default function AdminProductsPage() {
   
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -74,13 +75,14 @@ export default function AdminProductsPage() {
   const filteredProducts = products.filter(p => {
     const matchesSearch = p.name[locale]?.toLowerCase().includes(search.toLowerCase());
     const matchesCat = categoryFilter ? p.categoryId === categoryFilter : true;
-    return matchesSearch && matchesCat;
+    const matchesStatus = statusFilter ? p.status === statusFilter : true;
+    return matchesSearch && matchesCat && matchesStatus;
   });
 
   // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, categoryFilter]);
+  }, [search, categoryFilter, statusFilter]);
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -117,10 +119,19 @@ export default function AdminProductsPage() {
           onChange={e => setCategoryFilter(e.target.value)}
           className="rounded-lg border border-safra-taupe/40 bg-white px-4 py-2 focus:outline-none focus:ring-1 focus:ring-safra-gold"
         >
-          <option value="">All Categories</option>
+          <option value="">{locale === 'ar' ? 'كل الأقسام' : 'All Categories'}</option>
           {categories.map(c => (
             <option key={c.id} value={c.id}>{c.name[locale]}</option>
           ))}
+        </select>
+        <select
+          value={statusFilter}
+          onChange={e => setStatusFilter(e.target.value)}
+          className="rounded-lg border border-safra-taupe/40 bg-white px-4 py-2 focus:outline-none focus:ring-1 focus:ring-safra-gold"
+        >
+          <option value="">{locale === 'ar' ? 'كل الحالات' : 'All Statuses'}</option>
+          <option value="active">{t("statusActive")}</option>
+          <option value="inactive">{t("inactive")}</option>
         </select>
       </div>
 

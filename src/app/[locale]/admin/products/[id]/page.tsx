@@ -46,7 +46,7 @@ export default function AdminProductEditPage({ params }: { params: Promise<{ loc
   const [hasMultipleWeights, setHasMultipleWeights] = useState(false);
   const [weights, setWeights] = useState<ProductWeight[]>([]);
   const [stock, setStock] = useState(0);
-  const [status, setStatus] = useState<"active" | "draft" | "archived">("active");
+  const [status, setStatus] = useState<"active" | "inactive">("active");
   const [categoryId, setCategoryId] = useState("");
   const [subcategoryId, setSubcategoryId] = useState("");
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
@@ -485,10 +485,9 @@ export default function AdminProductEditPage({ params }: { params: Promise<{ loc
             <div className="space-y-4">
               <div className="space-y-1">
                 <label className="text-sm font-medium">{t("statusLabel")}</label>
-                <select value={status} onChange={e => setStatus(e.target.value as "active" | "draft" | "archived")} className="w-full rounded-lg border border-safra-taupe/40 p-2">
+                <select value={status} onChange={e => setStatus(e.target.value as "active" | "inactive")} className="w-full rounded-lg border border-safra-taupe/40 p-2">
                   <option value="active">{t("statusActive")}</option>
-                  <option value="draft">{t("statusDraft")}</option>
-                  <option value="archived">{t("statusArchived")}</option>
+                  <option value="inactive">{t("inactive")}</option>
                 </select>
               </div>
               <div className="space-y-1">

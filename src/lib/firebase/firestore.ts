@@ -54,7 +54,7 @@ export async function getProducts(): Promise<Product[]> {
         createdAt: data.createdAt ? toDate(data.createdAt) : undefined,
         updatedAt: data.updatedAt ? toDate(data.updatedAt) : undefined
       } as Product;
-    });
+    }).filter(p => p.status !== "inactive");
   }, []);
 }
 
@@ -63,12 +63,13 @@ export async function getProductById(id: string): Promise<Product | null> {
     const snap = await getDoc(doc(getFirebaseDb(), PRODUCTS, id));
     if (!snap.exists()) return null;
     const data = snap.data();
-    return { 
+    const product = { 
       id: snap.id, 
       ...data, 
       createdAt: data.createdAt ? toDate(data.createdAt) : undefined,
       updatedAt: data.updatedAt ? toDate(data.updatedAt) : undefined
     } as Product;
+    return product.status !== "inactive" ? product : null;
   }, null);
 }
 
@@ -84,7 +85,7 @@ export async function getFeaturedProducts(): Promise<Product[]> {
         createdAt: data.createdAt ? toDate(data.createdAt) : undefined,
         updatedAt: data.updatedAt ? toDate(data.updatedAt) : undefined
       } as Product;
-    });
+    }).filter(p => p.status !== "inactive");
   }, []);
 }
 
@@ -100,7 +101,7 @@ export async function getProductsByCategory(categoryId: string): Promise<Product
         createdAt: data.createdAt ? toDate(data.createdAt) : undefined,
         updatedAt: data.updatedAt ? toDate(data.updatedAt) : undefined
       } as Product;
-    });
+    }).filter(p => p.status !== "inactive");
   }, []);
 }
 

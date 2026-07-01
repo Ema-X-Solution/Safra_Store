@@ -136,11 +136,11 @@ export default function ProductsTable({ products, categories, subCategories, onD
                   <span
                     className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
                       product.status === "active" ? "bg-green-100 text-green-700" :
-                      product.status === "archived" ? "bg-gray-100 text-gray-700" :
-                      "bg-yellow-100 text-yellow-700"
+                      product.status === "inactive" ? "bg-gray-100 text-gray-700" :
+                      "bg-green-100 text-green-700"
                     }`}
                   >
-                    {product.status === "draft" ? t("statusDraft") : product.status === "archived" ? t("statusArchived") : t("statusActive")}
+                    {product.status === "inactive" ? t("inactive") : t("statusActive")}
                   </span>
                 </td>
                 <td className="px-6 py-3 text-end">

@@ -56,9 +56,7 @@ export default function ProductDetailView({ product, category, subCategory }: Pr
   const statusColor =
     product.status === "active"
       ? "bg-green-100 text-green-700"
-      : product.status === "archived"
-      ? "bg-gray-100 text-gray-600"
-      : "bg-yellow-100 text-yellow-700";
+      : "bg-gray-100 text-gray-600";
 
   const handleDeleteClick = () => setDeleteTarget(product.id);
 
